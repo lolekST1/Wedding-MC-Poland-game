@@ -684,7 +684,7 @@ class Setup extends Phaser.Scene{
   pickItem(it){ Phaser.Utils.Array.Remove(this.looseItems,it); it.sprite.destroy(); this.carry={kind:'item',id:it.id};
     const s=this.slots.find(x=>x.id===it.id); this.carrySprite.setTexture(s.key); Audio.sfx('pick'); this.refreshMarkers(); }
   placeItem(s){ s.placed=true; const p=iso(s.gx,s.gy,s.z); const spr=this.add.image(p.x,p.y,s.key).setOrigin(0.5,1).setScale(1).setDepth(tdepth(s.gx,s.gy,s.z*0.1+3));
-    this.placedSprites[s.id]=spr; this.tweens.add({targets:spr,scale:{from:2.5,to:2},duration:200,ease:'Back.out'});
+    this.placedSprites[s.id]=spr; this.tweens.add({targets:spr,scale:{from:1.25,to:1},duration:200,ease:'Back.out'});
     this.carry=null; this.placedCount++; Audio.sfx('place'); this.addScore(12); this.floatText(s.gx,s.gy,'✓','#46d67a');
     this.phaseDoneCheck(); this.refreshHUD(); this.refreshMarkers();
   }

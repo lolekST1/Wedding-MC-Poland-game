@@ -219,8 +219,10 @@ function drawChar(g,o,back){
   const skin=o.skin||0xf1c9a5, hair=o.hair||0x2a1a10;
   // nogi
   px(g,7,26,3,6,o.pants); px(g,12,26,3,6,o.pants);
+  if(o.shoes){ px(g,6,31,4,1,0x000000); px(g,12,31,4,1,0x000000); px(g,7,31,1,1,0x555); } // lakierki
   // tułów
   px(g,6,15,10,12,o.shirt);
+  if(o.vest && !back){ px(g,8,15,6,12,0xffffff); px(g,10,16,2,10,0xeaeaf0); } // biała kamizelka/koszula
   // ręce
   px(g,4,15,2,9,o.shirt); px(g,16,15,2,9,o.shirt);
   px(g,4,23,2,2,skin); px(g,16,23,2,2,skin);
@@ -229,11 +231,19 @@ function drawChar(g,o,back){
   px(g,7,6,8,8,skin);
   if(!back){ px(g,9,9,1,2,0x20140c); px(g,12,9,1,2,0x20140c); } // oczy
   // włosy
-  px(g,7,4,8,3,hair); if(back) px(g,7,4,8,9,hair);
+  if(o.ponytail){ px(g,14,7,3,5,hair); px(g,16,9,2,4,hair); } // kitek z tyłu
+  if(o.curly){
+    px(g,6,3,10,4,hair);                                        // czupryna
+    px(g,5,5,2,4,hair); px(g,15,5,2,4,hair);                    // boczne loki
+    px(g,6,2,3,2,hair); px(g,10,1,3,2,hair); px(g,13,2,2,2,hair); // loki na czubku
+    if(back){ px(g,5,4,12,10,hair); px(g,6,13,8,2,hair); }
+  } else {
+    px(g,7,4,8,3,hair); if(back) px(g,7,4,8,9,hair);
+  }
   // dodatki na głowie
   if(o.hat==='cap'){ px(g,6,3,10,3,o.hatCol||0x2b6cff); px(g,4,5,6,1,o.hatCol||0x2b6cff); }
-  if(o.hat==='top'){ px(g,6,4,10,2,0x000000); px(g,7,-1,8,6,0x0a0a0a); px(g,7,3,8,1,C.gold); }
-  if(o.bow){ px(g,10,15,3,2,0xffffff); }
+  if(o.hat==='top'){ px(g,6,4,10,2,0x000000); px(g,6,-1,10,6,0x0a0a0a); px(g,6,3,10,1,0x222222); } // cylinder (czarny)
+  if(o.bow){ px(g,9,15,4,2,0xffffff); px(g,10,14,2,1,0xffffff); } // biała muszka
   // rekwizyt
   if(o.prop==='camera'){ px(g,2,16,5,4,0x111111); px(g,3,17,2,2,C.sky); }
   if(o.prop==='cam'){ px(g,15,13,7,4,0x222222); px(g,20,14,2,2,0x111111); }
@@ -255,7 +265,19 @@ function drawItem(g,key){
   else if(key==='lightstand'){ px(g,6,2,2,28,0x6a6e76); px(g,2,30,10,2,0x5a5e66); px(g,4,28,2,5,0x5a5e66); px(g,9,28,2,5,0x5a5e66); }
   else if(key==='outlet'){ px(g,1,1,8,8,0xe8e2d0); px(g,3,3,1,3,0x333); px(g,5,3,1,3,0x333); }
   else if(key==='screen'){ px(g,2,2,26,30,0x3a2f50); px(g,4,4,22,26,0x4a3c66); px(g,3,2,2,30,0x2a2238); }
-  else if(key==='car'){ px(g,4,14,60,16,0x9c2b3a); px(g,14,4,36,12,0x8a2533); px(g,18,6,12,8,0xbfe3ff); px(g,33,6,12,8,0xbfe3ff); px(g,2,16,4,10,0x111); px(g,12,28,8,8,0x111); px(g,46,28,8,8,0x111); px(g,12,30,8,4,0x333); px(g,46,30,8,4,0x333); px(g,58,18,6,4,0xffe487); }
+  else if(key==='car'){ // duży biały van (Renault Trafic)
+    px(g,6,14,68,34,0xf0f0f0);                                  // nadwozie
+    px(g,8,11,64,4,0xfafafa);                                   // dach
+    px(g,6,42,68,6,0xd8d8de);                                   // cień dolny
+    px(g,9,17,15,11,0xbfe3ff); px(g,9,17,15,2,0x8fc0e0);        // szyba przednia
+    px(g,30,18,18,9,0x9fd0f0); px(g,50,18,18,9,0x9fd0f0);       // okna boczne
+    px(g,28,18,2,9,0xd8d8de); px(g,48,18,2,9,0xd8d8de); px(g,68,18,2,9,0xd8d8de); // ramki
+    px(g,6,32,4,14,0x2a2a30);                                   // przód/grill
+    px(g,6,29,5,3,0xffe487);                                    // reflektor
+    px(g,7,27,3,4,0x333);                                       // lusterko
+    px(g,14,45,13,11,0x111); px(g,17,48,7,6,0x2a2a2e);          // koło przednie
+    px(g,53,45,13,11,0x111); px(g,56,48,7,6,0x2a2a2e);          // koło tylne
+    px(g,13,43,15,3,0xc8c8d0); px(g,52,43,15,3,0xc8c8d0); }     // nadkola
   else if(key==='marker'){ g.lineStyle(2,0xffffff,0.9); g.beginPath(); g.moveTo(32,2); g.lineTo(62,17); g.lineTo(32,32); g.lineTo(2,17); g.closePath(); g.strokePath(); }
   else if(key==='cablecoil'){ px(g,3,4,10,8,0x111); px(g,5,6,6,4,0x222); px(g,6,7,4,2,0x39d0a0); }
 }
@@ -265,8 +287,8 @@ function genAssets(scene){
   const mk=(key,w,h,fn)=>{ const g=scene.make.graphics({x:0,y:0,add:false}); fn(g); g.generateTexture(key,w,h); g.destroy(); };
   // postacie
   const chars={
-    karol:   {shirt:0x2b3a55,pants:0x1c2433,hat:'cap',hatCol:0x21408a,skin:0xf1c9a5,hair:0x171717},
-    karolFrak:{shirt:0x0b0b10,pants:0x0b0b10,hat:'top',bow:true,skin:0xf1c9a5,hair:0x171717},
+    karol:   {shirt:0x2b3a55,pants:0x1c2433,skin:0xf1c9a5,hair:0x111111,curly:true},
+    karolFrak:{shirt:0x0b0b10,pants:0x0b0b10,hat:'top',bow:true,vest:true,curly:true,ponytail:true,shoes:true,skin:0xf1c9a5,hair:0x111111},
     manager: {shirt:0x6a4a8a,pants:0x2a2436,hair:0x3a2a18,prop:'tray'},
     photo:   {shirt:0x2f7a52,pants:0x223026,hair:0x20140c,prop:'camera'},
     camera:  {shirt:0x335a8a,pants:0x223040,hair:0x20140c,prop:'cam'},
@@ -276,7 +298,7 @@ function genAssets(scene){
   Object.keys(chars).forEach(k=>{ mk(k,22,34,g=>drawChar(g,chars[k],false)); mk(k+'_b',22,34,g=>drawChar(g,chars[k],true)); });
   // przedmioty
   ['bag','bagEmpty','djtable','console','laptop','dmx','speaker','spkstand','light','lightstand','outlet','screen','car','cablecoil']
-    .forEach(key=>{ const sizes={bag:[20,16],bagEmpty:[20,14],djtable:[40,32],console:[22,11],laptop:[18,12],dmx:[14,13],speaker:[18,30],spkstand:[16,30],light:[16,11],lightstand:[14,34],outlet:[10,10],screen:[30,34],car:[70,40],cablecoil:[16,14]}[key];
+    .forEach(key=>{ const sizes={bag:[20,16],bagEmpty:[20,14],djtable:[40,32],console:[22,11],laptop:[18,12],dmx:[14,13],speaker:[18,30],spkstand:[16,30],light:[16,11],lightstand:[14,34],outlet:[10,10],screen:[30,34],car:[80,58],cablecoil:[16,14]}[key];
       mk(key,sizes[0],sizes[1],g=>drawItem(g,key)); });
   mk('marker',64,34,g=>drawItem(g,'marker'));
   // miękka poświata
@@ -362,7 +384,7 @@ class Setup extends Phaser.Scene{
     this.cabled=0; this.tidied=0; this.returned=0; this.changed=false;
     this.score=0; this.secs=SETUP_TIME; this.late=false; this.done=false;
     this.carry=null; this.holdT=0;
-    this.stagingBags=[]; this.looseItems=[]; this.emptyBags=[]; this.placedSprites={};
+    this.stagingBags=[]; this.looseItems=[]; this.looseBags=[]; this.emptyBags=[]; this.placedSprites={};
     this.cables=[]; this.cableTargets=[ 'spkL','spkR','liL','liR','djtable' ];
     this.npcDone=0; this.npcActive=null; this.npcQueue=[];
 
@@ -377,7 +399,15 @@ class Setup extends Phaser.Scene{
 
     // torby na starcie przy aucie
     this.bagsAtCar=this.totalBags;
-    this.carBagSprite=this.add.image(cp.x-26,cp.y-26,'bag').setOrigin(0.5,1).setDepth(tdepth(this.car.gx,this.car.gy,6)).setScale(2);
+    this.carBagSprite=this.add.image(cp.x-46,cp.y-20,'bag').setOrigin(0.5,1).setDepth(tdepth(this.car.gx,this.car.gy,6)).setScale(2);
+
+    // strefa odkładcza (gdzie znieść torby) — widoczna w fazach 0–1
+    const stp=iso(this.staging.gx,this.staging.gy,0);
+    this.stageMark=this.add.image(stp.x,stp.y,'marker').setOrigin(0.5,0.5).setScale(1.7).setTint(C.gold).setAlpha(0.5).setDepth(tdepth(this.staging.gx,this.staging.gy,-9));
+    this.tweens.add({targets:this.stageMark,alpha:0.9,yoyo:true,repeat:-1,duration:700});
+    this.stageLabel=this.add.text(stp.x,stp.y-42,'ZNIEŚ TORBY TUTAJ',{fontFamily:'Segoe UI',fontSize:'14px',color:'#ffe487',fontStyle:'bold',backgroundColor:'#000a',padding:{x:6,y:3}}).setOrigin(0.5).setDepth(96000);
+    // etykieta auta
+    this.carLabel=this.add.text(cp.x,cp.y-124,'🚐 ODBIERZ SPRZĘT',{fontFamily:'Segoe UI',fontSize:'13px',color:'#fff',fontStyle:'bold',backgroundColor:'#000a',padding:{x:6,y:3}}).setOrigin(0.5).setDepth(96000);
 
     // markery celów (duchy)
     this.markerLayer=this.add.container(0,0);
@@ -451,7 +481,7 @@ class Setup extends Phaser.Scene{
       const carryingThis = this.carry && this.carry.id===s.id;
       const m=this.add.image(p.x,p.y,'marker').setOrigin(0.5,0.5).setScale(1).setAlpha(carryingThis?0.95:0.4).setTint(carryingThis?C.green:0xffffff).setDepth(tdepth(s.gx,s.gy,-8));
       this.markerLayer.add(m);
-      const t=this.add.text(p.x,p.y-10,s.label,{fontFamily:'Segoe UI',fontSize:'10px',color:'#cfe'}).setOrigin(0.5).setDepth(tdepth(s.gx,s.gy,-7)).setAlpha(carryingThis?1:0.5);
+      const t=this.add.text(p.x,p.y-14,s.label,{fontFamily:'Segoe UI',fontSize:'13px',color:carryingThis?'#b6ffd0':'#ffe487',fontStyle:'bold',backgroundColor:'#000a',padding:{x:5,y:2}}).setOrigin(0.5).setDepth(96000).setAlpha(carryingThis?1:0.92);
       this.markerLayer.add(t);
     });
   }
@@ -516,6 +546,9 @@ class Setup extends Phaser.Scene{
     const ph=this.phaseIndex();
     this.checkText.setText(L.map((r,i)=>{ const done=r[1]>=r[2]; const cur=i===ph; return (done?'✓ ':cur?'▶ ':'   ')+r[0]+'  '+r[1]+'/'+r[2]; }).join('\n'));
     this.hintText.setText('🎯 '+this.phaseHint());
+    // strefa odkładcza widoczna podczas wnoszenia/rozpakowania; etykieta auta wg fazy
+    if(this.stageMark){ const showStage=ph<=1; this.stageMark.setVisible(showStage); this.stageLabel.setVisible(showStage); }
+    if(this.carLabel){ this.carLabel.setVisible(ph===0||ph===5).setText(ph===5?'🚐 ZWRÓĆ TORBY':'🚐 ODBIERZ SPRZĘT'); }
   }
   flashTip(t){ this.tipText.setText(t).setAlpha(1); this.tweens.killTweensOf(this.tipText); this.tweens.add({targets:this.tipText,alpha:0,delay:1300,duration:600}); }
   addScore(n){ this.score+=n; this.refreshHUD(); }
@@ -541,22 +574,32 @@ class Setup extends Phaser.Scene{
   }
   buildActBtn(){
     const b=this.add.circle(GW-60,GH-70,42,C.gold,0.32).setStrokeStyle(3,C.gold).setScrollFactor(0).setDepth(95000).setInteractive();
-    this.add.text(GW-60,GH-70,'AKCJA',{fontFamily:'Segoe UI',fontSize:'12px',color:'#fff',fontStyle:'bold'}).setOrigin(0.5).setScrollFactor(0).setDepth(95001);
-    b.on('pointerdown',()=>{ this.actionQueued=true; this.holding=true; });
-    b.on('pointerup',()=>{ this.holding=false; }); b.on('pointerout',()=>{ this.holding=false; });
+    const lbl=this.add.text(GW-60,GH-70,'AKCJA',{fontFamily:'Segoe UI',fontSize:'12px',color:'#fff',fontStyle:'bold'}).setOrigin(0.5).setScrollFactor(0).setDepth(95001);
+    const press=()=>{ b.setFillStyle(C.gold,0.75).setScale(0.9); lbl.setScale(0.9); };
+    const release=()=>{ b.setFillStyle(C.gold,0.32).setScale(1); lbl.setScale(1); };
+    b.on('pointerdown',()=>{ this.actionQueued=true; this.holding=true; press(); });
+    b.on('pointerup',()=>{ this.holding=false; release(); }); b.on('pointerout',()=>{ this.holding=false; release(); });
   }
+  flashPrompt(){ if(!this.promptText.visible) return; this.tweens.killTweensOf(this.promptText); this.promptText.setScale(1);
+    this.tweens.add({targets:this.promptText,scale:1.25,yoyo:true,duration:110,ease:'Quad.out',onComplete:()=>this.promptText.setScale(1)}); }
 
   /* ---------- KONTEKSTOWA AKCJA ---------- */
   getContext(){
     const near=(gx,gy,r)=>Math.hypot(this.px-gx,this.py-gy)<(r||1.2);
     // carrying?
     if(this.carry){
-      if(this.carry.kind==='bag'){ if(near(this.staging.gx,this.staging.gy,1.6)) return {label:'Połóż torbę',fn:()=>this.dropBag()}; }
-      else if(this.carry.kind==='emptybag'){ if(near(this.car.gx,this.car.gy,1.8)) return {label:'Włóż torbę do auta',fn:()=>this.returnBag()}; }
-      else if(this.carry.kind==='item'){ const s=this.slots.find(x=>x.id===this.carry.id); if(s&&!s.placed&&this.depOk(s)&&near(s.gx,s.gy,1.4)) return {label:'Postaw: '+s.label,fn:()=>this.placeItem(s)}; }
+      if(this.carry.kind==='bag'){ if(near(this.staging.gx,this.staging.gy,1.6)) return {label:'Połóż torbę',fn:()=>this.dropBag()};
+        return {label:'Odłóż torbę',fn:()=>this.dropBagHere(false)}; }
+      else if(this.carry.kind==='emptybag'){ if(near(this.car.gx,this.car.gy,1.8)) return {label:'Włóż torbę do auta',fn:()=>this.returnBag()};
+        return {label:'Odłóż torbę',fn:()=>this.dropBagHere(true)}; }
+      else if(this.carry.kind==='item'){ const s=this.slots.find(x=>x.id===this.carry.id); if(s&&!s.placed&&this.depOk(s)&&near(s.gx,s.gy,1.4)) return {label:'Postaw: '+s.label,fn:()=>this.placeItem(s)};
+        return {label:'Odłóż tutaj',fn:()=>this.dropItemHere()}; }
       return null;
     }
     const ph=this.phaseIndex();
+    // luźna (odłożona) torba — ponowne podniesienie
+    const lb=this.looseBags.find(b=>near(b.gx,b.gy,1.3));
+    if(lb) return {label:'Weź torbę',fn:()=>this.takeLooseBag(lb)};
     // wnoszenie toreb
     if(this.bagsAtCar>0 && near(this.car.gx,this.car.gy,1.8)) return {label:'Weź torbę z auta',fn:()=>this.takeBag()};
     // rozpakowanie
@@ -580,6 +623,16 @@ class Setup extends Phaser.Scene{
 
   /* ---------- AKCJE ---------- */
   takeBag(){ this.bagsAtCar--; this.carry={kind:'bag'}; if(this.bagsAtCar<=0) this.carBagSprite.setVisible(false); Audio.sfx('pick'); }
+  // odłożenie przedmiotu/torby w dowolnym miejscu (cofnięcie przypadkowego podniesienia)
+  dropItemHere(){ const s=this.slots.find(x=>x.id===this.carry.id); const gx=this.px, gy=this.py;
+    const p=iso(gx,gy,0); const spr=this.add.image(p.x,p.y,s.key).setOrigin(0.5,1).setScale(2).setDepth(tdepth(gx,gy,2));
+    this.looseItems.push({id:s.id,gx,gy,sprite:spr}); this.carry=null; this.carrySprite.setVisible(false);
+    Audio.sfx('place'); this.floatText(gx,gy,'Odłożono','#ffd23f'); this.refreshMarkers(); }
+  dropBagHere(empty){ const gx=this.px, gy=this.py; const p=iso(gx,gy,0);
+    const spr=this.add.image(p.x,p.y,empty?'bagEmpty':'bag').setOrigin(0.5,1).setScale(2).setDepth(tdepth(gx,gy,2));
+    this.looseBags.push({gx,gy,sprite:spr,empty:!!empty}); this.carry=null;
+    Audio.sfx('place'); this.floatText(gx,gy,'Odłożono','#ffd23f'); }
+  takeLooseBag(b){ Phaser.Utils.Array.Remove(this.looseBags,b); b.sprite.destroy(); this.carry={kind:b.empty?'emptybag':'bag'}; Audio.sfx('pick'); }
   dropBag(){ const idx=this.stagingBags.length; const gx=this.staging.gx+((idx%3)-1)*0.7, gy=this.staging.gy+Math.floor(idx/3)*0.7;
     const p=iso(gx,gy,0); const spr=this.add.image(p.x,p.y,'bag').setOrigin(0.5,1).setScale(2).setDepth(tdepth(gx,gy,2));
     this.stagingBags.push({gx,gy,unpacked:false,sprite:spr,contents:this.bagContents[idx]||[]});
@@ -694,16 +747,17 @@ class Setup extends Phaser.Scene{
 
     // kontekstowa akcja + prompt
     const ctx=this.getContext();
-    if(ctx){ this.promptText.setText('[Spacja] '+ctx.label).setPosition(pp.x,pp.y-52).setVisible(true); }
+    const keyHint=this.sys.game.device.input.touch?'[AKCJA] ':'[Spacja] ';
+    if(ctx){ this.promptText.setText(keyHint+ctx.label).setPosition(pp.x,pp.y-52).setVisible(true); }
     else this.promptText.setVisible(false);
 
     // akcja
     let pressed=Phaser.Input.Keyboard.JustDown(this.keys.SPACE)||this.actionQueued; this.actionQueued=false;
     if(ctx && ctx.hold){ // przytrzymanie (rozpakowanie)
       const held = this.keys.SPACE.isDown || this.holding;
-      if(held){ this.holdT+=dt; if(this.holdT>=900){ this.holdT=0; ctx.fn(); } }
+      if(held){ this.holdT+=dt; if(this.holdT>=900){ this.holdT=0; this.flashPrompt(); ctx.fn(); } }
       else this.holdT=Math.max(0,this.holdT-dt*2);
-    } else if(pressed && ctx){ ctx.fn(); }
+    } else if(pressed && ctx){ this.flashPrompt(); ctx.fn(); }
 
     // NPC
     this.npcSpawnT-=dt/1000;

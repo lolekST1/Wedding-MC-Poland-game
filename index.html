@@ -1,0 +1,1020 @@
+<!DOCTYPE html>
+<html lang="pl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+<meta name="theme-color" content="#0a0a18">
+
+<!-- ============ SEO ============ -->
+<title>Wodzirej Karol: Master of the Dancefloor – gra | Wedding MC Poland</title>
+<meta name="description" content="Zagraj w retro-arkadówkę Wodzirej Karol: Master of the Dancefloor! Rozstaw sprzęt, rozgrzej parkiet i poprowadź międzynarodowe wesele bez przaśności. Profesjonalny wodzirej i DJ – Wedding MC Poland.">
+<meta name="keywords" content="wodzirej, dj na wesele, wedding mc poland, wodzirej Karol, konferansjer, wesele międzynarodowe, gra weselna">
+<meta name="author" content="Wedding MC Poland – Wodzirej Karol">
+<link rel="canonical" href="https://www.wodzirejkarol.pl/">
+<meta name="robots" content="index, follow">
+
+<!-- Open Graph / social -->
+<meta property="og:type" content="website">
+<meta property="og:locale" content="pl_PL">
+<meta property="og:site_name" content="Wedding MC Poland – Wodzirej Karol">
+<meta property="og:title" content="Wodzirej Karol: Master of the Dancefloor – zagraj online">
+<meta property="og:description" content="Retro-arkadówka o profesjonalnym wodzireju. Rozgrzej parkiet, unikaj przaśności i poprowadź międzynarodowe wesele z klasą.">
+<meta property="og:url" content="https://www.wodzirejkarol.pl/">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:title" content="Wodzirej Karol: Master of the Dancefloor">
+<meta name="twitter:description" content="Zagraj w grę o profesjonalnym wodzireju i sprawdź wolny termin u Karola.">
+
+<!-- Structured data: VideoGame + LocalBusiness -->
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@graph": [
+    {
+      "@type": "VideoGame",
+      "name": "Wodzirej Karol: Master of the Dancefloor",
+      "genre": ["Arcade", "Casual"],
+      "gamePlatform": "Web browser (HTML5)",
+      "applicationCategory": "Game",
+      "operatingSystem": "Any",
+      "inLanguage": "pl",
+      "description": "Retro-arkadówka, w której wcielasz się w profesjonalnego wodzireja Karola. Rozstawiasz sprzęt nagłośnieniowy, rozgrzewasz parkiet i prowadzisz międzynarodowe wesele bez przaśności.",
+      "author": { "@type": "Organization", "name": "Wedding MC Poland" },
+      "offers": { "@type": "Offer", "price": "0", "priceCurrency": "PLN" }
+    },
+    {
+      "@type": "LocalBusiness",
+      "name": "Wedding MC Poland – Wodzirej Karol",
+      "description": "Profesjonalny wodzirej i DJ na wesela polskie oraz międzynarodowe.",
+      "url": "https://www.wodzirejkarol.pl/",
+      "areaServed": "PL",
+      "knowsLanguage": ["pl", "en", "de"]
+    }
+  ]
+}
+</script>
+
+<style>
+  :root{
+    --gold:#d4af37; --bg:#0a0a18; --neon:#00ffcc; --pink:#ff2e8b;
+  }
+  *{box-sizing:border-box}
+  html,body{margin:0;padding:0;height:100%}
+  body{
+    background:radial-gradient(circle at 50% 20%, #1a1030 0%, var(--bg) 70%);
+    color:#f4f4f8; font-family:'Segoe UI',system-ui,Arial,sans-serif;
+    display:flex; flex-direction:column; align-items:center; justify-content:center;
+    min-height:100dvh; overflow:hidden;
+  }
+  #game-shell{
+    position:relative; width:min(96vw,900px); aspect-ratio:3/2;
+    border:3px solid var(--gold);
+    border-radius:10px;
+    box-shadow:0 0 40px rgba(212,175,55,.35), inset 0 0 60px rgba(0,0,0,.6);
+    overflow:hidden; background:#05050d;
+  }
+  #game-container{position:absolute; inset:0}
+  #game-container canvas{display:block; width:100%!important; height:100%!important}
+
+  /* Poster shown before the engine is loaded (keeps PageSpeed high — heavy JS is deferred) */
+  #poster{
+    position:absolute; inset:0; display:flex; flex-direction:column;
+    align-items:center; justify-content:center; text-align:center; gap:18px;
+    background:
+      radial-gradient(circle at 30% 30%, rgba(0,255,204,.18), transparent 45%),
+      radial-gradient(circle at 75% 70%, rgba(255,46,139,.20), transparent 45%),
+      linear-gradient(160deg,#140d2b,#0a0a18);
+    padding:24px; cursor:pointer; z-index:5;
+  }
+  #poster h1{
+    font-size:clamp(22px,5vw,42px); margin:0; letter-spacing:1px;
+    color:#fff; text-shadow:0 0 16px rgba(0,255,204,.55);
+  }
+  #poster h1 .accent{color:var(--gold); text-shadow:0 0 18px rgba(212,175,55,.7)}
+  #poster p{margin:0; max-width:540px; color:#c9c9e0; font-size:clamp(13px,2.6vw,16px); line-height:1.5}
+  #playBtn{
+    border:none; cursor:pointer; font-weight:700; letter-spacing:1px;
+    font-size:clamp(16px,3.4vw,22px); color:#0a0a18;
+    padding:14px 34px; border-radius:50px;
+    background:linear-gradient(90deg,var(--gold),#ffe487,var(--gold));
+    box-shadow:0 0 24px rgba(212,175,55,.6); transition:transform .15s ease, box-shadow .15s ease;
+  }
+  #playBtn:hover{transform:scale(1.06); box-shadow:0 0 34px rgba(212,175,55,.9)}
+  #loadingTxt{font-size:13px;color:var(--neon);min-height:18px}
+
+  /* Crawlable / accessible marketing copy (visible, lightweight, helps SEO) */
+  #seo-copy{max-width:900px;width:min(96vw,900px);margin:14px auto 0;color:#aab; font-size:13px;line-height:1.6;text-align:center}
+  #seo-copy a{color:var(--gold);font-weight:600;text-decoration:none}
+  #seo-copy a:hover{text-decoration:underline}
+  .visually-hidden{position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0);white-space:nowrap}
+</style>
+</head>
+<body>
+
+<main>
+  <h1 class="visually-hidden">Wodzirej Karol: Master of the Dancefloor – darmowa gra arkadowa promująca profesjonalnego wodzireja i DJ-a Wedding MC Poland</h1>
+
+  <div id="game-shell">
+    <div id="game-container"></div>
+
+    <div id="poster" role="button" tabindex="0" aria-label="Załaduj i uruchom grę">
+      <h1>Wodzirej Karol<br><span class="accent">Master of the Dancefloor</span></h1>
+      <p>Rozstaw sprzęt, rozgrzej parkiet i poprowadź międzynarodowe wesele z klasą — bez ani grama przaśności.</p>
+      <button id="playBtn" type="button">▶ GRAJ TERAZ</button>
+      <div id="loadingTxt" aria-live="polite"></div>
+    </div>
+  </div>
+
+  <p id="seo-copy">
+    <strong>Wodzirej Karol</strong> to profesjonalny wodzirej i DJ prowadzący wesela polskie oraz międzynarodowe jako
+    <strong>Wedding MC Poland</strong>. Zagraj w grę i zobacz, jak ważna na przyjęciu jest logistyka, brak przaśności
+    i swoboda językowa. <a href="http://www.wodzirejkarol.pl" target="_blank" rel="noopener">Sprawdź wolny termin u Karola →</a>
+  </p>
+</main>
+
+<script>
+/* =========================================================================
+   ŁADOWANIE SILNIKA NA ŻĄDANIE
+   Phaser (~1MB) jest wczytywany dopiero gdy gracz kliknie "GRAJ".
+   Dzięki temu start strony jest błyskawiczny (dobry wynik PageSpeed).
+   ========================================================================= */
+(function(){
+  const poster   = document.getElementById('poster');
+  const playBtn  = document.getElementById('playBtn');
+  const loadTxt  = document.getElementById('loadingTxt');
+  let loading = false;
+
+  function loadGame(){
+    if (loading) return;
+    loading = true;
+    loadTxt.textContent = 'Ładowanie parkietu…';
+    const s = document.createElement('script');
+    s.src = 'https://cdn.jsdelivr.net/npm/phaser@3.80.1/dist/phaser.min.js';
+    s.onload  = () => { loadTxt.textContent = 'Gotowe!'; startGame(); poster.style.display='none'; };
+    s.onerror = () => { loadTxt.textContent = 'Błąd ładowania. Sprawdź połączenie i spróbuj ponownie.'; loading=false; };
+    document.head.appendChild(s);
+  }
+  playBtn.addEventListener('click', e => { e.stopPropagation(); loadGame(); });
+  poster.addEventListener('click', loadGame);
+  poster.addEventListener('keydown', e => { if(e.key==='Enter'||e.key===' '){ e.preventDefault(); loadGame(); }});
+})();
+
+/* =========================================================================
+   GRA
+   ========================================================================= */
+function startGame(){
+
+const GW = 900, GH = 600;             // logiczny rozmiar sceny
+const SPEED = 260;
+const LEVEL_TIME = 30;                // sekund na poziom
+const SITE_URL = 'http://www.wodzirejkarol.pl';
+
+/* Paleta */
+const C = {
+  bored:0xff4444, happy:0x2ee86b, en:0xffd23f, de:0xff8c2b,
+  cringe:0x9b30ff, gold:0xd4af37, neon:0x00ffcc, pink:0xff2e8b
+};
+
+/* ---------------------------------------------------------------------------
+   SILNIK AUDIO (Web Audio API — bez plików MP3)
+   - zapętlony bit house/dance
+   - chime przy sukcesie, zgrzyt/pisk mikrofonu przy przaśności
+--------------------------------------------------------------------------- */
+const Audio = (function(){
+  let ctx=null, master=null, musicGain=null, sfxGain=null;
+  let noiseBuf=null, seqTimer=null, step=0, playing=false;
+  const BPM=124, stepDur=(60/BPM)/4;     // 16-tkowy krok
+
+  function init(){
+    if(ctx) return;
+    const AC = window.AudioContext||window.webkitAudioContext;
+    ctx = new AC();
+    master = ctx.createGain(); master.gain.value=0.9; master.connect(ctx.destination);
+    musicGain = ctx.createGain(); musicGain.gain.value=0.38; musicGain.connect(master);
+    sfxGain = ctx.createGain(); sfxGain.gain.value=0.6; sfxGain.connect(master);
+    // bufor szumu (hi-hat / pisk)
+    const len = ctx.sampleRate*1;
+    noiseBuf = ctx.createBuffer(1,len,ctx.sampleRate);
+    const d = noiseBuf.getChannelData(0);
+    for(let i=0;i<len;i++) d[i]=Math.random()*2-1;
+  }
+  function resume(){ if(ctx && ctx.state==='suspended') ctx.resume(); }
+
+  function kick(t){
+    const o=ctx.createOscillator(), g=ctx.createGain();
+    o.type='sine'; o.frequency.setValueAtTime(150,t);
+    o.frequency.exponentialRampToValueAtTime(45,t+0.12);
+    g.gain.setValueAtTime(1,t); g.gain.exponentialRampToValueAtTime(0.001,t+0.18);
+    o.connect(g); g.connect(musicGain); o.start(t); o.stop(t+0.2);
+  }
+  function hat(t,open){
+    const s=ctx.createBufferSource(); s.buffer=noiseBuf;
+    const hp=ctx.createBiquadFilter(); hp.type='highpass'; hp.frequency.value=8000;
+    const g=ctx.createGain(); const dur=open?0.12:0.04;
+    g.gain.setValueAtTime(0.28,t); g.gain.exponentialRampToValueAtTime(0.001,t+dur);
+    s.connect(hp); hp.connect(g); g.connect(musicGain); s.start(t); s.stop(t+dur);
+  }
+  function bass(t,freq){
+    const o=ctx.createOscillator(), g=ctx.createGain();
+    o.type='sawtooth'; o.frequency.value=freq;
+    const lp=ctx.createBiquadFilter(); lp.type='lowpass'; lp.frequency.value=600;
+    g.gain.setValueAtTime(0.0,t); g.gain.linearRampToValueAtTime(0.5,t+0.02);
+    g.gain.exponentialRampToValueAtTime(0.001,t+stepDur*0.9);
+    o.connect(lp); lp.connect(g); g.connect(musicGain); o.start(t); o.stop(t+stepDur);
+  }
+  function lead(t,freq){
+    const o=ctx.createOscillator(), g=ctx.createGain();
+    o.type='square'; o.frequency.value=freq;
+    g.gain.setValueAtTime(0.0,t); g.gain.linearRampToValueAtTime(0.12,t+0.02);
+    g.gain.exponentialRampToValueAtTime(0.001,t+0.25);
+    o.connect(g); g.connect(musicGain); o.start(t); o.stop(t+0.3);
+  }
+
+  const bassSeq=[55,55,82.4,55, 73.4,55,82.4,98, 55,55,82.4,55, 65.4,55,73.4,49];
+  const leadSeq=[0,0,659.3,0, 0,587.3,0,0, 523.3,0,0,659.3, 0,0,493.9,0];
+
+  function tick(){
+    if(!playing) return;
+    const t=ctx.currentTime+0.02;
+    if(step%4===0) kick(t);
+    hat(t, step%4===2);
+    bass(t, bassSeq[step]);
+    if(leadSeq[step]) lead(t, leadSeq[step]);
+    step=(step+1)%16;
+  }
+  function startMusic(){ init(); resume(); if(playing) return; playing=true; step=0; seqTimer=setInterval(tick,stepDur*1000); }
+  function stopMusic(){ playing=false; if(seqTimer){clearInterval(seqTimer); seqTimer=null;} }
+
+  function chime(){
+    init(); resume();
+    const t=ctx.currentTime;
+    [880,1108,1318].forEach((f,i)=>{
+      const o=ctx.createOscillator(), g=ctx.createGain();
+      o.type='triangle'; o.frequency.value=f;
+      const s=t+i*0.06;
+      g.gain.setValueAtTime(0,s); g.gain.linearRampToValueAtTime(0.3,s+0.02);
+      g.gain.exponentialRampToValueAtTime(0.001,s+0.35);
+      o.connect(g); g.connect(sfxGain); o.start(s); o.stop(s+0.4);
+    });
+  }
+  function screech(){ // pisk mikrofonu / zgrzyt przy przaśności
+    init(); resume();
+    const t=ctx.currentTime;
+    const o=ctx.createOscillator(), g=ctx.createGain();
+    o.type='sawtooth'; o.frequency.setValueAtTime(1800,t);
+    o.frequency.linearRampToValueAtTime(2600,t+0.18);
+    o.frequency.linearRampToValueAtTime(900,t+0.32);
+    g.gain.setValueAtTime(0.0001,t); g.gain.linearRampToValueAtTime(0.35,t+0.03);
+    g.gain.exponentialRampToValueAtTime(0.001,t+0.34);
+    o.connect(g); g.connect(sfxGain); o.start(t); o.stop(t+0.36);
+    // krótki szum sprzężenia
+    const s=ctx.createBufferSource(); s.buffer=noiseBuf;
+    const bp=ctx.createBiquadFilter(); bp.type='bandpass'; bp.frequency.value=2200; bp.Q.value=6;
+    const ng=ctx.createGain(); ng.gain.setValueAtTime(0.25,t); ng.gain.exponentialRampToValueAtTime(0.001,t+0.3);
+    s.connect(bp); bp.connect(ng); ng.connect(sfxGain); s.start(t); s.stop(t+0.3);
+  }
+  function blip(ok){ // miękkie potwierdzenie / odmowa
+    init(); resume();
+    const t=ctx.currentTime, o=ctx.createOscillator(), g=ctx.createGain();
+    o.type='square'; o.frequency.value=ok?720:200;
+    g.gain.setValueAtTime(0.0001,t); g.gain.linearRampToValueAtTime(0.2,t+0.01);
+    g.gain.exponentialRampToValueAtTime(0.001,t+0.12);
+    o.connect(g); g.connect(sfxGain); o.start(t); o.stop(t+0.13);
+  }
+  return { startMusic, stopMusic, chime, screech, blip, resume, init };
+})();
+
+/* ---------------------------------------------------------------------------
+   FABRYKA POSTACI KAROLA (warstwy geometryczne)
+   frak z połami • biała kamizelka • lakierki • biała mucha • cylinder • kucyk loków
+--------------------------------------------------------------------------- */
+function createKarol(scene,x,y,scale){
+  scale=scale||1;
+  const c=scene.add.container(x,y);
+
+  // poświata pod stopami (blend ADD) — osobny obiekt z tyłu
+  const glow=scene.add.ellipse(0,36,42,15,C.neon,0.18).setBlendMode(Phaser.BlendModes.ADD);
+
+  // wszystkie warstwy geometryczne rysujemy jednym Graphics (wydajność + precyzja)
+  const g=scene.add.graphics();
+
+  // --- poły fraka (z tyłu) ---
+  g.fillStyle(0x0b0b0f,1);
+  g.fillTriangle(-4,6, -13,34, -2,30);
+  g.fillTriangle( 4,6,  13,34,  2,30);
+
+  // --- KUCYK kręconych, czarnych włosów (kółka = tekstura loków) ---
+  g.fillStyle(0x141414,1);
+  [[-2,-30],[-7,-27],[-11,-22],[-13,-15],[-12,-8],[-9,-2]].forEach(p=>g.fillCircle(p[0],p[1],4.2));
+  g.fillCircle(-12,-12,5);
+
+  // --- LAKIERKI (czarne, błyszczące) ---
+  g.fillStyle(0x000000,1);
+  g.fillEllipse(-7,35,15,7); g.fillEllipse(7,35,15,7);
+  g.fillStyle(0xcfcfcf,1);
+  g.fillEllipse(-9,33,5,2.4); g.fillEllipse(5,33,5,2.4);
+
+  // --- NOGI (czarne spodnie) ---
+  g.fillStyle(0x111119,1);
+  g.fillRect(-9,18,7,16); g.fillRect(2,18,7,16);
+
+  // --- KORPUS: czarny frak ---
+  g.fillStyle(0x0b0b0f,1);
+  g.fillRoundedRect(-15,-9,30,30,6);
+
+  // --- biała KAMIZELKA pod spodem ---
+  g.fillStyle(0xf6f6f6,1);
+  g.fillTriangle(0,-6, -8,20, 8,20);
+  g.fillRect(-5,8,10,12);
+  g.fillStyle(0x222222,1);
+  g.fillCircle(0,4,1.4); g.fillCircle(0,10,1.4); g.fillCircle(0,16,1.4);
+
+  // --- klapy fraka ---
+  g.fillStyle(0x05050a,1);
+  g.fillTriangle(-2,-6, -10,14, -2,6);
+  g.fillTriangle( 2,-6,  10,14,  2,6);
+
+  // --- RĘCE + dłonie ---
+  g.fillStyle(0x0b0b0f,1);
+  g.fillPoints([{x:-14,y:-6},{x:-18,y:12},{x:-13,y:14},{x:-11,y:-4}],true);
+  g.fillPoints([{x:14,y:-6},{x:18,y:12},{x:13,y:14},{x:11,y:-4}],true);
+  g.fillStyle(0xf1c9a5,1);
+  g.fillCircle(-16,14,3.4); g.fillCircle(16,14,3.4);
+
+  // --- GŁOWA ---
+  g.fillStyle(0xf1c9a5,1);
+  g.fillCircle(0,-15,9);
+
+  // --- biała MUCHA pod szyją ---
+  g.fillStyle(0xffffff,1);
+  g.fillTriangle(0,-5, -8,-9, -8,-1);
+  g.fillTriangle(0,-5,  8,-9,  8,-1);
+  g.fillCircle(0,-5,1.9);
+
+  // --- CYLINDER (czarny, ze złotą wstążką) ---
+  g.fillStyle(0x000000,1); g.fillEllipse(0,-22,28,7);     // rondo
+  g.fillStyle(0x0a0a0a,1); g.fillRect(-9,-39,18,17);       // tulia
+  g.fillStyle(C.gold,1);   g.fillRect(-9,-25,18,3);        // złota wstążka
+  g.fillStyle(0x111111,1); g.fillEllipse(0,-39,18,5);      // góra
+
+  c.add([glow,g]);
+  c.setScale(scale);
+  return c;
+}
+
+/* Generowanie tekstur pomocniczych (goście, sprzęt, cringe) — wydajność */
+function buildTextures(scene){
+  if(scene.textures.exists('guest')) return;
+  const g=scene.add.graphics();
+
+  // GOŚĆ (biały, kolorowany przez tint)
+  g.clear();
+  g.fillStyle(0xffffff,1);
+  g.fillCircle(15,9,8);                 // głowa
+  g.fillRoundedRect(5,15,20,24,7);      // ciało
+  g.generateTexture('guest',30,42);
+
+  // GŁOŚNIK / KOLUMNA
+  g.clear();
+  g.fillStyle(0x222230,1); g.fillRoundedRect(2,2,32,46,4);
+  g.lineStyle(2,C.gold,1); g.strokeRoundedRect(2,2,32,46,4);
+  g.fillStyle(0x000000,1); g.fillCircle(18,16,9); g.fillCircle(18,36,6);
+  g.fillStyle(0x444,1); g.fillCircle(18,16,5);
+  g.generateTexture('eq_speaker',38,52);
+
+  // RUCHOMA GŁOWA LED
+  g.clear();
+  g.fillStyle(0x2a2a3a,1); g.fillRoundedRect(6,28,26,18,3);
+  g.fillStyle(0x14141f,1); g.fillRoundedRect(2,2,34,24,6);
+  g.fillStyle(C.neon,1); g.fillCircle(19,14,7);
+  g.fillStyle(0xffffff,1); g.fillCircle(19,14,3);
+  g.generateTexture('eq_led',40,50);
+
+  // KONSOLA DJ
+  g.clear();
+  g.fillStyle(0x1d1d2a,1); g.fillRoundedRect(2,10,44,30,4);
+  g.lineStyle(2,C.gold,1); g.strokeRoundedRect(2,10,44,30,4);
+  g.fillStyle(0x000,1); g.fillCircle(14,25,7); g.fillCircle(34,25,7);
+  g.fillStyle(C.pink,1); g.fillCircle(14,25,2.5); g.fillCircle(34,25,2.5);
+  g.fillStyle(0x555,1); g.fillRect(22,16,4,18);
+  g.generateTexture('eq_dj',50,46);
+
+  // CRINGE — przaśna ikona (zepsute jajko)
+  g.clear();
+  g.fillStyle(C.cringe,1);
+  g.fillEllipse(20,24,30,34);
+  g.fillStyle(0xc77dff,1); g.fillEllipse(20,16,22,18); // pęknięta skorupa
+  g.fillStyle(0xffe85c,1); g.fillCircle(20,22,7);       // "żółtko"
+  g.fillStyle(0x6a0dad,1);
+  g.fillTriangle(8,12, 14,4, 18,12);                    // zygzaki pęknięcia
+  g.fillTriangle(22,12, 28,4, 32,12);
+  g.generateTexture('cringe',40,44);
+
+  g.destroy();
+}
+
+/* ===========================================================================
+   BAZOWA SCENA POZIOMU — współdzielone HUD, sterowanie, ruch, meter
+=========================================================================== */
+class BaseLevel extends Phaser.Scene{
+  buildArena(){
+    const cam=this.cameras.main;
+    cam.setBackgroundColor('#0a0a18');
+
+    // --- PARKIET W JODEŁKĘ (herringbone) ---
+    this.drawParquet();
+
+    // --- NEONOWE NEONY (zmieniają kolor) ---
+    this.neon = this.add.rectangle(GW/2,GH/2,GW-16,GH-16).setStrokeStyle(4,C.neon).setFillStyle(0,0);
+    this.neonHue=0;
+
+    // --- ŚWIATŁA RAMP / RUCHOME GŁOWY (glow, blend ADD) ---
+    this.lights=[];
+    const lc=[C.pink,C.neon,C.en,0x6a5cff];
+    for(let i=0;i<4;i++){
+      const l=this.add.ellipse(150+i*200, -40, 220, 360, lc[i], 0.10)
+        .setBlendMode(Phaser.BlendModes.ADD);
+      l.baseX=150+i*200; l.phase=i*1.4; this.lights.push(l);
+    }
+    // delikatny vignette/disco floor pulse
+    this.discoPulse=0;
+  }
+
+  drawParquet(){
+    const g=this.add.graphics();
+    const bw=34, bh=14, gap=2;
+    let toggle=false;
+    for(let row=-1; row*bh < GH+40; row++){
+      toggle = row%2===0;
+      for(let col=-1; col*(bw+gap) < GW+60; col++){
+        const x=col*(bw+gap)+ (row%2)*(bw/2);
+        const y=row*(bh+6);
+        const shade = ((row+col)%2===0)?0x4a3320:0x5c3f25;
+        g.fillStyle(shade,1);
+        g.save(); g.translateCanvas(x,y); g.rotateCanvas((toggle?1:-1)*0.5);
+        g.fillRect(0,0,bw,bh);
+        g.restore();
+        toggle=!toggle;
+      }
+    }
+    g.fillStyle(0x000000,0.18); g.fillRect(0,0,GW,GH); // przyciemnienie dla kontrastu
+  }
+
+  createHUD(levelNum,levelName){
+    this.score = this.registry.get('score')||0;
+    this.cringe = this.registry.get('cringe'); if(this.cringe==null) this.cringe=100;
+
+    const tStyle={fontFamily:'Segoe UI,Arial',fontSize:'18px',color:'#ffffff',fontStyle:'bold'};
+    this.add.rectangle(GW/2,22,GW,44,0x000000,0.45);
+    this.scoreText=this.add.text(16,12,'★ '+this.score,{...tStyle,color:'#ffe487'});
+    this.levelText=this.add.text(GW/2,12,'Poziom '+levelNum+': '+levelName,
+      {...tStyle,color:'#ffffff'}).setOrigin(0.5,0);
+    this.timerText=this.add.text(GW-16,12,'⏱ '+LEVEL_TIME,{...tStyle,color:'#00ffcc'}).setOrigin(1,0);
+
+    // Anti-Cringe meter
+    this.add.text(16,40,'Anti-Cringe',{fontFamily:'Segoe UI',fontSize:'12px',color:'#c9c9e0'});
+    this.add.rectangle(120,48,160,14,0x222233).setOrigin(0,0.5).setStrokeStyle(1,0x444);
+    this.meterFill=this.add.rectangle(121,48,158,12,C.neon).setOrigin(0,0.5);
+    this.objText=this.add.text(GW/2,40,'',{fontFamily:'Segoe UI',fontSize:'13px',color:'#ffd23f'}).setOrigin(0.5,0);
+
+    this.refreshMeter();
+  }
+  setObjective(t){ this.objText.setText(t); }
+  refreshMeter(){
+    const w=158*Math.max(0,this.cringe)/100;
+    this.meterFill.width=w;
+    this.meterFill.fillColor = this.cringe>50?C.neon : this.cringe>20?0xffd23f : C.bored;
+  }
+  addScore(n){ this.score+=n; this.registry.set('score',this.score); this.scoreText.setText('★ '+this.score); }
+
+  hitCringe(amount){
+    if(this.invuln) return;
+    this.cringe-=amount; this.registry.set('cringe',this.cringe);
+    this.refreshMeter();
+    this.cameras.main.shake(220,0.012);
+    this.cameras.main.flash(140,120,0,80);
+    Audio.screech();
+    // chwilowa nietykalność, żeby jeden obiekt nie zabrał kilku razy
+    this.invuln=true; this.time.delayedCall(600,()=>this.invuln=false);
+    if(this.cringe<=0){ this.cringe=0; this.refreshMeter(); this.gameOver(); }
+  }
+
+  /* ---------- GRACZ + STEROWANIE ---------- */
+  createPlayer(){
+    this.player=createKarol(this,GW/2,GH/2,1);
+    this.physics.add.existing(this.player);
+    this.player.body.setSize(40,70); this.player.body.setOffset(-20,-38);
+    this.player.body.setCollideWorldBounds(true);
+  }
+
+  createControls(){
+    this.cursors=this.input.keyboard.createCursorKeys();
+    this.keys=this.input.keyboard.addKeys('W,A,S,D,SPACE,SHIFT');
+    this.input.keyboard.addCapture('SPACE,SHIFT,UP,DOWN,LEFT,RIGHT'); // nie przewijaj strony
+    this.joyVec={x:0,y:0};
+    this.actionDown=false;
+
+    const touch = this.sys.game.device.input.touch;
+    if(touch){
+      this.input.addPointer(2);
+      this.buildJoystick();
+      this.buildActionButton();
+    }
+  }
+
+  buildJoystick(){
+    this.joyBase=this.add.circle(0,0,52,0xffffff,0.10).setStrokeStyle(2,0xffffff,0.3)
+      .setScrollFactor(0).setDepth(50).setVisible(false);
+    this.joyKnob=this.add.circle(0,0,26,C.neon,0.5).setScrollFactor(0).setDepth(51).setVisible(false);
+    this.joyId=null;
+
+    this.input.on('pointerdown',(p)=>{
+      if(p.x < GW*0.42 && this.joyId===null){
+        this.joyId=p.id;
+        this.joyOrigin={x:p.x,y:p.y};
+        this.joyBase.setPosition(p.x,p.y).setVisible(true);
+        this.joyKnob.setPosition(p.x,p.y).setVisible(true);
+      }
+    });
+    this.input.on('pointermove',(p)=>{
+      if(p.id!==this.joyId) return;
+      let dx=p.x-this.joyOrigin.x, dy=p.y-this.joyOrigin.y;
+      const len=Math.hypot(dx,dy), max=52;
+      if(len>max){ dx=dx/len*max; dy=dy/len*max; }
+      this.joyKnob.setPosition(this.joyOrigin.x+dx,this.joyOrigin.y+dy);
+      this.joyVec={x:dx/max,y:dy/max};
+    });
+    const end=(p)=>{ if(p.id===this.joyId){ this.joyId=null; this.joyVec={x:0,y:0};
+      this.joyBase.setVisible(false); this.joyKnob.setVisible(false);} };
+    this.input.on('pointerup',end); this.input.on('pointerupoutside',end);
+  }
+
+  buildActionButton(){
+    this.actBtn=this.add.circle(GW-70,GH-70,44,C.gold,0.35).setStrokeStyle(3,C.gold)
+      .setScrollFactor(0).setDepth(50).setInteractive();
+    this.add.text(GW-70,GH-70,'AKCJA',{fontFamily:'Segoe UI',fontSize:'13px',color:'#fff',fontStyle:'bold'})
+      .setOrigin(0.5).setDepth(51);
+    this.actBtn.on('pointerdown',()=>{this.actionDown=true;});
+    this.actBtn.on('pointerup',()=>{this.actionDown=false;});
+    this.actBtn.on('pointerout',()=>{this.actionDown=false;});
+  }
+
+  isActionDown(){ return this.actionDown || this.keys.SPACE.isDown; }
+
+  movePlayer(){
+    if(!this.active || !this.player) return;
+    let vx=0, vy=0;
+    if(this.cursors.left.isDown||this.keys.A.isDown) vx=-1;
+    else if(this.cursors.right.isDown||this.keys.D.isDown) vx=1;
+    if(this.cursors.up.isDown||this.keys.W.isDown) vy=-1;
+    else if(this.cursors.down.isDown||this.keys.S.isDown) vy=1;
+    // joystick
+    if(Math.abs(this.joyVec.x)>0.15) vx=this.joyVec.x;
+    if(Math.abs(this.joyVec.y)>0.15) vy=this.joyVec.y;
+    const len=Math.hypot(vx,vy)||1;
+    this.player.body.setVelocity(vx/len*SPEED, vy/len*SPEED);
+    if(vx<-0.1) this.player.setScale(-1,1); else if(vx>0.1) this.player.setScale(1,1);
+  }
+
+  animateArena(t){
+    // neony zmieniają kolor
+    this.neonHue=(this.neonHue+0.6)%360;
+    const col=Phaser.Display.Color.HSVToRGB(this.neonHue/360,0.9,1).color;
+    this.neon.setStrokeStyle(4,col);
+    // ruchome światła
+    this.lights.forEach(l=>{ l.x=l.baseX+Math.sin(t/700+l.phase)*120; });
+  }
+
+  /* ---------- INTRO / PRZEJŚCIA ---------- */
+  showIntro(num,name,desc,onGo){
+    this.active=false;
+    const ov=this.add.container(0,0).setDepth(100);
+    ov.add(this.add.rectangle(GW/2,GH/2,GW,GH,0x05050d,0.82));
+    ov.add(this.add.text(GW/2,GH/2-90,'POZIOM '+num,{fontFamily:'Segoe UI',fontSize:'22px',color:'#d4af37',fontStyle:'bold'}).setOrigin(0.5));
+    ov.add(this.add.text(GW/2,GH/2-50,name,{fontFamily:'Segoe UI',fontSize:'34px',color:'#ffffff',fontStyle:'bold'}).setOrigin(0.5));
+    ov.add(this.add.text(GW/2,GH/2+10,desc,{fontFamily:'Segoe UI',fontSize:'17px',color:'#c9c9e0',align:'center',wordWrap:{width:GW-160}}).setOrigin(0.5));
+    const btn=this.add.text(GW/2,GH/2+90,'▶ START',{fontFamily:'Segoe UI',fontSize:'24px',color:'#0a0a18',backgroundColor:'#d4af37',padding:{x:26,y:10},fontStyle:'bold'}).setOrigin(0.5).setInteractive();
+    ov.add(btn);
+    this.tweens.add({targets:btn,scale:{from:1,to:1.08},yoyo:true,repeat:-1,duration:600});
+    const go=()=>{ ov.destroy(); this.active=true; this.startTimer(); onGo&&onGo(); };
+    btn.on('pointerdown',()=>{ Audio.startMusic(); go(); });
+  }
+
+  startTimer(){
+    this.timeLeft=LEVEL_TIME;
+    this.timerEvt=this.time.addEvent({delay:1000,loop:true,callback:()=>{
+      if(!this.active) return;
+      this.timeLeft--;
+      this.timerText.setText('⏱ '+this.timeLeft);
+      if(this.timeLeft<=0) this.onTimeUp();
+    }});
+  }
+  stopTimer(){ if(this.timerEvt) this.timerEvt.remove(); }
+
+  nextLevel(key){
+    this.active=false; this.stopTimer();
+    this.cameras.main.fade(500,5,5,15);
+    this.time.delayedCall(520,()=>this.scene.start(key));
+  }
+  gameOver(){
+    this.active=false; this.stopTimer(); this.physics.pause();
+    this.scene.start('GameOver');
+  }
+}
+
+/* ===========================================================================
+   MENU
+=========================================================================== */
+class Menu extends Phaser.Scene{
+  constructor(){ super('Menu'); }
+  create(){
+    this.registry.set('score',0);
+    this.registry.set('cringe',100);
+    buildTextures(this);
+
+    this.cameras.main.setBackgroundColor('#0a0a18');
+    // tło-parkiet
+    BaseLevel.prototype.drawParquet.call(this);
+    const lights=[];
+    [C.pink,C.neon,C.en].forEach((col,i)=>{
+      lights.push(this.add.ellipse(200+i*250,-30,240,420,col,0.12).setBlendMode(Phaser.BlendModes.ADD));
+    });
+    this.lights=lights;
+
+    this.add.text(GW/2,90,'Wodzirej Karol',{fontFamily:'Segoe UI',fontSize:'52px',color:'#ffffff',fontStyle:'bold'}).setOrigin(0.5).setShadow(0,0,'#00ffcc',18);
+    this.add.text(GW/2,140,'MASTER OF THE DANCEFLOOR',{fontFamily:'Segoe UI',fontSize:'22px',color:'#d4af37',fontStyle:'bold'}).setOrigin(0.5);
+
+    // Karol prezentacyjny
+    const karol=createKarol(this,GW/2,300,2.4);
+    this.tweens.add({targets:karol,y:'-=14',yoyo:true,repeat:-1,duration:900,ease:'Sine.inOut'});
+
+    const touch=this.sys.game.device.input.touch;
+    const ctrl = touch
+      ? 'Sterowanie: wirtualny joystick (lewa strona) + przycisk AKCJA'
+      : 'Sterowanie: Strzałki / WASD • Spacja = Akcja • Shift = drugi język';
+    this.add.text(GW/2,420,ctrl,{fontFamily:'Segoe UI',fontSize:'16px',color:'#c9c9e0',align:'center'}).setOrigin(0.5);
+    this.add.text(GW/2,448,'3 poziomy × 30 sekund — rozgrzej parkiet z klasą!',{fontFamily:'Segoe UI',fontSize:'14px',color:'#9aa'}).setOrigin(0.5);
+
+    const start=this.add.text(GW/2,520,'▶ START',{fontFamily:'Segoe UI',fontSize:'30px',color:'#0a0a18',backgroundColor:'#d4af37',padding:{x:36,y:12},fontStyle:'bold'}).setOrigin(0.5).setInteractive();
+    this.tweens.add({targets:start,scale:{from:1,to:1.07},yoyo:true,repeat:-1,duration:700});
+    start.on('pointerover',()=>start.setBackgroundColor('#ffe487'));
+    start.on('pointerout',()=>start.setBackgroundColor('#d4af37'));
+    start.on('pointerdown',()=>{ Audio.startMusic(); this.cameras.main.fade(400,5,5,15);
+      this.time.delayedCall(420,()=>this.scene.start('Level1')); });
+
+    this.input.keyboard.once('keydown-SPACE',()=>{ Audio.startMusic(); this.scene.start('Level1'); });
+  }
+  update(time){ this.lights.forEach((l,i)=>l.x=200+i*250+Math.sin(time/800+i)*100); }
+}
+
+/* ===========================================================================
+   POZIOM 1 — The Gear & Sound Check
+=========================================================================== */
+class Level1 extends BaseLevel{
+  constructor(){ super('Level1'); }
+  create(){
+    buildTextures(this);
+    this.buildArena();
+    this.createHUD(1,'The Gear & Sound Check');
+    this.createPlayer();
+    this.createControls();
+
+    this.placed=0; this.target=5;
+    this.holdT=0;
+    this.eqTypes=['eq_speaker','eq_led','eq_dj'];
+    this.spot=null;
+
+    // pasek ładowania nad graczem
+    this.barBg=this.add.rectangle(0,0,54,8,0x000000,0.6).setVisible(false).setDepth(20);
+    this.barFg=this.add.rectangle(0,0,52,6,C.neon).setOrigin(0,0.5).setVisible(false).setDepth(21);
+
+    this.setObjective('Rozstaw 5/5 elementów sprzętu (0/5)');
+    this.showIntro(1,'The Gear & Sound Check',
+      'Podejdź do migającego miejsca i PRZYTRZYMAJ Akcję (Spacja),\naby rozstawić sprzęt. Ustaw 5 elementów zanim wejdą goście!',
+      ()=>this.spawnSpot());
+  }
+
+  spawnSpot(){
+    if(this.placed>=this.target) return;
+    const x=Phaser.Math.Between(90,GW-90), y=Phaser.Math.Between(150,GH-90);
+    const tex=Phaser.Utils.Array.GetRandom(this.eqTypes);
+    // miejsce-cel: półprzezroczysty zarys + pierścień
+    this.spot=this.add.container(x,y);
+    const ghost=this.add.image(0,0,tex).setAlpha(0.35).setTint(0x88ffff);
+    const ring=this.add.circle(0,0,42,0,0).setStrokeStyle(3,C.gold);
+    this.spot.add([ring,ghost]);
+    this.spot.tex=tex; this.spot.done=false;
+    this.tweens.add({targets:ring,scale:{from:0.85,to:1.1},alpha:{from:1,to:0.4},yoyo:true,repeat:-1,duration:700});
+    this.tweens.add({targets:ghost,alpha:{from:0.25,to:0.6},yoyo:true,repeat:-1,duration:500});
+  }
+
+  onTimeUp(){
+    // koniec czasu -> przejście dalej (zaliczamy co rozstawiono)
+    this.finish();
+  }
+  finish(){
+    if(this.placed>=this.target) this.addScore(300); // bonus za komplet
+    this.nextLevel('Level2');
+  }
+
+  update(time,delta){
+    this.animateArena(time);
+    this.movePlayer();
+    if(!this.active || !this.spot || this.spot.done) { this.barBg.setVisible(false); this.barFg.setVisible(false); return; }
+
+    const d=Phaser.Math.Distance.Between(this.player.x,this.player.y,this.spot.x,this.spot.y);
+    const near=d<60;
+    if(near && this.isActionDown()){
+      this.holdT+=delta;
+      const p=Phaser.Math.Clamp(this.holdT/1000,0,1);
+      this.barBg.setPosition(this.player.x,this.player.y-58).setVisible(true);
+      this.barFg.setPosition(this.player.x-26,this.player.y-58).setVisible(true);
+      this.barFg.width=52*p;
+      if(p>=1) this.placeEquipment();
+    } else {
+      this.holdT=Math.max(0,this.holdT-delta*1.5);
+      if(this.holdT<=0){ this.barBg.setVisible(false); this.barFg.setVisible(false); }
+      else { this.barFg.width=52*(this.holdT/1000); }
+      if(!near){ this.barBg.setVisible(false); this.barFg.setVisible(false); }
+    }
+  }
+
+  placeEquipment(){
+    this.spot.done=true; this.holdT=0;
+    this.barBg.setVisible(false); this.barFg.setVisible(false);
+    const x=this.spot.x,y=this.spot.y,tex=this.spot.tex;
+    this.spot.destroy(); this.spot=null;
+    // rozstawiony sprzęt (na stałe)
+    const eq=this.add.image(x,y,tex);
+    this.tweens.add({targets:eq,scale:{from:0.4,to:1},ease:'Back.out',duration:300});
+    this.add.text(x,y-34,'✓',{fontSize:'22px',color:'#2ee86b',fontStyle:'bold'}).setOrigin(0.5);
+    Audio.chime();
+    this.placed++;
+    this.addScore(120);
+    this.setObjective('Rozstaw 5/5 elementów sprzętu ('+this.placed+'/5)');
+    if(this.placed>=this.target){
+      this.setObjective('Sprzęt gotowy! ✓');
+      this.time.delayedCall(700,()=>this.finish());
+    } else {
+      this.time.delayedCall(300,()=>this.spawnSpot());
+    }
+  }
+}
+
+/* ===========================================================================
+   POZIOM 2 — Dancefloor Magnet
+=========================================================================== */
+class Level2 extends BaseLevel{
+  constructor(){ super('Level2'); }
+  create(){
+    buildTextures(this);
+    this.buildArena();
+    this.createHUD(2,'Dancefloor Magnet');
+    this.createPlayer();
+    this.createControls();
+
+    this.guests=this.physics.add.group();
+    this.total=12; this.happy=0;
+    for(let i=0;i<this.total;i++) this.spawnGuest();
+
+    this.cringeGroup=this.physics.add.group();
+    this.physics.add.overlap(this.player,this.guests,this.touchGuest,null,this);
+    this.physics.add.overlap(this.player,this.cringeGroup,this.touchCringe,null,this);
+
+    this.setObjective('Roztańcz gości: 0/'+this.total);
+    this.showIntro(2,'Dancefloor Magnet',
+      'Czerwoni = znudzeni. Podejdź do każdego, by zmienić go w roztańczonego (zielonego)!\nUWAGA: omijaj fioletowe „cringe-obiekty” — obniżają Anti-Cringe Meter o 20%.',
+      ()=>this.startSpawningCringe());
+  }
+
+  spawnGuest(){
+    const x=Phaser.Math.Between(80,GW-80), y=Phaser.Math.Between(150,GH-60);
+    const g=this.guests.create(x,y,'guest').setTint(C.bored);
+    g.body.setSize(26,30).setOffset(2,8);
+    g.body.setVelocity(Phaser.Math.Between(-70,70),Phaser.Math.Between(-70,70));
+    g.body.setBounce(1).setCollideWorldBounds(true);
+    g.happy=false;
+  }
+
+  startSpawningCringe(){
+    this.cringeTimer=this.time.addEvent({delay:1600,loop:true,callback:()=>{
+      if(!this.active) return;
+      const x=Phaser.Math.Between(70,GW-70), y=Phaser.Math.Between(150,GH-60);
+      const it=this.cringeGroup.create(x,y,'cringe');
+      it.body.setVelocity(Phaser.Math.Between(-40,40),Phaser.Math.Between(-40,40));
+      it.body.setBounce(1).setCollideWorldBounds(true);
+      this.tweens.add({targets:it,scale:{from:0.8,to:1.15},yoyo:true,repeat:-1,duration:400});
+      this.time.delayedCall(6000,()=>{ if(it.active) this.tweens.add({targets:it,alpha:0,duration:300,onComplete:()=>it.destroy()});});
+    }});
+  }
+
+  touchGuest(player,g){
+    if(g.happy) return;
+    g.happy=true; g.setTint(C.happy);
+    g.body.setVelocity(g.body.velocity.x*1.6,g.body.velocity.y*1.6);
+    this.tweens.add({targets:g,scale:{from:1.4,to:1},duration:300,ease:'Back.out'});
+    this.addScore(100); this.happy++;
+    Audio.chime();
+    this.setObjective('Roztańcz gości: '+this.happy+'/'+this.total);
+    // serduszko
+    const h=this.add.text(g.x,g.y-20,'♪',{fontSize:'20px',color:'#2ee86b'}).setOrigin(0.5);
+    this.tweens.add({targets:h,y:'-=26',alpha:0,duration:600,onComplete:()=>h.destroy()});
+    if(this.happy>=this.total){ this.addScore(300); this.setObjective('Cały parkiet tańczy! ✓'); this.time.delayedCall(600,()=>this.nextLevel('Level3')); }
+  }
+  touchCringe(player,it){
+    it.destroy();
+    this.hitCringe(20);
+  }
+  onTimeUp(){ this.nextLevel('Level3'); }
+
+  update(time){
+    this.animateArena(time);
+    this.movePlayer();
+  }
+}
+
+/* ===========================================================================
+   POZIOM 3 — Wedding MC: International Rescue
+=========================================================================== */
+class Level3 extends BaseLevel{
+  constructor(){ super('Level3'); }
+  create(){
+    buildTextures(this);
+    this.buildArena();
+    this.createHUD(3,'International Rescue');
+    this.createPlayer();
+    this.createControls();
+
+    this.lang='en';                 // aktualny język mikrofonu
+    this.guests=this.add.group();
+    this.total=10; this.invited=0;
+    for(let i=0;i<this.total;i++) this.spawnIntlGuest();
+
+    this.physics.add.overlap(this.player,this.guests,this.touchGuest,null,this);
+
+    this.buildLangUI();
+    this.input.keyboard.on('keydown-SPACE',()=>this.setLang('en'));
+    this.input.keyboard.on('keydown-SHIFT',()=>this.setLang('de'));
+
+    this.setObjective('Zaproś gości właściwym językiem: 0/'+this.total);
+    this.showIntro(3,'International Rescue',
+      'Wesele międzynarodowe! Nad gośćmi widać flagi: 🇬🇧/🇺🇸 (żółty) = EN, 🇩🇪 (pomarańczowy) = DE.\nPrzełącz mikrofon (Spacja=EN, Shift=DE lub przyciski) i dotknij gościa z PASUJĄCĄ flagą.');
+  }
+
+  spawnIntlGuest(){
+    const x=Phaser.Math.Between(80,GW-80), y=Phaser.Math.Between(160,GH-60);
+    const lang = Math.random()<0.5?'en':'de';
+    const cont=this.add.container(x,y);
+    const body=this.add.image(0,0,'guest').setTint(lang==='en'?C.en:C.de);
+    // dymek z flagą
+    const bub=this.add.circle(0,-30,13,0xffffff,0.95).setStrokeStyle(2,0x333);
+    const flag=lang==='en'
+      ? this.add.text(0,-30,'EN',{fontSize:'12px',color:'#1a3aff',fontStyle:'bold'}).setOrigin(0.5)
+      : this.add.text(0,-30,'DE',{fontSize:'12px',color:'#d40000',fontStyle:'bold'}).setOrigin(0.5);
+    cont.add([body,bub,flag]);
+    this.physics.add.existing(cont);
+    this.guests.add(cont);
+    cont.body.setSize(26,30).setOffset(-13,-15);
+    cont.body.setVelocity(Phaser.Math.Between(-60,60),Phaser.Math.Between(-60,60));
+    cont.body.setBounce(1).setCollideWorldBounds(true);
+    cont.lang=lang; cont.done=false; cont.bub=bub;
+    this.tweens.add({targets:bub,scale:{from:0.9,to:1.08},yoyo:true,repeat:-1,duration:600});
+  }
+
+  buildLangUI(){
+    const mk=(x,label,lang)=>{
+      const btn=this.add.container(x,GH-46).setDepth(40);
+      const bg=this.add.rectangle(0,0,86,40,0x14141f,0.9).setStrokeStyle(2,0x444).setInteractive();
+      const tx=this.add.text(0,0,'🎤 '+label,{fontFamily:'Segoe UI',fontSize:'16px',color:'#fff',fontStyle:'bold'}).setOrigin(0.5);
+      btn.add([bg,tx]); btn.bg=bg; btn.lang=lang;
+      bg.on('pointerdown',()=>this.setLang(lang));
+      return btn;
+    };
+    this.btnEN=mk(GW/2-60,'EN','en');
+    this.btnDE=mk(GW/2+60,'DE','de');
+    this.langLabel=this.add.text(GW/2,GH-78,'Mikrofon: EN',{fontFamily:'Segoe UI',fontSize:'14px',color:'#00ffcc',fontStyle:'bold'}).setOrigin(0.5).setDepth(40);
+    this.setLang('en');
+  }
+  setLang(l){
+    this.lang=l;
+    Audio.blip(true);
+    this.langLabel.setText('Mikrofon: '+l.toUpperCase());
+    this.btnEN.bg.setStrokeStyle(3, l==='en'?C.neon:0x444).setFillStyle(l==='en'?0x103a35:0x14141f,0.9);
+    this.btnDE.bg.setStrokeStyle(3, l==='de'?C.neon:0x444).setFillStyle(l==='de'?0x103a35:0x14141f,0.9);
+  }
+
+  touchGuest(player,g){
+    if(g.done) return;
+    if(g.lang===this.lang){
+      g.done=true;
+      g.list[0].setTint(C.happy);
+      g.bub.setVisible(false);
+      this.tweens.add({targets:g,scale:{from:1.4,to:1},duration:300,ease:'Back.out'});
+      this.addScore(150); this.invited++;
+      Audio.chime();
+      const h=this.add.text(g.x,g.y-26,'✓',{fontSize:'20px',color:'#2ee86b',fontStyle:'bold'}).setOrigin(0.5);
+      this.tweens.add({targets:h,y:'-=24',alpha:0,duration:600,onComplete:()=>h.destroy()});
+      this.setObjective('Zaproś gości właściwym językiem: '+this.invited+'/'+this.total);
+      if(this.invited>=this.total){ this.addScore(400); this.setObjective('Wszyscy goście zaproszeni! ✓'); this.time.delayedCall(600,()=>this.win()); }
+    } else {
+      if(g.cooldown) return;
+      g.cooldown=true; this.time.delayedCall(700,()=>g.cooldown=false);
+      Audio.blip(false);
+      const h=this.add.text(g.x,g.y-26,'?!',{fontSize:'18px',color:'#ff6b6b',fontStyle:'bold'}).setOrigin(0.5);
+      this.tweens.add({targets:h,y:'-=18',alpha:0,duration:500,onComplete:()=>h.destroy()});
+    }
+  }
+
+  onTimeUp(){ this.win(); }
+  win(){
+    this.active=false; this.stopTimer();
+    this.cameras.main.fade(500,5,5,15);
+    this.time.delayedCall(520,()=>this.scene.start('End'));
+  }
+
+  update(time){
+    this.animateArena(time);
+    this.movePlayer();
+  }
+}
+
+/* ===========================================================================
+   GAME OVER (przaśność wygrała)
+=========================================================================== */
+class GameOver extends Phaser.Scene{
+  constructor(){ super('GameOver'); }
+  create(){
+    this.cameras.main.setBackgroundColor('#1a0510');
+    Audio.stopMusic();
+    this.add.rectangle(GW/2,GH/2,GW,GH,0x000000,0.4);
+    this.add.text(GW/2,160,'GAME OVER',{fontFamily:'Segoe UI',fontSize:'56px',color:'#ff2e8b',fontStyle:'bold'}).setOrigin(0.5).setShadow(0,0,'#ff2e8b',20);
+    this.add.text(GW/2,250,'Przaśność przejęła wesele!',{fontFamily:'Segoe UI',fontSize:'26px',color:'#ffffff',fontStyle:'bold'}).setOrigin(0.5);
+    this.add.text(GW/2,300,'Warto zaufać profesjonaliście z klasą.',{fontFamily:'Segoe UI',fontSize:'20px',color:'#ffd23f'}).setOrigin(0.5);
+    this.add.text(GW/2,350,'Wynik: '+(this.registry.get('score')||0)+' pkt',{fontFamily:'Segoe UI',fontSize:'22px',color:'#c9c9e0'}).setOrigin(0.5);
+
+    const cta=this.add.text(GW/2,420,'SPRAWDŹ WOLNY TERMIN U KAROLA',{fontFamily:'Segoe UI',fontSize:'18px',color:'#0a0a18',backgroundColor:'#d4af37',padding:{x:22,y:10},fontStyle:'bold'}).setOrigin(0.5).setInteractive();
+    this.tweens.add({targets:cta,scale:{from:1,to:1.06},yoyo:true,repeat:-1,duration:700});
+    cta.on('pointerdown',()=>window.open(SITE_URL,'_blank','noopener'));
+
+    const retry=this.add.text(GW/2,490,'↻ Spróbuj ponownie',{fontFamily:'Segoe UI',fontSize:'18px',color:'#ffffff'}).setOrigin(0.5).setInteractive();
+    retry.on('pointerdown',()=>this.scene.start('Menu'));
+  }
+}
+
+/* ===========================================================================
+   EKRAN KOŃCOWY (sukces + CTA)
+=========================================================================== */
+class End extends Phaser.Scene{
+  constructor(){ super('End'); }
+  create(){
+    this.cameras.main.setBackgroundColor('#0a0a18');
+    BaseLevel.prototype.drawParquet.call(this);
+    // konfetti
+    for(let i=0;i<60;i++){
+      const c=this.add.rectangle(Phaser.Math.Between(0,GW),Phaser.Math.Between(-300,0),7,12,
+        Phaser.Utils.Array.GetRandom([C.gold,C.neon,C.pink,C.en,C.happy]));
+      this.tweens.add({targets:c,y:GH+20,angle:360,duration:Phaser.Math.Between(2500,5000),
+        repeat:-1,delay:Phaser.Math.Between(0,2000),ease:'Linear'});
+    }
+    this.add.rectangle(GW/2,GH/2,GW-80,GH-80,0x05050d,0.86).setStrokeStyle(3,C.gold);
+
+    this.add.text(GW/2,120,'SUKCES!',{fontFamily:'Segoe UI',fontSize:'58px',color:'#d4af37',fontStyle:'bold'}).setOrigin(0.5).setShadow(0,0,'#d4af37',20);
+    this.add.text(GW/2,178,'Wesele uratowane z klasą i elegancją!',{fontFamily:'Segoe UI',fontSize:'24px',color:'#ffffff',fontStyle:'bold'}).setOrigin(0.5);
+
+    const karol=createKarol(this,GW/2,275,1.6);
+    this.tweens.add({targets:karol,angle:{from:-6,to:6},yoyo:true,repeat:-1,duration:700,ease:'Sine.inOut'});
+
+    this.add.text(GW/2,350,'Twój wynik: '+(this.registry.get('score')||0)+' pkt',{fontFamily:'Segoe UI',fontSize:'26px',color:'#00ffcc',fontStyle:'bold'}).setOrigin(0.5);
+
+    this.add.text(GW/2,408,'Zobacz, jak kluczowy na weselu jest brak przaśności, świetna logistyka\noraz swoboda międzynarodowa. Karol i jego zespół zapewnią to na Twoim przyjęciu.',
+      {fontFamily:'Segoe UI',fontSize:'15px',color:'#c9c9e0',align:'center',lineSpacing:4}).setOrigin(0.5);
+
+    const cta=this.add.text(GW/2,478,'✦ SPRAWDŹ WOLNY TERMIN U KAROLA ✦',{fontFamily:'Segoe UI',fontSize:'22px',color:'#0a0a18',backgroundColor:'#d4af37',padding:{x:28,y:14},fontStyle:'bold'}).setOrigin(0.5).setInteractive();
+    cta.setShadow(0,0,'#d4af37',12);
+    this.tweens.add({targets:cta,scale:{from:1,to:1.07},yoyo:true,repeat:-1,duration:650});
+    cta.on('pointerover',()=>cta.setBackgroundColor('#ffe487'));
+    cta.on('pointerout',()=>cta.setBackgroundColor('#d4af37'));
+    cta.on('pointerdown',()=>window.open(SITE_URL,'_blank','noopener'));
+
+    const retry=this.add.text(GW/2,535,'↻ Zagraj jeszcze raz',{fontFamily:'Segoe UI',fontSize:'16px',color:'#9aa'}).setOrigin(0.5).setInteractive();
+    retry.on('pointerdown',()=>this.scene.start('Menu'));
+  }
+}
+
+/* ===========================================================================
+   KONFIGURACJA GRY
+=========================================================================== */
+const config={
+  type:Phaser.AUTO,
+  width:GW, height:GH,
+  parent:'game-container',
+  backgroundColor:'#0a0a18',
+  scale:{ mode:Phaser.Scale.FIT, autoCenter:Phaser.Scale.CENTER_BOTH },
+  physics:{ default:'arcade', arcade:{ gravity:{y:0}, debug:false } },
+  scene:[Menu,Level1,Level2,Level3,End,GameOver]
+};
+new Phaser.Game(config);
+
+} // startGame
+</script>
+</body>
+</html>

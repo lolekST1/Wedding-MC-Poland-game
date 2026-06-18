@@ -7,7 +7,7 @@
 
 <!-- ============ SEO ============ -->
 <title>Wodzirej Karol: Master of the Dancefloor – gra | Wedding MC Poland</title>
-<meta name="description" content="Zagraj w retro-arkadówkę Wodzirej Karol: Master of the Dancefloor! Rozstaw sprzęt, rozgrzej parkiet i poprowadź międzynarodowe wesele bez przaśności. Profesjonalny wodzirej i DJ – Wedding MC Poland.">
+<meta name="description" content="Zagraj w retro-arkadówkę Wodzirej Karol: Master of the Dancefloor! Rozgrzej parkiet, utrzymaj energię, neutralizuj przaśność i prowadź wesele w PL/EN/DE. Profesjonalny wodzirej i DJ – Wedding MC Poland.">
 <meta name="keywords" content="wodzirej, dj na wesele, wedding mc poland, wodzirej Karol, konferansjer, wesele międzynarodowe, gra weselna">
 <meta name="author" content="Wedding MC Poland – Wodzirej Karol">
 <link rel="canonical" href="https://www.wodzirejkarol.pl/">
@@ -37,7 +37,7 @@
       "applicationCategory": "Game",
       "operatingSystem": "Any",
       "inLanguage": "pl",
-      "description": "Retro-arkadówka, w której wcielasz się w profesjonalnego wodzireja Karola. Rozstawiasz sprzęt nagłośnieniowy, rozgrzewasz parkiet i prowadzisz międzynarodowe wesele bez przaśności.",
+      "description": "Retro-arkadówka, w której wcielasz się w profesjonalnego wodzireja Karola. Rozgrzewasz parkiet, utrzymujesz energię gości, neutralizujesz przaśność i prowadzisz międzynarodowe wesele.",
       "author": { "@type": "Organization", "name": "Wedding MC Poland" },
       "offers": { "@type": "Offer", "price": "0", "priceCurrency": "PLN" }
     },
@@ -118,7 +118,7 @@
 
     <div id="poster" role="button" tabindex="0" aria-label="Załaduj i uruchom grę">
       <h1>Wodzirej Karol<br><span class="accent">Master of the Dancefloor</span></h1>
-      <p>Rozstaw sprzęt, rozgrzej parkiet i poprowadź międzynarodowe wesele z klasą — bez ani grama przaśności.</p>
+      <p>Rozgrzej parkiet, utrzymaj energię gości i neutralizuj przaśność — poprowadź międzynarodowe wesele z klasą.</p>
       <button id="playBtn" type="button">▶ GRAJ TERAZ</button>
       <div id="loadingTxt" aria-live="polite"></div>
     </div>
@@ -126,8 +126,8 @@
 
   <p id="seo-copy">
     <strong>Wodzirej Karol</strong> to profesjonalny wodzirej i DJ prowadzący wesela polskie oraz międzynarodowe jako
-    <strong>Wedding MC Poland</strong>. Zagraj w grę i zobacz, jak ważna na przyjęciu jest logistyka, brak przaśności
-    i swoboda językowa. <a href="http://www.wodzirejkarol.pl" target="_blank" rel="noopener">Sprawdź wolny termin u Karola →</a>
+    <strong>Wedding MC Poland</strong>. Zagraj i przekonaj się, jak ważna jest energia parkietu, brak przaśności
+    i płynne dwujęzyczne prowadzenie. <a href="http://www.wodzirejkarol.pl" target="_blank" rel="noopener">Sprawdź wolny termin u Karola →</a>
   </p>
 </main>
 
@@ -159,466 +159,284 @@
 })();
 
 /* =========================================================================
-   GRA
+   GRA — "Mistrz Parkietu": jeden wieczór, narastające fale (2.5D)
    ========================================================================= */
 function startGame(){
 
-const GW = 900, GH = 600;             // logiczny rozmiar sceny
-const SPEED = 260;
-const LEVEL_TIME = 30;                // sekund na poziom
-const SITE_URL = 'http://www.wodzirejkarol.pl';
+const GW=900, GH=600, HORIZON=205;
+const SITE_URL='http://www.wodzirejkarol.pl';
+const SPEED=255;
+const TARGET_SURVIVE=150;            // sek do sukcesu
+const ACT_R=72;                      // zasięg akcji
 
-/* Paleta */
-const C = {
-  bored:0xff4444, happy:0x2ee86b, en:0xffd23f, de:0xff8c2b,
-  cringe:0x9b30ff, gold:0xd4af37, neon:0x00ffcc, pink:0xff2e8b
-};
+const C={ bored:0xff4444, happy:0x2ee86b, en:0xffd23f, de:0xff8c2b,
+          cringe:0x9b30ff, gold:0xd4af37, neon:0x00ffcc, pink:0xff2e8b };
+
+// at, guests, needRate(s), decay(/s), cringeRate(s,0=brak), cringeSpeed, label
+const WAVES=[
+  {at:0,   guests:4,  needRate:3.4, decay:4.0,  cringeRate:0,   cringeSpeed:30, label:'Rozgrzewka'},
+  {at:25,  guests:6,  needRate:2.8, decay:5.5,  cringeRate:7.0, cringeSpeed:42, label:'Goście wchodzą'},
+  {at:55,  guests:8,  needRate:2.2, decay:7.0,  cringeRate:5.0, cringeSpeed:56, label:'Parkiet się grzeje'},
+  {at:90,  guests:10, needRate:1.7, decay:8.5,  cringeRate:4.0, cringeSpeed:72, label:'Pełna sala'},
+  {at:125, guests:12, needRate:1.3, decay:10.0, cringeRate:3.2, cringeSpeed:88, label:'Finał wieczoru'}
+];
+
+const VALUE_TIPS=['Zero przaśności!','Świetna logistyka!','Płynne dwujęzyczne prowadzenie!',
+                  'Energia parkietu w górę!','Klasa i elegancja!','Czytanie sali!'];
+
+function depthT(y){ return Phaser.Math.Clamp((y-HORIZON)/(GH-HORIZON),0,1); }
+function depthScale(y){ return Phaser.Math.Linear(0.62,1.16,depthT(y)); }
 
 /* ---------------------------------------------------------------------------
-   SILNIK AUDIO (Web Audio API — bez plików MP3)
-   - zapętlony bit house/dance
-   - chime przy sukcesie, zgrzyt/pisk mikrofonu przy przaśności
+   AUDIO — syntezator Web Audio (bit house z warstwami + SFX)
 --------------------------------------------------------------------------- */
-const Audio = (function(){
-  let ctx=null, master=null, musicGain=null, sfxGain=null;
-  let noiseBuf=null, seqTimer=null, step=0, playing=false;
-  const BPM=124, stepDur=(60/BPM)/4;     // 16-tkowy krok
-
+const Audio=(function(){
+  let ctx=null,master,musicG,sfxG,noiseBuf,seq=null,step=0,playing=false,layer=0,stepCb=null;
+  const BPM=126, stepDur=(60/BPM)/4;
   function init(){
     if(ctx) return;
-    const AC = window.AudioContext||window.webkitAudioContext;
-    ctx = new AC();
-    master = ctx.createGain(); master.gain.value=0.9; master.connect(ctx.destination);
-    musicGain = ctx.createGain(); musicGain.gain.value=0.38; musicGain.connect(master);
-    sfxGain = ctx.createGain(); sfxGain.gain.value=0.6; sfxGain.connect(master);
-    // bufor szumu (hi-hat / pisk)
-    const len = ctx.sampleRate*1;
-    noiseBuf = ctx.createBuffer(1,len,ctx.sampleRate);
-    const d = noiseBuf.getChannelData(0);
-    for(let i=0;i<len;i++) d[i]=Math.random()*2-1;
+    const AC=window.AudioContext||window.webkitAudioContext; ctx=new AC();
+    master=ctx.createGain(); master.gain.value=0.9; master.connect(ctx.destination);
+    musicG=ctx.createGain(); musicG.gain.value=0.34; musicG.connect(master);
+    sfxG=ctx.createGain(); sfxG.gain.value=0.6; sfxG.connect(master);
+    const len=ctx.sampleRate; noiseBuf=ctx.createBuffer(1,len,ctx.sampleRate);
+    const d=noiseBuf.getChannelData(0); for(let i=0;i<len;i++) d[i]=Math.random()*2-1;
   }
-  function resume(){ if(ctx && ctx.state==='suspended') ctx.resume(); }
-
-  function kick(t){
-    const o=ctx.createOscillator(), g=ctx.createGain();
-    o.type='sine'; o.frequency.setValueAtTime(150,t);
-    o.frequency.exponentialRampToValueAtTime(45,t+0.12);
+  function resume(){ if(ctx&&ctx.state==='suspended') ctx.resume(); }
+  function kick(t){ const o=ctx.createOscillator(),g=ctx.createGain();
+    o.type='sine'; o.frequency.setValueAtTime(150,t); o.frequency.exponentialRampToValueAtTime(45,t+0.12);
     g.gain.setValueAtTime(1,t); g.gain.exponentialRampToValueAtTime(0.001,t+0.18);
-    o.connect(g); g.connect(musicGain); o.start(t); o.stop(t+0.2);
-  }
-  function hat(t,open){
-    const s=ctx.createBufferSource(); s.buffer=noiseBuf;
+    o.connect(g); g.connect(musicG); o.start(t); o.stop(t+0.2); }
+  function hat(t,open){ const s=ctx.createBufferSource(); s.buffer=noiseBuf;
     const hp=ctx.createBiquadFilter(); hp.type='highpass'; hp.frequency.value=8000;
-    const g=ctx.createGain(); const dur=open?0.12:0.04;
-    g.gain.setValueAtTime(0.28,t); g.gain.exponentialRampToValueAtTime(0.001,t+dur);
-    s.connect(hp); hp.connect(g); g.connect(musicGain); s.start(t); s.stop(t+dur);
-  }
-  function bass(t,freq){
-    const o=ctx.createOscillator(), g=ctx.createGain();
-    o.type='sawtooth'; o.frequency.value=freq;
-    const lp=ctx.createBiquadFilter(); lp.type='lowpass'; lp.frequency.value=600;
-    g.gain.setValueAtTime(0.0,t); g.gain.linearRampToValueAtTime(0.5,t+0.02);
-    g.gain.exponentialRampToValueAtTime(0.001,t+stepDur*0.9);
-    o.connect(lp); lp.connect(g); g.connect(musicGain); o.start(t); o.stop(t+stepDur);
-  }
-  function lead(t,freq){
-    const o=ctx.createOscillator(), g=ctx.createGain();
-    o.type='square'; o.frequency.value=freq;
-    g.gain.setValueAtTime(0.0,t); g.gain.linearRampToValueAtTime(0.12,t+0.02);
-    g.gain.exponentialRampToValueAtTime(0.001,t+0.25);
-    o.connect(g); g.connect(musicGain); o.start(t); o.stop(t+0.3);
-  }
-
+    const g=ctx.createGain(); const dur=open?0.10:0.035;
+    g.gain.setValueAtTime(0.22,t); g.gain.exponentialRampToValueAtTime(0.001,t+dur);
+    s.connect(hp); hp.connect(g); g.connect(musicG); s.start(t); s.stop(t+dur); }
+  function bass(t,f){ const o=ctx.createOscillator(),g=ctx.createGain();
+    o.type='sawtooth'; o.frequency.value=f; const lp=ctx.createBiquadFilter(); lp.type='lowpass'; lp.frequency.value=600;
+    g.gain.setValueAtTime(0,t); g.gain.linearRampToValueAtTime(0.5,t+0.02); g.gain.exponentialRampToValueAtTime(0.001,t+stepDur*0.9);
+    o.connect(lp); lp.connect(g); g.connect(musicG); o.start(t); o.stop(t+stepDur); }
+  function lead(t,f){ const o=ctx.createOscillator(),g=ctx.createGain();
+    o.type='square'; o.frequency.value=f; g.gain.setValueAtTime(0,t); g.gain.linearRampToValueAtTime(0.10,t+0.02);
+    g.gain.exponentialRampToValueAtTime(0.001,t+0.25); o.connect(g); g.connect(musicG); o.start(t); o.stop(t+0.3); }
+  function clap(t){ const s=ctx.createBufferSource(); s.buffer=noiseBuf;
+    const bp=ctx.createBiquadFilter(); bp.type='bandpass'; bp.frequency.value=1500; bp.Q.value=1.4;
+    const g=ctx.createGain(); g.gain.setValueAtTime(0.3,t); g.gain.exponentialRampToValueAtTime(0.001,t+0.12);
+    s.connect(bp); bp.connect(g); g.connect(musicG); s.start(t); s.stop(t+0.13); }
   const bassSeq=[55,55,82.4,55, 73.4,55,82.4,98, 55,55,82.4,55, 65.4,55,73.4,49];
   const leadSeq=[0,0,659.3,0, 0,587.3,0,0, 523.3,0,0,659.3, 0,0,493.9,0];
-
-  function tick(){
-    if(!playing) return;
-    const t=ctx.currentTime+0.02;
+  function tick(){ if(!playing) return; const t=ctx.currentTime+0.02;
     if(step%4===0) kick(t);
     hat(t, step%4===2);
-    bass(t, bassSeq[step]);
-    if(leadSeq[step]) lead(t, leadSeq[step]);
-    step=(step+1)%16;
-  }
-  function startMusic(){ init(); resume(); if(playing) return; playing=true; step=0; seqTimer=setInterval(tick,stepDur*1000); }
-  function stopMusic(){ playing=false; if(seqTimer){clearInterval(seqTimer); seqTimer=null;} }
-
-  function chime(){
-    init(); resume();
-    const t=ctx.currentTime;
-    [880,1108,1318].forEach((f,i)=>{
-      const o=ctx.createOscillator(), g=ctx.createGain();
-      o.type='triangle'; o.frequency.value=f;
-      const s=t+i*0.06;
-      g.gain.setValueAtTime(0,s); g.gain.linearRampToValueAtTime(0.3,s+0.02);
-      g.gain.exponentialRampToValueAtTime(0.001,s+0.35);
-      o.connect(g); g.connect(sfxGain); o.start(s); o.stop(s+0.4);
-    });
-  }
-  function screech(){ // pisk mikrofonu / zgrzyt przy przaśności
-    init(); resume();
-    const t=ctx.currentTime;
-    const o=ctx.createOscillator(), g=ctx.createGain();
-    o.type='sawtooth'; o.frequency.setValueAtTime(1800,t);
-    o.frequency.linearRampToValueAtTime(2600,t+0.18);
-    o.frequency.linearRampToValueAtTime(900,t+0.32);
-    g.gain.setValueAtTime(0.0001,t); g.gain.linearRampToValueAtTime(0.35,t+0.03);
-    g.gain.exponentialRampToValueAtTime(0.001,t+0.34);
-    o.connect(g); g.connect(sfxGain); o.start(t); o.stop(t+0.36);
-    // krótki szum sprzężenia
-    const s=ctx.createBufferSource(); s.buffer=noiseBuf;
-    const bp=ctx.createBiquadFilter(); bp.type='bandpass'; bp.frequency.value=2200; bp.Q.value=6;
-    const ng=ctx.createGain(); ng.gain.setValueAtTime(0.25,t); ng.gain.exponentialRampToValueAtTime(0.001,t+0.3);
-    s.connect(bp); bp.connect(ng); ng.connect(sfxGain); s.start(t); s.stop(t+0.3);
-  }
-  function blip(ok){ // miękkie potwierdzenie / odmowa
-    init(); resume();
-    const t=ctx.currentTime, o=ctx.createOscillator(), g=ctx.createGain();
-    o.type='square'; o.frequency.value=ok?720:200;
-    g.gain.setValueAtTime(0.0001,t); g.gain.linearRampToValueAtTime(0.2,t+0.01);
-    g.gain.exponentialRampToValueAtTime(0.001,t+0.12);
-    o.connect(g); g.connect(sfxGain); o.start(t); o.stop(t+0.13);
-  }
-  return { startMusic, stopMusic, chime, screech, blip, resume, init };
+    bass(t,bassSeq[step]);
+    if(layer>=1 && leadSeq[step]) lead(t,leadSeq[step]);
+    if(layer>=2 && step%8===4) clap(t);
+    if(layer>=3 && leadSeq[step]) lead(t,leadSeq[step]*2);
+    if(stepCb) stepCb(step);
+    step=(step+1)%16; }
+  function startMusic(){ init(); resume(); if(playing) return; playing=true; step=0; seq=setInterval(tick,stepDur*1000); }
+  function stopMusic(){ playing=false; if(seq){clearInterval(seq); seq=null;} }
+  function setLayer(n){ layer=n; if(musicG) musicG.gain.value=0.34+n*0.02; }
+  function onStep(cb){ stepCb=cb; }
+  function chime(){ init(); resume(); const t=ctx.currentTime;
+    [880,1108,1318].forEach((f,i)=>{ const o=ctx.createOscillator(),g=ctx.createGain(); o.type='triangle'; o.frequency.value=f;
+      const s=t+i*0.05; g.gain.setValueAtTime(0,s); g.gain.linearRampToValueAtTime(0.28,s+0.02); g.gain.exponentialRampToValueAtTime(0.001,s+0.3);
+      o.connect(g); g.connect(sfxG); o.start(s); o.stop(s+0.34); }); }
+  function comboUp(tier){ init(); resume(); const t=ctx.currentTime; const base=520+tier*60;
+    [0,1,2].forEach(i=>{ const o=ctx.createOscillator(),g=ctx.createGain(); o.type='triangle'; o.frequency.value=base*Math.pow(1.26,i);
+      const s=t+i*0.05; g.gain.setValueAtTime(0,s); g.gain.linearRampToValueAtTime(0.24,s+0.01); g.gain.exponentialRampToValueAtTime(0.001,s+0.22);
+      o.connect(g); g.connect(sfxG); o.start(s); o.stop(s+0.24); }); }
+  function classZap(){ init(); resume(); const t=ctx.currentTime; const o=ctx.createOscillator(),g=ctx.createGain();
+    o.type='sawtooth'; o.frequency.setValueAtTime(300,t); o.frequency.exponentialRampToValueAtTime(1400,t+0.12);
+    g.gain.setValueAtTime(0.0001,t); g.gain.linearRampToValueAtTime(0.3,t+0.02); g.gain.exponentialRampToValueAtTime(0.001,t+0.2);
+    o.connect(g); g.connect(sfxG); o.start(t); o.stop(t+0.22); }
+  function screech(){ init(); resume(); const t=ctx.currentTime; const o=ctx.createOscillator(),g=ctx.createGain();
+    o.type='sawtooth'; o.frequency.setValueAtTime(1800,t); o.frequency.linearRampToValueAtTime(2600,t+0.16); o.frequency.linearRampToValueAtTime(900,t+0.3);
+    g.gain.setValueAtTime(0.0001,t); g.gain.linearRampToValueAtTime(0.32,t+0.03); g.gain.exponentialRampToValueAtTime(0.001,t+0.32);
+    o.connect(g); g.connect(sfxG); o.start(t); o.stop(t+0.34); }
+  function thump(){ init(); resume(); const t=ctx.currentTime; const o=ctx.createOscillator(),g=ctx.createGain();
+    o.type='sine'; o.frequency.setValueAtTime(90,t); o.frequency.exponentialRampToValueAtTime(40,t+0.2);
+    g.gain.setValueAtTime(0.5,t); g.gain.exponentialRampToValueAtTime(0.001,t+0.25); o.connect(g); g.connect(sfxG); o.start(t); o.stop(t+0.26); }
+  function blip(ok){ init(); resume(); const t=ctx.currentTime,o=ctx.createOscillator(),g=ctx.createGain();
+    o.type='square'; o.frequency.value=ok?720:200; g.gain.setValueAtTime(0.0001,t); g.gain.linearRampToValueAtTime(0.2,t+0.01);
+    g.gain.exponentialRampToValueAtTime(0.001,t+0.12); o.connect(g); g.connect(sfxG); o.start(t); o.stop(t+0.13); }
+  return { startMusic,stopMusic,setLayer,onStep,chime,comboUp,classZap,screech,thump,blip,resume,init };
 })();
 
 /* ---------------------------------------------------------------------------
-   FABRYKA POSTACI KAROLA (warstwy geometryczne)
-   frak z połami • biała kamizelka • lakierki • biała mucha • cylinder • kucyk loków
+   TEKSTURY pomocnicze (raz, w Boot)
 --------------------------------------------------------------------------- */
-function createKarol(scene,x,y,scale){
-  scale=scale||1;
-  const c=scene.add.container(x,y);
-
-  // poświata pod stopami (blend ADD) — osobny obiekt z tyłu
-  const glow=scene.add.ellipse(0,36,42,15,C.neon,0.18).setBlendMode(Phaser.BlendModes.ADD);
-
-  // wszystkie warstwy geometryczne rysujemy jednym Graphics (wydajność + precyzja)
-  const g=scene.add.graphics();
-
-  // --- poły fraka (z tyłu) ---
-  g.fillStyle(0x0b0b0f,1);
-  g.fillTriangle(-4,6, -13,34, -2,30);
-  g.fillTriangle( 4,6,  13,34,  2,30);
-
-  // --- KUCYK kręconych, czarnych włosów (kółka = tekstura loków) ---
-  g.fillStyle(0x141414,1);
-  [[-2,-30],[-7,-27],[-11,-22],[-13,-15],[-12,-8],[-9,-2]].forEach(p=>g.fillCircle(p[0],p[1],4.2));
-  g.fillCircle(-12,-12,5);
-
-  // --- LAKIERKI (czarne, błyszczące) ---
-  g.fillStyle(0x000000,1);
-  g.fillEllipse(-7,35,15,7); g.fillEllipse(7,35,15,7);
-  g.fillStyle(0xcfcfcf,1);
-  g.fillEllipse(-9,33,5,2.4); g.fillEllipse(5,33,5,2.4);
-
-  // --- NOGI (czarne spodnie) ---
-  g.fillStyle(0x111119,1);
-  g.fillRect(-9,18,7,16); g.fillRect(2,18,7,16);
-
-  // --- KORPUS: czarny frak ---
-  g.fillStyle(0x0b0b0f,1);
-  g.fillRoundedRect(-15,-9,30,30,6);
-
-  // --- biała KAMIZELKA pod spodem ---
-  g.fillStyle(0xf6f6f6,1);
-  g.fillTriangle(0,-6, -8,20, 8,20);
-  g.fillRect(-5,8,10,12);
-  g.fillStyle(0x222222,1);
-  g.fillCircle(0,4,1.4); g.fillCircle(0,10,1.4); g.fillCircle(0,16,1.4);
-
-  // --- klapy fraka ---
-  g.fillStyle(0x05050a,1);
-  g.fillTriangle(-2,-6, -10,14, -2,6);
-  g.fillTriangle( 2,-6,  10,14,  2,6);
-
-  // --- RĘCE + dłonie ---
-  g.fillStyle(0x0b0b0f,1);
-  g.fillPoints([{x:-14,y:-6},{x:-18,y:12},{x:-13,y:14},{x:-11,y:-4}],true);
-  g.fillPoints([{x:14,y:-6},{x:18,y:12},{x:13,y:14},{x:11,y:-4}],true);
-  g.fillStyle(0xf1c9a5,1);
-  g.fillCircle(-16,14,3.4); g.fillCircle(16,14,3.4);
-
-  // --- GŁOWA ---
-  g.fillStyle(0xf1c9a5,1);
-  g.fillCircle(0,-15,9);
-
-  // --- biała MUCHA pod szyją ---
-  g.fillStyle(0xffffff,1);
-  g.fillTriangle(0,-5, -8,-9, -8,-1);
-  g.fillTriangle(0,-5,  8,-9,  8,-1);
-  g.fillCircle(0,-5,1.9);
-
-  // --- CYLINDER (czarny, ze złotą wstążką) ---
-  g.fillStyle(0x000000,1); g.fillEllipse(0,-22,28,7);     // rondo
-  g.fillStyle(0x0a0a0a,1); g.fillRect(-9,-39,18,17);       // tulia
-  g.fillStyle(C.gold,1);   g.fillRect(-9,-25,18,3);        // złota wstążka
-  g.fillStyle(0x111111,1); g.fillEllipse(0,-39,18,5);      // góra
-
-  c.add([glow,g]);
-  c.setScale(scale);
-  return c;
-}
-
-/* Generowanie tekstur pomocniczych (goście, sprzęt, cringe) — wydajność */
 function buildTextures(scene){
   if(scene.textures.exists('guest')) return;
-  const g=scene.add.graphics();
+  const g=scene.make.graphics({x:0,y:0,add:false});
 
-  // GOŚĆ (biały, kolorowany przez tint)
+  // miękka poświata (cień / światło) — koncentryczne koła
   g.clear();
-  g.fillStyle(0xffffff,1);
-  g.fillCircle(15,9,8);                 // głowa
-  g.fillRoundedRect(5,15,20,24,7);      // ciało
+  for(let r=64;r>0;r-=2){ g.fillStyle(0xffffff,0.05); g.fillCircle(64,64,r); }
+  g.generateTexture('soft',128,128);
+
+  g.clear(); g.fillStyle(0xffffff,1); g.fillCircle(8,8,8); g.generateTexture('dot',16,16);
+
+  // gość
+  g.clear(); g.fillStyle(0xffffff,1); g.fillCircle(15,9,8); g.fillRoundedRect(5,15,20,24,7);
   g.generateTexture('guest',30,42);
 
-  // GŁOŚNIK / KOLUMNA
-  g.clear();
-  g.fillStyle(0x222230,1); g.fillRoundedRect(2,2,32,46,4);
-  g.lineStyle(2,C.gold,1); g.strokeRoundedRect(2,2,32,46,4);
-  g.fillStyle(0x000000,1); g.fillCircle(18,16,9); g.fillCircle(18,36,6);
-  g.fillStyle(0x444,1); g.fillCircle(18,16,5);
-  g.generateTexture('eq_speaker',38,52);
-
-  // RUCHOMA GŁOWA LED
-  g.clear();
-  g.fillStyle(0x2a2a3a,1); g.fillRoundedRect(6,28,26,18,3);
-  g.fillStyle(0x14141f,1); g.fillRoundedRect(2,2,34,24,6);
-  g.fillStyle(C.neon,1); g.fillCircle(19,14,7);
-  g.fillStyle(0xffffff,1); g.fillCircle(19,14,3);
-  g.generateTexture('eq_led',40,50);
-
-  // KONSOLA DJ
-  g.clear();
-  g.fillStyle(0x1d1d2a,1); g.fillRoundedRect(2,10,44,30,4);
-  g.lineStyle(2,C.gold,1); g.strokeRoundedRect(2,10,44,30,4);
-  g.fillStyle(0x000,1); g.fillCircle(14,25,7); g.fillCircle(34,25,7);
-  g.fillStyle(C.pink,1); g.fillCircle(14,25,2.5); g.fillCircle(34,25,2.5);
-  g.fillStyle(0x555,1); g.fillRect(22,16,4,18);
-  g.generateTexture('eq_dj',50,46);
-
-  // CRINGE — przaśna ikona (zepsute jajko)
-  g.clear();
-  g.fillStyle(C.cringe,1);
-  g.fillEllipse(20,24,30,34);
-  g.fillStyle(0xc77dff,1); g.fillEllipse(20,16,22,18); // pęknięta skorupa
-  g.fillStyle(0xffe85c,1); g.fillCircle(20,22,7);       // "żółtko"
-  g.fillStyle(0x6a0dad,1);
-  g.fillTriangle(8,12, 14,4, 18,12);                    // zygzaki pęknięcia
-  g.fillTriangle(22,12, 28,4, 32,12);
+  // cringe — zepsute jajko
+  g.clear(); g.fillStyle(C.cringe,1); g.fillEllipse(20,24,30,34);
+  g.fillStyle(0xc77dff,1); g.fillEllipse(20,16,22,18);
+  g.fillStyle(0xffe85c,1); g.fillCircle(20,22,7);
+  g.fillStyle(0x6a0dad,1); g.fillTriangle(8,12,14,4,18,12); g.fillTriangle(22,12,28,4,32,12);
   g.generateTexture('cringe',40,44);
 
   g.destroy();
 }
 
+/* ---------------------------------------------------------------------------
+   KAROL — kontener z animowanym rigiem (8 kierunków, walk-cycle, cień)
+--------------------------------------------------------------------------- */
+function drawBody(g,facing){
+  g.clear();
+  const skin=0xf1c9a5, coat=0x0b0b0f, vest=0xf6f6f6, hair=0x141414;
+  // poły fraka (z tyłu)
+  g.fillStyle(coat,1); g.fillTriangle(-4,12,-12,30,-2,26); g.fillTriangle(4,12,12,30,2,26);
+  // kucyk loków (tył/profil)
+  if(facing!=='front'){ g.fillStyle(hair,1); const px=facing==='side'?-7:0; for(let i=0;i<4;i++) g.fillCircle(px,-21+i*4.2,3.3); g.fillCircle(px-1,-12,3.6); }
+  // korpus
+  g.fillStyle(coat,1); g.fillRoundedRect(-13,-8,26,28,6);
+  if(facing!=='back'){
+    g.fillStyle(vest,1); g.fillTriangle(0,-5,-7,18,7,18); g.fillRect(-4,8,8,11);
+    g.fillStyle(0x222222,1); g.fillCircle(0,2,1.3); g.fillCircle(0,8,1.3); g.fillCircle(0,14,1.3);
+    g.fillStyle(0x05050a,1); g.fillTriangle(-1,-5,-9,12,-1,5); g.fillTriangle(1,-5,9,12,1,5);
+  } else { g.fillStyle(0x05050a,1); g.fillRect(-1,-6,2,24); }
+  // głowa
+  g.fillStyle(facing==='back'?hair:skin,1); g.fillCircle(0,-15,9);
+  if(facing==='front'){ g.fillStyle(0x222222,1); g.fillCircle(-3,-16,1.3); g.fillCircle(3,-16,1.3); }
+  if(facing==='side'){ g.fillStyle(0x222222,1); g.fillCircle(4,-16,1.3); }
+  // mucha (przód/profil)
+  if(facing!=='back'){ g.fillStyle(0xffffff,1); g.fillTriangle(0,-5,-7,-8,-7,-2); g.fillTriangle(0,-5,7,-8,7,-2); g.fillCircle(0,-5,1.6); }
+  // cylinder
+  g.fillStyle(0x000000,1); g.fillEllipse(0,-22,26,6);
+  g.fillStyle(0x0a0a0a,1); g.fillRect(-8,-38,16,16);
+  g.fillStyle(C.gold,1);   g.fillRect(-8,-25,16,3);
+  g.fillStyle(0x111111,1); g.fillEllipse(0,-38,16,5);
+}
+
+function createKarol(scene,x,y){
+  const k=scene.add.container(x,y);
+  k.shadow=scene.add.image(x,y,'soft').setTint(0x000000).setAlpha(0.32).setBlendMode(Phaser.BlendModes.MULTIPLY);
+  const rig=scene.add.container(0,0); k.rig=rig;
+  const legL=scene.add.rectangle(-4,15,6,16,0x111119).setOrigin(0.5,0);
+  const legR=scene.add.rectangle(4,15,6,16,0x111119).setOrigin(0.5,0);
+  const armL=scene.add.rectangle(-12,-4,5,15,0x0b0b0f).setOrigin(0.5,0);
+  const armR=scene.add.rectangle(12,-4,5,15,0x0b0b0f).setOrigin(0.5,0);
+  const bodyG=scene.add.graphics();
+  rig.add([legL,legR,bodyG,armL,armR]);
+  k.add(rig);
+  k.legL=legL; k.legR=legR; k.armL=armL; k.armR=armR; k.bodyG=bodyG;
+  k.facing='front'; k.flip=1; k.phase=0; k._drawn='';
+  drawBody(bodyG,'front');
+
+  k.face=function(facing,flip){ k.facing=facing; k.flip=flip; if(k._drawn!==facing){ drawBody(bodyG,facing); k._drawn=facing; } };
+  k.step=function(dt,moving,vx){
+    k.phase += (moving?0.022:0.006)*dt;
+    const sw=moving?1:0.12;
+    legL.rotation=Math.sin(k.phase)*0.5*sw;
+    legR.rotation=Math.sin(k.phase+Math.PI)*0.5*sw;
+    armL.rotation=Math.sin(k.phase+Math.PI)*0.4*sw;
+    armR.rotation=Math.sin(k.phase)*0.4*sw;
+    rig.y = moving? -Math.abs(Math.sin(k.phase*2))*3 : Math.sin(k.phase)*-1.2;
+    rig.rotation = Phaser.Math.Clamp(-vx*0.0007,-0.12,0.12);
+    const s=depthScale(k.y);
+    rig.setScale(k.flip*s, s);
+    k.setDepth(k.y);
+    k.shadow.setPosition(k.x, k.y+30*s).setScale(0.5*s, 0.22*s).setDepth(k.y-1);
+  };
+  return k;
+}
+
 /* ===========================================================================
-   BAZOWA SCENA POZIOMU — współdzielone HUD, sterowanie, ruch, meter
+   BOOT
 =========================================================================== */
-class BaseLevel extends Phaser.Scene{
-  buildArena(){
-    const cam=this.cameras.main;
-    cam.setBackgroundColor('#0a0a18');
+class Boot extends Phaser.Scene{
+  constructor(){ super('Boot'); }
+  create(){ buildTextures(this);
+    this.registry.set('score',0); this.registry.set('best',this.registry.get('best')||0);
+    this.scene.start('Menu'); }
+}
 
-    // --- PARKIET W JODEŁKĘ (herringbone) ---
-    this.drawParquet();
+/* ===========================================================================
+   ARENA 2.5D (współdzielona przez Menu i Game)
+=========================================================================== */
+function buildArena(scene,opts){
+  opts=opts||{};
+  scene.cameras.main.setBackgroundColor('#07060f');
+  // ściana + sufit (gradient z pasów)
+  for(let i=0;i<10;i++){ const o=Phaser.Display.Color.Interpolate.ColorWithColor(
+      new Phaser.Display.Color(20,12,40), new Phaser.Display.Color(8,6,16),10,i);
+    const c=Phaser.Display.Color.GetColor(o.r,o.g,o.b);
+    scene.add.rectangle(GW/2, i*(HORIZON/10), GW, HORIZON/10+1, c).setOrigin(0.5,0).setDepth(-100); }
 
-    // --- NEONOWE NEONY (zmieniają kolor) ---
-    this.neon = this.add.rectangle(GW/2,GH/2,GW-16,GH-16).setStrokeStyle(4,C.neon).setFillStyle(0,0);
-    this.neonHue=0;
+  // neon z marką
+  const sign=scene.add.text(GW/2,46,'WODZIREJ KAROL',{fontFamily:'Segoe UI',fontSize:'30px',color:'#ffe487',fontStyle:'bold'})
+    .setOrigin(0.5).setDepth(-90).setShadow(0,0,'#d4af37',18,true,true);
+  scene.add.text(GW/2,74,'• Wedding MC Poland •',{fontFamily:'Segoe UI',fontSize:'14px',color:'#00ffcc'})
+    .setOrigin(0.5).setDepth(-90).setShadow(0,0,'#00ffcc',10);
+  scene.tweens.add({targets:sign,alpha:{from:1,to:0.78},yoyo:true,repeat:-1,duration:1400});
 
-    // --- ŚWIATŁA RAMP / RUCHOME GŁOWY (glow, blend ADD) ---
-    this.lights=[];
-    const lc=[C.pink,C.neon,C.en,0x6a5cff];
-    for(let i=0;i<4;i++){
-      const l=this.add.ellipse(150+i*200, -40, 220, 360, lc[i], 0.10)
-        .setBlendMode(Phaser.BlendModes.ADD);
-      l.baseX=150+i*200; l.phase=i*1.4; this.lights.push(l);
-    }
-    // delikatny vignette/disco floor pulse
-    this.discoPulse=0;
-  }
+  // kula disco
+  const ball=scene.add.container(GW/2,108).setDepth(-85);
+  ball.add(scene.add.circle(0,0,16,0x9fb6c9));
+  for(let i=0;i<10;i++){ const ang=i/10*Math.PI*2; ball.add(scene.add.circle(Math.cos(ang)*10,Math.sin(ang)*8,2,0xffffff,0.9)); }
+  scene.add.rectangle(GW/2,90,2,18,0x444455).setDepth(-86);
+  scene.tweens.add({targets:ball,angle:360,duration:9000,repeat:-1,ease:'Linear'});
+  scene.ball=ball;
 
-  drawParquet(){
-    const g=this.add.graphics();
-    const bw=34, bh=14, gap=2;
-    let toggle=false;
-    for(let row=-1; row*bh < GH+40; row++){
-      toggle = row%2===0;
-      for(let col=-1; col*(bw+gap) < GW+60; col++){
-        const x=col*(bw+gap)+ (row%2)*(bw/2);
-        const y=row*(bh+6);
-        const shade = ((row+col)%2===0)?0x4a3320:0x5c3f25;
-        g.fillStyle(shade,1);
-        g.save(); g.translateCanvas(x,y); g.rotateCanvas((toggle?1:-1)*0.5);
-        g.fillRect(0,0,bw,bh);
-        g.restore();
-        toggle=!toggle;
-      }
-    }
-    g.fillStyle(0x000000,0.18); g.fillRect(0,0,GW,GH); // przyciemnienie dla kontrastu
-  }
+  // tłum (sylwetki) tuż nad horyzontem
+  const crowd=[]; for(let i=0;i<16;i++){ const x=20+i*56; const b=scene.add.ellipse(x,HORIZON-6,40,46,0x140d22).setDepth(-80);
+    b.bx=x; b.ph=i*0.6; crowd.push(b);
+    scene.add.circle(x,HORIZON-26,11,0x180f28).setDepth(-80); }
+  scene.crowd=crowd;
 
-  createHUD(levelNum,levelName){
-    this.score = this.registry.get('score')||0;
-    this.cringe = this.registry.get('cringe'); if(this.cringe==null) this.cringe=100;
+  // PARKIET perspektywiczny (raz)
+  drawFloor(scene);
 
-    const tStyle={fontFamily:'Segoe UI,Arial',fontSize:'18px',color:'#ffffff',fontStyle:'bold'};
-    this.add.rectangle(GW/2,22,GW,44,0x000000,0.45);
-    this.scoreText=this.add.text(16,12,'★ '+this.score,{...tStyle,color:'#ffe487'});
-    this.levelText=this.add.text(GW/2,12,'Poziom '+levelNum+': '+levelName,
-      {...tStyle,color:'#ffffff'}).setOrigin(0.5,0);
-    this.timerText=this.add.text(GW-16,12,'⏱ '+LEVEL_TIME,{...tStyle,color:'#00ffcc'}).setOrigin(1,0);
+  // światła wolumetryczne (ADD)
+  scene.lights=[]; const lc=[C.pink,C.neon,C.en,0x6a5cff];
+  for(let i=0;i<4;i++){ const l=scene.add.image(140+i*210,120,'soft').setTint(lc[i]).setAlpha(0.16)
+      .setBlendMode(Phaser.BlendModes.ADD).setScale(2.4,5.0).setDepth(-60);
+    l.bx=140+i*210; l.ph=i*1.3; scene.lights.push(l); }
+}
 
-    // Anti-Cringe meter
-    this.add.text(16,40,'Anti-Cringe',{fontFamily:'Segoe UI',fontSize:'12px',color:'#c9c9e0'});
-    this.add.rectangle(120,48,160,14,0x222233).setOrigin(0,0.5).setStrokeStyle(1,0x444);
-    this.meterFill=this.add.rectangle(121,48,158,12,C.neon).setOrigin(0,0.5);
-    this.objText=this.add.text(GW/2,40,'',{fontFamily:'Segoe UI',fontSize:'13px',color:'#ffd23f'}).setOrigin(0.5,0);
-
-    this.refreshMeter();
-  }
-  setObjective(t){ this.objText.setText(t); }
-  refreshMeter(){
-    const w=158*Math.max(0,this.cringe)/100;
-    this.meterFill.width=w;
-    this.meterFill.fillColor = this.cringe>50?C.neon : this.cringe>20?0xffd23f : C.bored;
-  }
-  addScore(n){ this.score+=n; this.registry.set('score',this.score); this.scoreText.setText('★ '+this.score); }
-
-  hitCringe(amount){
-    if(this.invuln) return;
-    this.cringe-=amount; this.registry.set('cringe',this.cringe);
-    this.refreshMeter();
-    this.cameras.main.shake(220,0.012);
-    this.cameras.main.flash(140,120,0,80);
-    Audio.screech();
-    // chwilowa nietykalność, żeby jeden obiekt nie zabrał kilku razy
-    this.invuln=true; this.time.delayedCall(600,()=>this.invuln=false);
-    if(this.cringe<=0){ this.cringe=0; this.refreshMeter(); this.gameOver(); }
-  }
-
-  /* ---------- GRACZ + STEROWANIE ---------- */
-  createPlayer(){
-    this.player=createKarol(this,GW/2,GH/2,1);
-    this.physics.add.existing(this.player);
-    this.player.body.setSize(40,70); this.player.body.setOffset(-20,-38);
-    this.player.body.setCollideWorldBounds(true);
-  }
-
-  createControls(){
-    this.cursors=this.input.keyboard.createCursorKeys();
-    this.keys=this.input.keyboard.addKeys('W,A,S,D,SPACE,SHIFT');
-    this.input.keyboard.addCapture('SPACE,SHIFT,UP,DOWN,LEFT,RIGHT'); // nie przewijaj strony
-    this.joyVec={x:0,y:0};
-    this.actionDown=false;
-
-    const touch = this.sys.game.device.input.touch;
-    if(touch){
-      this.input.addPointer(2);
-      this.buildJoystick();
-      this.buildActionButton();
+function drawFloor(scene){
+  const g=scene.add.graphics().setDepth(-70);
+  const VPX=GW/2;
+  const top=HORIZON, bot=GH+10, LB=-160, RB=GW+160;
+  const rows=11, lanes=16;
+  const ts=i=>Math.pow(i/rows,1.6);
+  for(let i=0;i<rows;i++){
+    const t0=ts(i), t1=ts(i+1);
+    const y0=top+(bot-top)*t0, y1=top+(bot-top)*t1;
+    const l0=VPX+(LB-VPX)*t0, r0=VPX+(RB-VPX)*t0;
+    const l1=VPX+(LB-VPX)*t1, r1=VPX+(RB-VPX)*t1;
+    for(let j=0;j<lanes;j++){
+      const f0=j/lanes, f1=(j+1)/lanes;
+      const ax=l0+(r0-l0)*f0, bx=l0+(r0-l0)*f1;
+      const cx=l1+(r1-l1)*f1, dx=l1+(r1-l1)*f0;
+      const base=((i+j)%2)?0x5a3d22:0x4a3119;
+      const o=Phaser.Display.Color.Interpolate.ColorWithColor(
+        new Phaser.Display.Color(20,12,8), Phaser.Display.Color.IntegerToColor(base), 1, t1);
+      const col=Phaser.Display.Color.GetColor(o.r,o.g,o.b);
+      g.fillStyle(col,1);
+      g.fillPoints([{x:ax,y:y0},{x:bx,y:y0},{x:cx,y:y1},{x:dx,y:y1}],true);
     }
   }
+  // poświata parkietu od frontu
+  g.fillStyle(0x000000,0.0);
+}
 
-  buildJoystick(){
-    this.joyBase=this.add.circle(0,0,52,0xffffff,0.10).setStrokeStyle(2,0xffffff,0.3)
-      .setScrollFactor(0).setDepth(50).setVisible(false);
-    this.joyKnob=this.add.circle(0,0,26,C.neon,0.5).setScrollFactor(0).setDepth(51).setVisible(false);
-    this.joyId=null;
-
-    this.input.on('pointerdown',(p)=>{
-      if(p.x < GW*0.42 && this.joyId===null){
-        this.joyId=p.id;
-        this.joyOrigin={x:p.x,y:p.y};
-        this.joyBase.setPosition(p.x,p.y).setVisible(true);
-        this.joyKnob.setPosition(p.x,p.y).setVisible(true);
-      }
-    });
-    this.input.on('pointermove',(p)=>{
-      if(p.id!==this.joyId) return;
-      let dx=p.x-this.joyOrigin.x, dy=p.y-this.joyOrigin.y;
-      const len=Math.hypot(dx,dy), max=52;
-      if(len>max){ dx=dx/len*max; dy=dy/len*max; }
-      this.joyKnob.setPosition(this.joyOrigin.x+dx,this.joyOrigin.y+dy);
-      this.joyVec={x:dx/max,y:dy/max};
-    });
-    const end=(p)=>{ if(p.id===this.joyId){ this.joyId=null; this.joyVec={x:0,y:0};
-      this.joyBase.setVisible(false); this.joyKnob.setVisible(false);} };
-    this.input.on('pointerup',end); this.input.on('pointerupoutside',end);
-  }
-
-  buildActionButton(){
-    this.actBtn=this.add.circle(GW-70,GH-70,44,C.gold,0.35).setStrokeStyle(3,C.gold)
-      .setScrollFactor(0).setDepth(50).setInteractive();
-    this.add.text(GW-70,GH-70,'AKCJA',{fontFamily:'Segoe UI',fontSize:'13px',color:'#fff',fontStyle:'bold'})
-      .setOrigin(0.5).setDepth(51);
-    this.actBtn.on('pointerdown',()=>{this.actionDown=true;});
-    this.actBtn.on('pointerup',()=>{this.actionDown=false;});
-    this.actBtn.on('pointerout',()=>{this.actionDown=false;});
-  }
-
-  isActionDown(){ return this.actionDown || this.keys.SPACE.isDown; }
-
-  movePlayer(){
-    if(!this.active || !this.player) return;
-    let vx=0, vy=0;
-    if(this.cursors.left.isDown||this.keys.A.isDown) vx=-1;
-    else if(this.cursors.right.isDown||this.keys.D.isDown) vx=1;
-    if(this.cursors.up.isDown||this.keys.W.isDown) vy=-1;
-    else if(this.cursors.down.isDown||this.keys.S.isDown) vy=1;
-    // joystick
-    if(Math.abs(this.joyVec.x)>0.15) vx=this.joyVec.x;
-    if(Math.abs(this.joyVec.y)>0.15) vy=this.joyVec.y;
-    const len=Math.hypot(vx,vy)||1;
-    this.player.body.setVelocity(vx/len*SPEED, vy/len*SPEED);
-    if(vx<-0.1) this.player.setScale(-1,1); else if(vx>0.1) this.player.setScale(1,1);
-  }
-
-  animateArena(t){
-    // neony zmieniają kolor
-    this.neonHue=(this.neonHue+0.6)%360;
-    const col=Phaser.Display.Color.HSVToRGB(this.neonHue/360,0.9,1).color;
-    this.neon.setStrokeStyle(4,col);
-    // ruchome światła
-    this.lights.forEach(l=>{ l.x=l.baseX+Math.sin(t/700+l.phase)*120; });
-  }
-
-  /* ---------- INTRO / PRZEJŚCIA ---------- */
-  showIntro(num,name,desc,onGo){
-    this.active=false;
-    const ov=this.add.container(0,0).setDepth(100);
-    ov.add(this.add.rectangle(GW/2,GH/2,GW,GH,0x05050d,0.82));
-    ov.add(this.add.text(GW/2,GH/2-90,'POZIOM '+num,{fontFamily:'Segoe UI',fontSize:'22px',color:'#d4af37',fontStyle:'bold'}).setOrigin(0.5));
-    ov.add(this.add.text(GW/2,GH/2-50,name,{fontFamily:'Segoe UI',fontSize:'34px',color:'#ffffff',fontStyle:'bold'}).setOrigin(0.5));
-    ov.add(this.add.text(GW/2,GH/2+10,desc,{fontFamily:'Segoe UI',fontSize:'17px',color:'#c9c9e0',align:'center',wordWrap:{width:GW-160}}).setOrigin(0.5));
-    const btn=this.add.text(GW/2,GH/2+90,'▶ START',{fontFamily:'Segoe UI',fontSize:'24px',color:'#0a0a18',backgroundColor:'#d4af37',padding:{x:26,y:10},fontStyle:'bold'}).setOrigin(0.5).setInteractive();
-    ov.add(btn);
-    this.tweens.add({targets:btn,scale:{from:1,to:1.08},yoyo:true,repeat:-1,duration:600});
-    const go=()=>{ ov.destroy(); this.active=true; this.startTimer(); onGo&&onGo(); };
-    btn.on('pointerdown',()=>{ Audio.startMusic(); go(); });
-  }
-
-  startTimer(){
-    this.timeLeft=LEVEL_TIME;
-    this.timerEvt=this.time.addEvent({delay:1000,loop:true,callback:()=>{
-      if(!this.active) return;
-      this.timeLeft--;
-      this.timerText.setText('⏱ '+this.timeLeft);
-      if(this.timeLeft<=0) this.onTimeUp();
-    }});
-  }
-  stopTimer(){ if(this.timerEvt) this.timerEvt.remove(); }
-
-  nextLevel(key){
-    this.active=false; this.stopTimer();
-    this.cameras.main.fade(500,5,5,15);
-    this.time.delayedCall(520,()=>this.scene.start(key));
-  }
-  gameOver(){
-    this.active=false; this.stopTimer(); this.physics.pause();
-    this.scene.start('GameOver');
-  }
+function animateArena(scene,time){
+  if(scene.lights) scene.lights.forEach(l=>{ l.x=l.bx+Math.sin(time/900+l.ph)*120; });
+  if(scene.crowd) scene.crowd.forEach(b=>{ b.y=HORIZON-6+Math.sin(time/300+b.ph)*2; });
 }
 
 /* ===========================================================================
@@ -628,389 +446,396 @@ class Menu extends Phaser.Scene{
   constructor(){ super('Menu'); }
   create(){
     this.registry.set('score',0);
-    this.registry.set('cringe',100);
-    buildTextures(this);
+    buildArena(this);
+    this.add.text(GW/2,150,'MASTER OF THE DANCEFLOOR',{fontFamily:'Segoe UI',fontSize:'24px',color:'#fff',fontStyle:'bold'}).setOrigin(0.5).setDepth(10).setShadow(0,0,'#00ffcc',12);
 
-    this.cameras.main.setBackgroundColor('#0a0a18');
-    // tło-parkiet
-    BaseLevel.prototype.drawParquet.call(this);
-    const lights=[];
-    [C.pink,C.neon,C.en].forEach((col,i)=>{
-      lights.push(this.add.ellipse(200+i*250,-30,240,420,col,0.12).setBlendMode(Phaser.BlendModes.ADD));
-    });
-    this.lights=lights;
-
-    this.add.text(GW/2,90,'Wodzirej Karol',{fontFamily:'Segoe UI',fontSize:'52px',color:'#ffffff',fontStyle:'bold'}).setOrigin(0.5).setShadow(0,0,'#00ffcc',18);
-    this.add.text(GW/2,140,'MASTER OF THE DANCEFLOOR',{fontFamily:'Segoe UI',fontSize:'22px',color:'#d4af37',fontStyle:'bold'}).setOrigin(0.5);
-
-    // Karol prezentacyjny
-    const karol=createKarol(this,GW/2,300,2.4);
-    this.tweens.add({targets:karol,y:'-=14',yoyo:true,repeat:-1,duration:900,ease:'Sine.inOut'});
+    this.karol=createKarol(this,GW/2,360); this.karol.setDepth(360);
 
     const touch=this.sys.game.device.input.touch;
-    const ctrl = touch
-      ? 'Sterowanie: wirtualny joystick (lewa strona) + przycisk AKCJA'
-      : 'Sterowanie: Strzałki / WASD • Spacja = Akcja • Shift = drugi język';
-    this.add.text(GW/2,420,ctrl,{fontFamily:'Segoe UI',fontSize:'16px',color:'#c9c9e0',align:'center'}).setOrigin(0.5);
-    this.add.text(GW/2,448,'3 poziomy × 30 sekund — rozgrzej parkiet z klasą!',{fontFamily:'Segoe UI',fontSize:'14px',color:'#9aa'}).setOrigin(0.5);
+    const ctrl=touch ? 'Joystick (lewa) • przycisk AKCJA • przyciski EN/DE'
+                     : 'Ruch: Strzałki / WASD • Akcja: Spacja • Język: Z = EN, X = DE';
+    this.add.text(GW/2,430,'Utrzymaj Energię Parkietu, spełniaj życzenia gości,\nneutralizuj przaśność i przetrwaj cały wieczór!',{fontFamily:'Segoe UI',fontSize:'15px',color:'#c9c9e0',align:'center'}).setOrigin(0.5).setDepth(10);
+    this.add.text(GW/2,478,ctrl,{fontFamily:'Segoe UI',fontSize:'14px',color:'#9aa'}).setOrigin(0.5).setDepth(10);
+    const best=this.registry.get('best')||0;
+    if(best>0) this.add.text(GW/2,502,'Najlepszy wynik: '+best,{fontFamily:'Segoe UI',fontSize:'14px',color:'#ffe487'}).setOrigin(0.5).setDepth(10);
 
-    const start=this.add.text(GW/2,520,'▶ START',{fontFamily:'Segoe UI',fontSize:'30px',color:'#0a0a18',backgroundColor:'#d4af37',padding:{x:36,y:12},fontStyle:'bold'}).setOrigin(0.5).setInteractive();
+    const start=this.add.text(GW/2,548,'▶ START',{fontFamily:'Segoe UI',fontSize:'30px',color:'#0a0a18',backgroundColor:'#d4af37',padding:{x:36,y:12},fontStyle:'bold'}).setOrigin(0.5).setDepth(10).setInteractive();
     this.tweens.add({targets:start,scale:{from:1,to:1.07},yoyo:true,repeat:-1,duration:700});
     start.on('pointerover',()=>start.setBackgroundColor('#ffe487'));
     start.on('pointerout',()=>start.setBackgroundColor('#d4af37'));
-    start.on('pointerdown',()=>{ Audio.startMusic(); this.cameras.main.fade(400,5,5,15);
-      this.time.delayedCall(420,()=>this.scene.start('Level1')); });
-
-    this.input.keyboard.once('keydown-SPACE',()=>{ Audio.startMusic(); this.scene.start('Level1'); });
+    const go=()=>{ Audio.startMusic(); this.cameras.main.fade(380,5,5,15); this.time.delayedCall(400,()=>this.scene.start('Game')); };
+    start.on('pointerdown',go);
+    this.input.keyboard.once('keydown-SPACE',go);
   }
-  update(time){ this.lights.forEach((l,i)=>l.x=200+i*250+Math.sin(time/800+i)*100); }
+  update(time,delta){ animateArena(this,time); if(this.karol){ this.karol.face('front',1); this.karol.step(delta,false,0); } }
 }
 
 /* ===========================================================================
-   POZIOM 1 — The Gear & Sound Check
+   GAME — jeden wieczór, fale
 =========================================================================== */
-class Level1 extends BaseLevel{
-  constructor(){ super('Level1'); }
+class Game extends Phaser.Scene{
+  constructor(){ super('Game'); }
+
   create(){
-    buildTextures(this);
-    this.buildArena();
-    this.createHUD(1,'The Gear & Sound Check');
-    this.createPlayer();
+    buildArena(this);
+    this.physics.world.setBounds(14,HORIZON+18,GW-28,GH-HORIZON-26); // parkiet
+    Audio.onStep((s)=>{ if(s%4===0) this.onBeat(); });
+    Audio.setLayer(0);
+
+    // stan
+    this.score=0; this.energy=70; this.klasa=100; this.combo=0; this.bestCombo=0;
+    this.minEnergy=70; this.elapsed=0; this.waveIdx=0;
+    this.needAcc=0; this.cringeAcc=0; this.lowAcc=0; this.active=true;
+    this.lang='en';
+
+    this.guests=[]; this.cringes=[];
+
+    // gracz
+    this.karol=createKarol(this,GW/2,420);
+    this.physics.add.existing(this.karol);
+    this.karol.body.setSize(36,40).setOffset(-18,0); this.karol.body.setCollideWorldBounds(true);
+    this.spot=this.add.image(GW/2,420,'soft').setTint(C.gold).setAlpha(0.12).setBlendMode(Phaser.BlendModes.ADD).setScale(3,3).setDepth(-55);
+
+    this.applyWave(0);
+    this.buildHUD();
     this.createControls();
+    this.events.once('shutdown',()=>Audio.onStep(null));
 
-    this.placed=0; this.target=5;
-    this.holdT=0;
-    this.eqTypes=['eq_speaker','eq_led','eq_dj'];
-    this.spot=null;
-
-    // pasek ładowania nad graczem
-    this.barBg=this.add.rectangle(0,0,54,8,0x000000,0.6).setVisible(false).setDepth(20);
-    this.barFg=this.add.rectangle(0,0,52,6,C.neon).setOrigin(0,0.5).setVisible(false).setDepth(21);
-
-    this.setObjective('Rozstaw 5/5 elementów sprzętu (0/5)');
-    this.showIntro(1,'The Gear & Sound Check',
-      'Podejdź do migającego miejsca i PRZYTRZYMAJ Akcję (Spacja),\naby rozstawić sprzęt. Ustaw 5 elementów zanim wejdą goście!',
-      ()=>this.spawnSpot());
+    // ticker 1s
+    this.time.addEvent({delay:1000,loop:true,callback:()=>{ if(!this.active) return;
+      this.elapsed++; this.checkWave(); this.updateHUDtime(); }});
   }
 
-  spawnSpot(){
-    if(this.placed>=this.target) return;
-    const x=Phaser.Math.Between(90,GW-90), y=Phaser.Math.Between(150,GH-90);
-    const tex=Phaser.Utils.Array.GetRandom(this.eqTypes);
-    // miejsce-cel: półprzezroczysty zarys + pierścień
-    this.spot=this.add.container(x,y);
-    const ghost=this.add.image(0,0,tex).setAlpha(0.35).setTint(0x88ffff);
-    const ring=this.add.circle(0,0,42,0,0).setStrokeStyle(3,C.gold);
-    this.spot.add([ring,ghost]);
-    this.spot.tex=tex; this.spot.done=false;
-    this.tweens.add({targets:ring,scale:{from:0.85,to:1.1},alpha:{from:1,to:0.4},yoyo:true,repeat:-1,duration:700});
-    this.tweens.add({targets:ghost,alpha:{from:0.25,to:0.6},yoyo:true,repeat:-1,duration:500});
+  waves(i){ return WAVES[i]; }
+  checkWave(){ let idx=0; for(let i=0;i<WAVES.length;i++){ if(this.elapsed>=WAVES[i].at) idx=i; }
+    if(idx!==this.waveIdx){ this.applyWave(idx); } }
+  applyWave(idx){
+    this.waveIdx=idx; const w=WAVES[idx]; this.wave=w;
+    Audio.setLayer(idx);
+    while(this.guests.length<w.guests) this.spawnGuest();
+    if(idx>0){ this.waveLabel.setText('Fala '+(idx+1)+': '+w.label);
+      this.flashTip(w.label); }
   }
 
-  onTimeUp(){
-    // koniec czasu -> przejście dalej (zaliczamy co rozstawiono)
-    this.finish();
-  }
-  finish(){
-    if(this.placed>=this.target) this.addScore(300); // bonus za komplet
-    this.nextLevel('Level2');
-  }
-
-  update(time,delta){
-    this.animateArena(time);
-    this.movePlayer();
-    if(!this.active || !this.spot || this.spot.done) { this.barBg.setVisible(false); this.barFg.setVisible(false); return; }
-
-    const d=Phaser.Math.Distance.Between(this.player.x,this.player.y,this.spot.x,this.spot.y);
-    const near=d<60;
-    if(near && this.isActionDown()){
-      this.holdT+=delta;
-      const p=Phaser.Math.Clamp(this.holdT/1000,0,1);
-      this.barBg.setPosition(this.player.x,this.player.y-58).setVisible(true);
-      this.barFg.setPosition(this.player.x-26,this.player.y-58).setVisible(true);
-      this.barFg.width=52*p;
-      if(p>=1) this.placeEquipment();
-    } else {
-      this.holdT=Math.max(0,this.holdT-delta*1.5);
-      if(this.holdT<=0){ this.barBg.setVisible(false); this.barFg.setVisible(false); }
-      else { this.barFg.width=52*(this.holdT/1000); }
-      if(!near){ this.barBg.setVisible(false); this.barFg.setVisible(false); }
-    }
-  }
-
-  placeEquipment(){
-    this.spot.done=true; this.holdT=0;
-    this.barBg.setVisible(false); this.barFg.setVisible(false);
-    const x=this.spot.x,y=this.spot.y,tex=this.spot.tex;
-    this.spot.destroy(); this.spot=null;
-    // rozstawiony sprzęt (na stałe)
-    const eq=this.add.image(x,y,tex);
-    this.tweens.add({targets:eq,scale:{from:0.4,to:1},ease:'Back.out',duration:300});
-    this.add.text(x,y-34,'✓',{fontSize:'22px',color:'#2ee86b',fontStyle:'bold'}).setOrigin(0.5);
-    Audio.chime();
-    this.placed++;
-    this.addScore(120);
-    this.setObjective('Rozstaw 5/5 elementów sprzętu ('+this.placed+'/5)');
-    if(this.placed>=this.target){
-      this.setObjective('Sprzęt gotowy! ✓');
-      this.time.delayedCall(700,()=>this.finish());
-    } else {
-      this.time.delayedCall(300,()=>this.spawnSpot());
-    }
-  }
-}
-
-/* ===========================================================================
-   POZIOM 2 — Dancefloor Magnet
-=========================================================================== */
-class Level2 extends BaseLevel{
-  constructor(){ super('Level2'); }
-  create(){
-    buildTextures(this);
-    this.buildArena();
-    this.createHUD(2,'Dancefloor Magnet');
-    this.createPlayer();
-    this.createControls();
-
-    this.guests=this.physics.add.group();
-    this.total=12; this.happy=0;
-    for(let i=0;i<this.total;i++) this.spawnGuest();
-
-    this.cringeGroup=this.physics.add.group();
-    this.physics.add.overlap(this.player,this.guests,this.touchGuest,null,this);
-    this.physics.add.overlap(this.player,this.cringeGroup,this.touchCringe,null,this);
-
-    this.setObjective('Roztańcz gości: 0/'+this.total);
-    this.showIntro(2,'Dancefloor Magnet',
-      'Czerwoni = znudzeni. Podejdź do każdego, by zmienić go w roztańczonego (zielonego)!\nUWAGA: omijaj fioletowe „cringe-obiekty” — obniżają Anti-Cringe Meter o 20%.',
-      ()=>this.startSpawningCringe());
-  }
-
+  /* ---------- GOŚCIE / POTRZEBY ---------- */
   spawnGuest(){
-    const x=Phaser.Math.Between(80,GW-80), y=Phaser.Math.Between(150,GH-60);
-    const g=this.guests.create(x,y,'guest').setTint(C.bored);
-    g.body.setSize(26,30).setOffset(2,8);
-    g.body.setVelocity(Phaser.Math.Between(-70,70),Phaser.Math.Between(-70,70));
+    const x=Phaser.Math.Between(80,GW-80), y=Phaser.Math.Between(HORIZON+40,GH-40);
+    const g=this.physics.add.image(x,y,'guest').setTint(0xff8fa3);
+    g.body.setSize(24,28).setOffset(3,10);
+    const sp=this.wave?40:30;
+    g.body.setVelocity(Phaser.Math.Between(-sp,sp),Phaser.Math.Between(-sp,sp));
     g.body.setBounce(1).setCollideWorldBounds(true);
-    g.happy=false;
+    g.need=null; g.needTime=0; g.needMax=0;
+    g.shadow=this.add.image(x,y,'soft').setTint(0x000000).setAlpha(0.28).setBlendMode(Phaser.BlendModes.MULTIPLY);
+    g.bubble=null;
+    this.guests.push(g);
   }
 
-  startSpawningCringe(){
-    this.cringeTimer=this.time.addEvent({delay:1600,loop:true,callback:()=>{
-      if(!this.active) return;
-      const x=Phaser.Math.Between(70,GW-70), y=Phaser.Math.Between(150,GH-60);
-      const it=this.cringeGroup.create(x,y,'cringe');
-      it.body.setVelocity(Phaser.Math.Between(-40,40),Phaser.Math.Between(-40,40));
-      it.body.setBounce(1).setCollideWorldBounds(true);
-      this.tweens.add({targets:it,scale:{from:0.8,to:1.15},yoyo:true,repeat:-1,duration:400});
-      this.time.delayedCall(6000,()=>{ if(it.active) this.tweens.add({targets:it,alpha:0,duration:300,onComplete:()=>it.destroy()});});
-    }});
+  giveNeed(){
+    const free=this.guests.filter(g=>!g.need); if(!free.length) return;
+    const g=Phaser.Utils.Array.GetRandom(free);
+    const r=Math.random();
+    g.need = r<0.4?'dance' : r<0.62?'en' : r<0.84?'de' : 'bored';
+    g.needMax = g.need==='bored'?4.5:7.5; g.needTime=g.needMax;
+    // dymek
+    const b=this.add.container(g.x,g.y-34);
+    const bg=this.add.circle(0,0,15,0xffffff,0.96).setStrokeStyle(2,0x333333);
+    let icon;
+    if(g.need==='dance') icon=this.add.text(0,0,'♪',{fontSize:'18px',color:'#ff2e8b',fontStyle:'bold'}).setOrigin(0.5);
+    else if(g.need==='bored') icon=this.add.text(0,-1,'zzz',{fontSize:'12px',color:'#888',fontStyle:'bold'}).setOrigin(0.5);
+    else icon=this.add.text(0,0,g.need.toUpperCase(),{fontSize:'12px',color:g.need==='en'?'#1a3aff':'#d40000',fontStyle:'bold'}).setOrigin(0.5);
+    const ring=this.add.graphics();
+    b.add([bg,ring,icon]); b.ring=ring; b.setDepth(9000);
+    g.bubble=b;
+    g.setTint(g.need==='en'?C.en:g.need==='de'?C.de:0xff6b6b);
   }
 
-  touchGuest(player,g){
-    if(g.happy) return;
-    g.happy=true; g.setTint(C.happy);
-    g.body.setVelocity(g.body.velocity.x*1.6,g.body.velocity.y*1.6);
-    this.tweens.add({targets:g,scale:{from:1.4,to:1},duration:300,ease:'Back.out'});
-    this.addScore(100); this.happy++;
-    Audio.chime();
-    this.setObjective('Roztańcz gości: '+this.happy+'/'+this.total);
-    // serduszko
-    const h=this.add.text(g.x,g.y-20,'♪',{fontSize:'20px',color:'#2ee86b'}).setOrigin(0.5);
-    this.tweens.add({targets:h,y:'-=26',alpha:0,duration:600,onComplete:()=>h.destroy()});
-    if(this.happy>=this.total){ this.addScore(300); this.setObjective('Cały parkiet tańczy! ✓'); this.time.delayedCall(600,()=>this.nextLevel('Level3')); }
+  satisfy(g){
+    const mult=this.mult();
+    this.combo++; this.bestCombo=Math.max(this.bestCombo,this.combo); this.comboTimer=this.combo>0?4:0;
+    this.addScore(Math.round(50*mult));
+    this.energy=Math.min(100,this.energy+9);
+    if(this.combo>0 && this.combo%4===0){ Audio.comboUp(Math.floor(this.combo/4)); this.klasa=Math.min(100,this.klasa+12); this.flashTip(Phaser.Utils.Array.GetRandom(VALUE_TIPS)); }
+    else Audio.chime();
+    this.floatText(g.x,g.y-40,'+'+Math.round(50*mult),'#2ee86b');
+    this.burst(g.x,g.y,C.happy,6);
+    this.clearNeed(g,true);
+    this.refreshHUD();
   }
-  touchCringe(player,it){
-    it.destroy();
-    this.hitCringe(20);
+  clearNeed(g,happy){
+    if(g.bubble){ g.bubble.destroy(); g.bubble=null; }
+    g.need=null; g.setTint(happy?C.happy:0xff8fa3);
+    if(happy){ this.tweens.add({targets:g,scale:{from:1.35,to:1},duration:300,ease:'Back.out'});
+      this.time.delayedCall(700,()=>{ if(g.active) g.setTint(0xff8fa3); }); }
   }
-  onTimeUp(){ this.nextLevel('Level3'); }
+  needExpired(g){
+    this.energy=Math.max(0,this.energy-5); this.breakCombo();
+    this.floatText(g.x,g.y-40,'–5','#ff6b6b'); this.clearNeed(g,false); this.refreshHUD();
+  }
 
-  update(time){
-    this.animateArena(time);
-    this.movePlayer();
+  /* ---------- CRINGE / KLASA ---------- */
+  spawnCringe(){
+    const edge=Phaser.Math.Between(0,3); let x,y;
+    if(edge===0){x=Phaser.Math.Between(60,GW-60);y=HORIZON+20;}
+    else if(edge===1){x=Phaser.Math.Between(60,GW-60);y=GH-20;}
+    else if(edge===2){x=60;y=Phaser.Math.Between(HORIZON+30,GH-30);}
+    else {x=GW-60;y=Phaser.Math.Between(HORIZON+30,GH-30);}
+    const it=this.add.image(x,y,'cringe').setDepth(y);
+    it.shadow=this.add.image(x,y,'soft').setTint(0x000000).setAlpha(0.25).setBlendMode(Phaser.BlendModes.MULTIPLY);
+    this.tweens.add({targets:it,scale:{from:0.85,to:1.12},yoyo:true,repeat:-1,duration:380});
+    this.cringes.push(it);
+  }
+  neutralize(it){
+    this.klasa-=28; this.addScore(120);
+    Audio.classZap(); this.burst(it.x,it.y,C.neon,10);
+    this.floatText(it.x,it.y-20,'KLASA! +120','#00ffcc');
+    this.removeCringe(it); this.refreshHUD();
+  }
+  cringeHit(it){
+    this.energy=Math.max(0,this.energy-10); this.breakCombo();
+    Audio.screech(); this.cameras.main.shake(200,0.012); this.cameras.main.flash(120,120,0,80);
+    this.removeCringe(it); this.refreshHUD();
+    if(this.energy<=0) this.endGame(false);
+  }
+  removeCringe(it){ if(it.shadow) it.shadow.destroy(); Phaser.Utils.Array.Remove(this.cringes,it); it.destroy(); }
+
+  /* ---------- AKCJA ---------- */
+  doAction(){
+    // 1) najbliższa spełnialna potrzeba
+    let best=null,bd=ACT_R;
+    this.guests.forEach(g=>{ if(!g.need) return; const d=Phaser.Math.Distance.Between(this.karol.x,this.karol.y,g.x,g.y);
+      if(d<bd){ const ok = (g.need==='dance'||g.need==='bored') || (g.need===this.lang); if(ok){ bd=d; best=g; } } });
+    if(best){ this.satisfy(best); return; }
+    // 2) cringe + klasa
+    let bc=null,cd=ACT_R; this.cringes.forEach(it=>{ const d=Phaser.Math.Distance.Between(this.karol.x,this.karol.y,it.x,it.y); if(d<cd){cd=d;bc=it;} });
+    if(bc){ if(this.klasa>=28) this.neutralize(bc); else { Audio.blip(false); this.floatText(this.karol.x,this.karol.y-50,'Mało Klasy!','#ff6b6b'); } return; }
+    // 3) potrzeba w zasięgu, zły język?
+    let hint=null,hd=ACT_R; this.guests.forEach(g=>{ if(!g.need||g.need==='dance'||g.need==='bored') return;
+      const d=Phaser.Math.Distance.Between(this.karol.x,this.karol.y,g.x,g.y); if(d<hd){hd=d;hint=g;} });
+    if(hint){ Audio.blip(false); this.floatText(this.karol.x,this.karol.y-50,'Zmień język ('+hint.need.toUpperCase()+')!','#ffd23f'); }
+  }
+
+  /* ---------- HELPERY UI ---------- */
+  mult(){ return 1+Math.min(this.combo,9)*0.5; }
+  addScore(n){ this.score+=n; this.registry.set('score',this.score); this.scoreText.setText('★ '+this.score); }
+  breakCombo(){ this.combo=0; this.comboTimer=0; this.refreshHUD(); }
+  floatText(x,y,t,col){ const o=this.add.text(x,y,t,{fontFamily:'Segoe UI',fontSize:'16px',color:col,fontStyle:'bold'}).setOrigin(0.5).setDepth(9999);
+    this.tweens.add({targets:o,y:y-30,alpha:0,duration:650,onComplete:()=>o.destroy()}); }
+  burst(x,y,col,n){ for(let i=0;i<n;i++){ const p=this.add.image(x,y,'dot').setTint(col).setDepth(9998).setScale(0.5);
+    const a=Math.random()*Math.PI*2, r=20+Math.random()*30;
+    this.tweens.add({targets:p,x:x+Math.cos(a)*r,y:y+Math.sin(a)*r,alpha:0,scale:0.1,duration:400+Math.random()*200,onComplete:()=>p.destroy()}); } }
+  flashTip(t){ if(!this.tipText) return; this.tipText.setText('„'+t+'”'); this.tipText.setAlpha(1);
+    this.tweens.killTweensOf(this.tipText); this.tweens.add({targets:this.tipText,alpha:0,delay:1100,duration:600}); }
+  onBeat(){ if(!this.active) return; if(this.lights) this.lights.forEach(l=>{ l.setAlpha(0.26); this.tweens.add({targets:l,alpha:0.16,duration:180}); });
+    if(this.crowd) this.crowd.forEach(b=>{ b.scaleY=1.06; this.tweens.add({targets:b,scaleY:1,duration:160}); }); }
+
+  buildHUD(){
+    this.add.rectangle(GW/2,20,GW,40,0x000000,0.4).setDepth(9000);
+    this.scoreText=this.add.text(14,10,'★ 0',{fontFamily:'Segoe UI',fontSize:'20px',color:'#ffe487',fontStyle:'bold'}).setDepth(9001);
+    this.waveLabel=this.add.text(GW/2,8,'Fala 1: Rozgrzewka',{fontFamily:'Segoe UI',fontSize:'15px',color:'#fff',fontStyle:'bold'}).setOrigin(0.5,0).setDepth(9001);
+    this.timeText=this.add.text(GW-14,10,'⏱ '+TARGET_SURVIVE,{fontFamily:'Segoe UI',fontSize:'18px',color:'#00ffcc',fontStyle:'bold'}).setOrigin(1,0).setDepth(9001);
+    this.comboText=this.add.text(GW-14,32,'',{fontFamily:'Segoe UI',fontSize:'16px',color:'#ff2e8b',fontStyle:'bold'}).setOrigin(1,0).setDepth(9001);
+
+    // Energia
+    this.add.text(70,40,'Energia',{fontFamily:'Segoe UI',fontSize:'11px',color:'#c9c9e0'}).setOrigin(0.5,0).setDepth(9001);
+    this.add.rectangle(120,58,250,16,0x222233).setOrigin(0,0.5).setStrokeStyle(1,0x444).setDepth(9000);
+    this.energyFill=this.add.rectangle(121,58,248,14,C.neon).setOrigin(0,0.5).setDepth(9001);
+    // Klasa
+    this.add.text(70,76,'Klasa',{fontFamily:'Segoe UI',fontSize:'11px',color:'#c9c9e0'}).setOrigin(0.5,0).setDepth(9001);
+    this.add.rectangle(120,90,250,10,0x222233).setOrigin(0,0.5).setStrokeStyle(1,0x444).setDepth(9000);
+    this.klasaFill=this.add.rectangle(121,90,248,8,C.gold).setOrigin(0,0.5).setDepth(9001);
+
+    this.tipText=this.add.text(GW/2,120,'',{fontFamily:'Segoe UI',fontSize:'18px',color:'#ffe487',fontStyle:'bold'}).setOrigin(0.5).setDepth(9001).setAlpha(0).setShadow(0,0,'#d4af37',8);
+    this.refreshHUD();
+  }
+  refreshHUD(){
+    this.energyFill.width=248*Math.max(0,this.energy)/100;
+    this.energyFill.fillColor=this.energy>50?C.neon:this.energy>22?0xffd23f:C.bored;
+    this.klasaFill.width=248*Math.max(0,this.klasa)/100;
+    this.comboText.setText(this.combo>=2?('COMBO x'+this.mult().toFixed(1)):'');
+  }
+  updateHUDtime(){ const left=Math.max(0,TARGET_SURVIVE-this.elapsed); this.timeText.setText('⏱ '+left); }
+
+  /* ---------- STEROWANIE ---------- */
+  createControls(){
+    this.cursors=this.input.keyboard.createCursorKeys();
+    this.keys=this.input.keyboard.addKeys('W,A,S,D,SPACE,Z,X');
+    this.input.keyboard.addCapture('SPACE,UP,DOWN,LEFT,RIGHT');
+    this.input.keyboard.on('keydown-Z',()=>this.setLang('en'));
+    this.input.keyboard.on('keydown-X',()=>this.setLang('de'));
+    this.joyVec={x:0,y:0}; this.actionQueued=false;
+
+    if(this.sys.game.device.input.touch){
+      this.input.addPointer(3);
+      this.buildJoystick(); this.buildButtons();
+    }
+  }
+  setLang(l){ this.lang=l; Audio.blip(true); if(this.micText) this.micText.setText('🎤 '+l.toUpperCase());
+    if(this.btnEN) this.btnEN.setStrokeStyle(3,l==='en'?C.neon:0x444); if(this.btnDE) this.btnDE.setStrokeStyle(3,l==='de'?C.neon:0x444); }
+  buildJoystick(){
+    this.joyBase=this.add.circle(0,0,52,0xffffff,0.10).setStrokeStyle(2,0xffffff,0.3).setScrollFactor(0).setDepth(9500).setVisible(false);
+    this.joyKnob=this.add.circle(0,0,26,C.neon,0.5).setScrollFactor(0).setDepth(9501).setVisible(false);
+    this.joyId=null;
+    this.input.on('pointerdown',(p)=>{ if(p.x<GW*0.45 && this.joyId===null){ this.joyId=p.id; this.joyO={x:p.x,y:p.y};
+      this.joyBase.setPosition(p.x,p.y).setVisible(true); this.joyKnob.setPosition(p.x,p.y).setVisible(true); } });
+    this.input.on('pointermove',(p)=>{ if(p.id!==this.joyId) return; let dx=p.x-this.joyO.x,dy=p.y-this.joyO.y;
+      const len=Math.hypot(dx,dy),m=52; if(len>m){dx=dx/len*m;dy=dy/len*m;} this.joyKnob.setPosition(this.joyO.x+dx,this.joyO.y+dy); this.joyVec={x:dx/m,y:dy/m}; });
+    const end=(p)=>{ if(p.id===this.joyId){ this.joyId=null; this.joyVec={x:0,y:0}; this.joyBase.setVisible(false); this.joyKnob.setVisible(false);} };
+    this.input.on('pointerup',end); this.input.on('pointerupoutside',end);
+  }
+  buildButtons(){
+    const act=this.add.circle(GW-66,GH-66,44,C.gold,0.32).setStrokeStyle(3,C.gold).setScrollFactor(0).setDepth(9500).setInteractive();
+    this.add.text(GW-66,GH-66,'AKCJA',{fontFamily:'Segoe UI',fontSize:'13px',color:'#fff',fontStyle:'bold'}).setOrigin(0.5).setScrollFactor(0).setDepth(9501);
+    act.on('pointerdown',(p)=>{ p.event && p.event.stopPropagation && p.event.stopPropagation(); this.actionQueued=true; });
+    this.btnEN=this.add.rectangle(GW-150,GH-44,56,34,0x14141f,0.92).setStrokeStyle(3,C.neon).setScrollFactor(0).setDepth(9500).setInteractive();
+    this.add.text(GW-150,GH-44,'EN',{fontFamily:'Segoe UI',fontSize:'15px',color:'#fff',fontStyle:'bold'}).setOrigin(0.5).setScrollFactor(0).setDepth(9501);
+    this.btnDE=this.add.rectangle(GW-150,GH-82,56,34,0x14141f,0.92).setStrokeStyle(3,0x444).setScrollFactor(0).setDepth(9500).setInteractive();
+    this.add.text(GW-150,GH-82,'DE',{fontFamily:'Segoe UI',fontSize:'15px',color:'#fff',fontStyle:'bold'}).setOrigin(0.5).setScrollFactor(0).setDepth(9501);
+    this.btnEN.on('pointerdown',()=>this.setLang('en')); this.btnDE.on('pointerdown',()=>this.setLang('de'));
+    this.micText=this.add.text(GW-150,GH-104,'🎤 EN',{fontFamily:'Segoe UI',fontSize:'12px',color:'#00ffcc',fontStyle:'bold'}).setOrigin(0.5).setScrollFactor(0).setDepth(9501);
+  }
+
+  /* ---------- PĘTLA ---------- */
+  update(time,delta){
+    animateArena(this,time);
+    if(!this.active) return;
+    const dt=delta;
+
+    // ruch
+    let vx=0,vy=0;
+    if(this.cursors.left.isDown||this.keys.A.isDown) vx=-1; else if(this.cursors.right.isDown||this.keys.D.isDown) vx=1;
+    if(this.cursors.up.isDown||this.keys.W.isDown) vy=-1; else if(this.cursors.down.isDown||this.keys.S.isDown) vy=1;
+    if(Math.abs(this.joyVec.x)>0.15) vx=this.joyVec.x; if(Math.abs(this.joyVec.y)>0.15) vy=this.joyVec.y;
+    const len=Math.hypot(vx,vy);
+    if(len>0){ vx/=len; vy/=len; }
+    this.karol.body.setVelocity(vx*SPEED,vy*SPEED);
+    const moving=len>0.01;
+    // facing
+    let facing=this.karol.facing, flip=this.karol.flip;
+    if(moving){ if(Math.abs(vx)>=Math.abs(vy)){ facing='side'; flip=vx<0?-1:1; } else { facing=vy>0?'front':'back'; flip=1; } }
+    this.karol.face(facing,flip); this.karol.step(dt,moving,this.karol.body.velocity.x);
+    this.spot.setPosition(this.karol.x,this.karol.y);
+
+    // akcja
+    let pressed=Phaser.Input.Keyboard.JustDown(this.keys.SPACE)||this.actionQueued; this.actionQueued=false;
+    if(pressed) this.doAction();
+
+    // energia maleje
+    this.energy=Math.max(0,this.energy - this.wave.decay*(dt/1000));
+    this.minEnergy=Math.min(this.minEnergy,this.energy);
+    // klasa się odnawia
+    this.klasa=Math.min(100,this.klasa + 4*(dt/1000));
+    this.refreshHUD();
+
+    // combo okno
+    if(this.combo>0){ this.comboTimer-=dt/1000; if(this.comboTimer<=0) this.breakCombo(); }
+
+    // spawn potrzeb
+    this.needAcc+=dt/1000; if(this.needAcc>=this.wave.needRate){ this.needAcc=0; this.giveNeed(); }
+    // spawn cringe
+    if(this.wave.cringeRate>0){ this.cringeAcc+=dt/1000; if(this.cringeAcc>=this.wave.cringeRate){ this.cringeAcc=0; this.spawnCringe(); } }
+
+    // goście: cienie, głębia, dymki
+    this.guests.forEach(g=>{ const s=depthScale(g.y); g.setScale(s); g.setDepth(g.y);
+      g.shadow.setPosition(g.x,g.y+16*s).setScale(0.45*s,0.2*s).setDepth(g.y-1);
+      if(g.need){ g.needTime-=dt/1000;
+        if(g.bubble){ g.bubble.setPosition(g.x,g.y-34*s).setDepth(9000);
+          const r=g.bubble.ring; r.clear(); r.lineStyle(3,g.needTime/g.needMax>0.3?0x2ee86b:0xff6b6b,1);
+          r.beginPath(); r.arc(0,0,15,-Math.PI/2,-Math.PI/2+Math.PI*2*(g.needTime/g.needMax)); r.strokePath(); }
+        if(g.needTime<=0) this.needExpired(g);
+      }
+    });
+
+    // cringe: ruch ku środkowi + cień + trafienie
+    const cx=GW/2, cy=(HORIZON+GH)/2;
+    this.cringes.slice().forEach(it=>{ const ang=Math.atan2(cy-it.y,cx-it.x);
+      it.x+=Math.cos(ang)*this.wave.cringeSpeed*(dt/1000); it.y+=Math.sin(ang)*this.wave.cringeSpeed*(dt/1000);
+      const s=depthScale(it.y); it.setDepth(it.y); if(it.shadow) it.shadow.setPosition(it.x,it.y+14*s).setScale(0.4*s,0.18*s).setDepth(it.y-1);
+      if(Phaser.Math.Distance.Between(it.x,it.y,cx,cy)<36) this.cringeHit(it);
+    });
+
+    // mała energia — heartbeat + winieta
+    if(this.energy<20 && this.energy>0){ this.lowAcc+=dt; if(this.lowAcc>700){ this.lowAcc=0; Audio.thump();
+      this.cameras.main.flash(120,80,0,0); } }
+
+    // koniec?
+    if(this.energy<=0) this.endGame(false);
+    else if(this.elapsed>=TARGET_SURVIVE) this.endGame(true);
+  }
+
+  endGame(success){
+    if(!this.active) return; this.active=false;
+    this.physics.pause();
+    let stars=1;
+    if(success){ stars = (this.score>3500 && this.minEnergy>35)?3 : this.score>1800?2:1; }
+    else stars = 0;
+    const best=Math.max(this.registry.get('best')||0,this.score); this.registry.set('best',best);
+    this.registry.set('outcome',success?'success':'flop'); this.registry.set('stars',stars);
+    this.registry.set('finalScore',this.score); this.registry.set('bestCombo',this.bestCombo);
+    this.cameras.main.fade(500,5,5,15); this.time.delayedCall(520,()=>this.scene.start('Result'));
   }
 }
 
 /* ===========================================================================
-   POZIOM 3 — Wedding MC: International Rescue
+   RESULT — sukces / flop + CTA
 =========================================================================== */
-class Level3 extends BaseLevel{
-  constructor(){ super('Level3'); }
+class Result extends Phaser.Scene{
+  constructor(){ super('Result'); }
   create(){
-    buildTextures(this);
-    this.buildArena();
-    this.createHUD(3,'International Rescue');
-    this.createPlayer();
-    this.createControls();
+    const success=this.registry.get('outcome')==='success';
+    const score=this.registry.get('finalScore')||0;
+    const stars=this.registry.get('stars')||0;
+    const best=this.registry.get('best')||0;
+    buildArena(this);
+    if(!success) Audio.setLayer(0);
+    this.add.rectangle(GW/2,GH/2,GW-70,GH-70,0x05050d,0.9).setStrokeStyle(3,C.gold).setDepth(10);
 
-    this.lang='en';                 // aktualny język mikrofonu
-    this.guests=this.add.group();
-    this.total=10; this.invited=0;
-    for(let i=0;i<this.total;i++) this.spawnIntlGuest();
-
-    this.physics.add.overlap(this.player,this.guests,this.touchGuest,null,this);
-
-    this.buildLangUI();
-    this.input.keyboard.on('keydown-SPACE',()=>this.setLang('en'));
-    this.input.keyboard.on('keydown-SHIFT',()=>this.setLang('de'));
-
-    this.setObjective('Zaproś gości właściwym językiem: 0/'+this.total);
-    this.showIntro(3,'International Rescue',
-      'Wesele międzynarodowe! Nad gośćmi widać flagi: 🇬🇧/🇺🇸 (żółty) = EN, 🇩🇪 (pomarańczowy) = DE.\nPrzełącz mikrofon (Spacja=EN, Shift=DE lub przyciski) i dotknij gościa z PASUJĄCĄ flagą.');
-  }
-
-  spawnIntlGuest(){
-    const x=Phaser.Math.Between(80,GW-80), y=Phaser.Math.Between(160,GH-60);
-    const lang = Math.random()<0.5?'en':'de';
-    const cont=this.add.container(x,y);
-    const body=this.add.image(0,0,'guest').setTint(lang==='en'?C.en:C.de);
-    // dymek z flagą
-    const bub=this.add.circle(0,-30,13,0xffffff,0.95).setStrokeStyle(2,0x333);
-    const flag=lang==='en'
-      ? this.add.text(0,-30,'EN',{fontSize:'12px',color:'#1a3aff',fontStyle:'bold'}).setOrigin(0.5)
-      : this.add.text(0,-30,'DE',{fontSize:'12px',color:'#d40000',fontStyle:'bold'}).setOrigin(0.5);
-    cont.add([body,bub,flag]);
-    this.physics.add.existing(cont);
-    this.guests.add(cont);
-    cont.body.setSize(26,30).setOffset(-13,-15);
-    cont.body.setVelocity(Phaser.Math.Between(-60,60),Phaser.Math.Between(-60,60));
-    cont.body.setBounce(1).setCollideWorldBounds(true);
-    cont.lang=lang; cont.done=false; cont.bub=bub;
-    this.tweens.add({targets:bub,scale:{from:0.9,to:1.08},yoyo:true,repeat:-1,duration:600});
-  }
-
-  buildLangUI(){
-    const mk=(x,label,lang)=>{
-      const btn=this.add.container(x,GH-46).setDepth(40);
-      const bg=this.add.rectangle(0,0,86,40,0x14141f,0.9).setStrokeStyle(2,0x444).setInteractive();
-      const tx=this.add.text(0,0,'🎤 '+label,{fontFamily:'Segoe UI',fontSize:'16px',color:'#fff',fontStyle:'bold'}).setOrigin(0.5);
-      btn.add([bg,tx]); btn.bg=bg; btn.lang=lang;
-      bg.on('pointerdown',()=>this.setLang(lang));
-      return btn;
-    };
-    this.btnEN=mk(GW/2-60,'EN','en');
-    this.btnDE=mk(GW/2+60,'DE','de');
-    this.langLabel=this.add.text(GW/2,GH-78,'Mikrofon: EN',{fontFamily:'Segoe UI',fontSize:'14px',color:'#00ffcc',fontStyle:'bold'}).setOrigin(0.5).setDepth(40);
-    this.setLang('en');
-  }
-  setLang(l){
-    this.lang=l;
-    Audio.blip(true);
-    this.langLabel.setText('Mikrofon: '+l.toUpperCase());
-    this.btnEN.bg.setStrokeStyle(3, l==='en'?C.neon:0x444).setFillStyle(l==='en'?0x103a35:0x14141f,0.9);
-    this.btnDE.bg.setStrokeStyle(3, l==='de'?C.neon:0x444).setFillStyle(l==='de'?0x103a35:0x14141f,0.9);
-  }
-
-  touchGuest(player,g){
-    if(g.done) return;
-    if(g.lang===this.lang){
-      g.done=true;
-      g.list[0].setTint(C.happy);
-      g.bub.setVisible(false);
-      this.tweens.add({targets:g,scale:{from:1.4,to:1},duration:300,ease:'Back.out'});
-      this.addScore(150); this.invited++;
-      Audio.chime();
-      const h=this.add.text(g.x,g.y-26,'✓',{fontSize:'20px',color:'#2ee86b',fontStyle:'bold'}).setOrigin(0.5);
-      this.tweens.add({targets:h,y:'-=24',alpha:0,duration:600,onComplete:()=>h.destroy()});
-      this.setObjective('Zaproś gości właściwym językiem: '+this.invited+'/'+this.total);
-      if(this.invited>=this.total){ this.addScore(400); this.setObjective('Wszyscy goście zaproszeni! ✓'); this.time.delayedCall(600,()=>this.win()); }
+    if(success){
+      for(let i=0;i<70;i++){ const c=this.add.rectangle(Phaser.Math.Between(0,GW),Phaser.Math.Between(-300,0),7,12,
+        Phaser.Utils.Array.GetRandom([C.gold,C.neon,C.pink,C.en,C.happy])).setDepth(10.5);
+        this.tweens.add({targets:c,y:GH+20,angle:360,duration:Phaser.Math.Between(2500,5000),repeat:-1,delay:Phaser.Math.Between(0,2000)}); }
+      this.add.text(GW/2,96,'SUKCES!',{fontFamily:'Segoe UI',fontSize:'52px',color:'#d4af37',fontStyle:'bold'}).setOrigin(0.5).setDepth(11).setShadow(0,0,'#d4af37',20);
+      this.add.text(GW/2,150,'Wesele uratowane z klasą i elegancją!',{fontFamily:'Segoe UI',fontSize:'22px',color:'#fff',fontStyle:'bold'}).setOrigin(0.5).setDepth(11);
     } else {
-      if(g.cooldown) return;
-      g.cooldown=true; this.time.delayedCall(700,()=>g.cooldown=false);
-      Audio.blip(false);
-      const h=this.add.text(g.x,g.y-26,'?!',{fontSize:'18px',color:'#ff6b6b',fontStyle:'bold'}).setOrigin(0.5);
-      this.tweens.add({targets:h,y:'-=18',alpha:0,duration:500,onComplete:()=>h.destroy()});
+      Audio.stopMusic();
+      this.add.text(GW/2,96,'PRZAŚNOŚĆ WYGRAŁA',{fontFamily:'Segoe UI',fontSize:'40px',color:'#ff2e8b',fontStyle:'bold'}).setOrigin(0.5).setDepth(11).setShadow(0,0,'#ff2e8b',18);
+      this.add.text(GW/2,150,'Energia parkietu zgasła. Warto zaufać profesjonaliście z klasą.',{fontFamily:'Segoe UI',fontSize:'18px',color:'#ffd23f',align:'center',wordWrap:{width:GW-160}}).setOrigin(0.5).setDepth(11);
     }
-  }
 
-  onTimeUp(){ this.win(); }
-  win(){
-    this.active=false; this.stopTimer();
-    this.cameras.main.fade(500,5,5,15);
-    this.time.delayedCall(520,()=>this.scene.start('End'));
-  }
+    // gwiazdki
+    const sx=GW/2-66;
+    for(let i=0;i<3;i++){ const lit=i<stars; const st=this.add.text(sx+i*66,210,'★',{fontSize:'52px',color:lit?'#ffe487':'#3a3a4a'}).setOrigin(0.5).setDepth(11);
+      if(lit){ st.setScale(0); this.tweens.add({targets:st,scale:1,delay:300+i*200,ease:'Back.out',duration:400});
+        st.setShadow(0,0,'#d4af37',14); } }
 
-  update(time){
-    this.animateArena(time);
-    this.movePlayer();
-  }
-}
+    const karol=createKarol(this,GW/2,300); karol.setScale(1.3); karol.setDepth(11);
+    this.tweens.add({targets:karol,angle:{from:-5,to:5},yoyo:true,repeat:-1,duration:700});
 
-/* ===========================================================================
-   GAME OVER (przaśność wygrała)
-=========================================================================== */
-class GameOver extends Phaser.Scene{
-  constructor(){ super('GameOver'); }
-  create(){
-    this.cameras.main.setBackgroundColor('#1a0510');
-    Audio.stopMusic();
-    this.add.rectangle(GW/2,GH/2,GW,GH,0x000000,0.4);
-    this.add.text(GW/2,160,'GAME OVER',{fontFamily:'Segoe UI',fontSize:'56px',color:'#ff2e8b',fontStyle:'bold'}).setOrigin(0.5).setShadow(0,0,'#ff2e8b',20);
-    this.add.text(GW/2,250,'Przaśność przejęła wesele!',{fontFamily:'Segoe UI',fontSize:'26px',color:'#ffffff',fontStyle:'bold'}).setOrigin(0.5);
-    this.add.text(GW/2,300,'Warto zaufać profesjonaliście z klasą.',{fontFamily:'Segoe UI',fontSize:'20px',color:'#ffd23f'}).setOrigin(0.5);
-    this.add.text(GW/2,350,'Wynik: '+(this.registry.get('score')||0)+' pkt',{fontFamily:'Segoe UI',fontSize:'22px',color:'#c9c9e0'}).setOrigin(0.5);
+    this.add.text(GW/2,360,'Twój wynik: '+score+' pkt',{fontFamily:'Segoe UI',fontSize:'26px',color:'#00ffcc',fontStyle:'bold'}).setOrigin(0.5).setDepth(11);
+    this.add.text(GW/2,392,'Najlepszy: '+best+'  •  Najdłuższe combo: x'+(1+Math.min(this.registry.get('bestCombo')||0,9)*0.5).toFixed(1),{fontFamily:'Segoe UI',fontSize:'14px',color:'#9aa'}).setOrigin(0.5).setDepth(11);
 
-    const cta=this.add.text(GW/2,420,'SPRAWDŹ WOLNY TERMIN U KAROLA',{fontFamily:'Segoe UI',fontSize:'18px',color:'#0a0a18',backgroundColor:'#d4af37',padding:{x:22,y:10},fontStyle:'bold'}).setOrigin(0.5).setInteractive();
-    this.tweens.add({targets:cta,scale:{from:1,to:1.06},yoyo:true,repeat:-1,duration:700});
-    cta.on('pointerdown',()=>window.open(SITE_URL,'_blank','noopener'));
+    this.add.text(GW/2,432,'Tak wygląda wesele bez przaśności: świetna logistyka, energia parkietu\noraz płynne dwujęzyczne prowadzenie. Karol i jego zespół zapewnią to na Twoim przyjęciu.',
+      {fontFamily:'Segoe UI',fontSize:'14px',color:'#c9c9e0',align:'center',lineSpacing:3}).setOrigin(0.5).setDepth(11);
 
-    const retry=this.add.text(GW/2,490,'↻ Spróbuj ponownie',{fontFamily:'Segoe UI',fontSize:'18px',color:'#ffffff'}).setOrigin(0.5).setInteractive();
-    retry.on('pointerdown',()=>this.scene.start('Menu'));
-  }
-}
-
-/* ===========================================================================
-   EKRAN KOŃCOWY (sukces + CTA)
-=========================================================================== */
-class End extends Phaser.Scene{
-  constructor(){ super('End'); }
-  create(){
-    this.cameras.main.setBackgroundColor('#0a0a18');
-    BaseLevel.prototype.drawParquet.call(this);
-    // konfetti
-    for(let i=0;i<60;i++){
-      const c=this.add.rectangle(Phaser.Math.Between(0,GW),Phaser.Math.Between(-300,0),7,12,
-        Phaser.Utils.Array.GetRandom([C.gold,C.neon,C.pink,C.en,C.happy]));
-      this.tweens.add({targets:c,y:GH+20,angle:360,duration:Phaser.Math.Between(2500,5000),
-        repeat:-1,delay:Phaser.Math.Between(0,2000),ease:'Linear'});
-    }
-    this.add.rectangle(GW/2,GH/2,GW-80,GH-80,0x05050d,0.86).setStrokeStyle(3,C.gold);
-
-    this.add.text(GW/2,120,'SUKCES!',{fontFamily:'Segoe UI',fontSize:'58px',color:'#d4af37',fontStyle:'bold'}).setOrigin(0.5).setShadow(0,0,'#d4af37',20);
-    this.add.text(GW/2,178,'Wesele uratowane z klasą i elegancją!',{fontFamily:'Segoe UI',fontSize:'24px',color:'#ffffff',fontStyle:'bold'}).setOrigin(0.5);
-
-    const karol=createKarol(this,GW/2,275,1.6);
-    this.tweens.add({targets:karol,angle:{from:-6,to:6},yoyo:true,repeat:-1,duration:700,ease:'Sine.inOut'});
-
-    this.add.text(GW/2,350,'Twój wynik: '+(this.registry.get('score')||0)+' pkt',{fontFamily:'Segoe UI',fontSize:'26px',color:'#00ffcc',fontStyle:'bold'}).setOrigin(0.5);
-
-    this.add.text(GW/2,408,'Zobacz, jak kluczowy na weselu jest brak przaśności, świetna logistyka\noraz swoboda międzynarodowa. Karol i jego zespół zapewnią to na Twoim przyjęciu.',
-      {fontFamily:'Segoe UI',fontSize:'15px',color:'#c9c9e0',align:'center',lineSpacing:4}).setOrigin(0.5);
-
-    const cta=this.add.text(GW/2,478,'✦ SPRAWDŹ WOLNY TERMIN U KAROLA ✦',{fontFamily:'Segoe UI',fontSize:'22px',color:'#0a0a18',backgroundColor:'#d4af37',padding:{x:28,y:14},fontStyle:'bold'}).setOrigin(0.5).setInteractive();
+    const cta=this.add.text(GW/2,498,'✦ SPRAWDŹ WOLNY TERMIN U KAROLA ✦',{fontFamily:'Segoe UI',fontSize:'21px',color:'#0a0a18',backgroundColor:'#d4af37',padding:{x:26,y:13},fontStyle:'bold'}).setOrigin(0.5).setDepth(11).setInteractive();
     cta.setShadow(0,0,'#d4af37',12);
-    this.tweens.add({targets:cta,scale:{from:1,to:1.07},yoyo:true,repeat:-1,duration:650});
-    cta.on('pointerover',()=>cta.setBackgroundColor('#ffe487'));
-    cta.on('pointerout',()=>cta.setBackgroundColor('#d4af37'));
+    this.tweens.add({targets:cta,scale:{from:1,to:1.06},yoyo:true,repeat:-1,duration:650});
+    cta.on('pointerover',()=>cta.setBackgroundColor('#ffe487')); cta.on('pointerout',()=>cta.setBackgroundColor('#d4af37'));
     cta.on('pointerdown',()=>window.open(SITE_URL,'_blank','noopener'));
 
-    const retry=this.add.text(GW/2,535,'↻ Zagraj jeszcze raz',{fontFamily:'Segoe UI',fontSize:'16px',color:'#9aa'}).setOrigin(0.5).setInteractive();
+    const retry=this.add.text(GW/2,548,'↻ Zagraj jeszcze raz',{fontFamily:'Segoe UI',fontSize:'16px',color:'#fff'}).setOrigin(0.5).setDepth(11).setInteractive();
     retry.on('pointerdown',()=>this.scene.start('Menu'));
   }
 }
 
 /* ===========================================================================
-   KONFIGURACJA GRY
+   KONFIGURACJA
 =========================================================================== */
 const config={
-  type:Phaser.AUTO,
-  width:GW, height:GH,
-  parent:'game-container',
-  backgroundColor:'#0a0a18',
+  type:Phaser.AUTO, width:GW, height:GH, parent:'game-container', backgroundColor:'#07060f',
   scale:{ mode:Phaser.Scale.FIT, autoCenter:Phaser.Scale.CENTER_BOTH },
   physics:{ default:'arcade', arcade:{ gravity:{y:0}, debug:false } },
-  scene:[Menu,Level1,Level2,Level3,End,GameOver]
+  scene:[Boot,Menu,Game,Result]
 };
 new Phaser.Game(config);
 

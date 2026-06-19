@@ -317,7 +317,18 @@ function genAssets(scene){
   mkFloor('floorWood', (ctx,W,H)=>floorTile(ctx,W,H,0x6a4a2c,0x4a3320,false));
   mkFloor('floorWoodB',(ctx,W,H)=>floorTile(ctx,W,H,0x5a3f25,0x402c1c,false));
   mkFloor('floorOut',  (ctx,W,H)=>floorTile(ctx,W,H,0x2a2c33,0x202228,true));
-  // postacie wczytywane są jako spritesheety w Boot.preload (assets/*.png) — nie generujemy ich tu
+  // postacie
+  const chars={
+    karol:   {shirt:0x2b3a55,pants:0x1c2433,skin:0xf1c9a5,hair:0x111111,curly:true},
+    karolFrak:{shirt:0x0b0b10,pants:0x0b0b10,hat:'top',bow:true,vest:true,curly:true,ponytail:true,shoes:true,skin:0xf1c9a5,hair:0x111111},
+    manager: {shirt:0x6a4a8a,pants:0x2a2436,hair:0x3a2a18,prop:'tray'},
+    photo:   {shirt:0x2f7a52,pants:0x223026,hair:0x20140c,prop:'camera'},
+    camera:  {shirt:0x335a8a,pants:0x223040,hair:0x20140c,prop:'cam'},
+    booth:   {shirt:0x8a3c7a,pants:0x402838,hair:0x301020,prop:'booth'},
+    barman:  {shirt:0xdedede,pants:0x222,hair:0x20140c,prop:'tray'}
+  };
+  const cOpt={shade:{top:0.08,bot:0.12},rim:true};
+  Object.keys(chars).forEach(k=>{ mk(k,22,34,P=>drawChar(P,chars[k],false),cOpt); mk(k+'_b',22,34,P=>drawChar(P,chars[k],true),cOpt); });
   // przedmioty
   const iOpt={rim:true};
   ['bag','bagEmpty','djtable','console','laptop','dmx','speaker','spkstand','light','lightstand','outlet','screen','car','cablecoil']
@@ -334,20 +345,8 @@ function genAssets(scene){
 =========================================================================== */
 class Boot extends Phaser.Scene{
   constructor(){ super('Boot'); }
-  preload(){
-    ['karol_work','karol_cases','karol_frak','manager','camera','barman','booth']
-      .forEach(k=>this.load.spritesheet(k,'assets/'+k+'.png',{frameWidth:88,frameHeight:96}));
-  }
-  create(){ genAssets(this);
-    // animacje postaci (4 kierunki: down/up/side; chód 2-klatkowy) — wspólny layout arkuszy
-    const mkA=(k,dir,frames)=>{ const key=k+'_'+dir; if(this.anims.exists(key)) return;
-      this.anims.create({key,frames:this.anims.generateFrameNumbers(k,{frames}),frameRate:6,repeat:-1}); };
-    ['karol_work','karol_cases','karol_frak','manager','camera','barman','booth'].forEach(k=>{
-      mkA(k,'down',[2,3]); mkA(k,'up',[0,1]); mkA(k,'side',[10,11]); });
-    this.registry.set('best',this.registry.get('best')||0); this.scene.start('Hub'); }
+  create(){ genAssets(this); this.registry.set('best',this.registry.get('best')||0); this.scene.start('Hub'); }
 }
-// klatka „postoju" dla danego kierunku
-const STAND={down:2,up:0,side:10};
 
 /* ===========================================================================
    HUB — wybór minigry
@@ -359,7 +358,7 @@ class Hub extends Phaser.Scene{
     this.add.text(GW/2,60,'WODZIREJ KAROL',{fontFamily:'Segoe UI',fontSize:'42px',color:'#ffe487',fontStyle:'bold'}).setOrigin(0.5).setShadow(0,0,'#d4af37',16);
     this.add.text(GW/2,100,'Master of the Dancefloor — wybierz zadanie',{fontFamily:'Segoe UI',fontSize:'18px',color:'#00ffcc'}).setOrigin(0.5);
 
-    const k=this.add.sprite(GW/2,180,'karol_work',STAND.down).setScale(1.3); k.setOrigin(0.5,1); k.y=210;
+    const k=this.add.image(GW/2,180,'karol').setScale(1); k.setOrigin(0.5,1); k.y=210;
     this.tweens.add({targets:k,y:200,yoyo:true,repeat:-1,duration:700,ease:'Sine.inOut'});
 
     const cards=[
@@ -450,7 +449,7 @@ class Setup extends Phaser.Scene{
 
     // gracz
     this.px=this.staging.gx; this.py=this.staging.gy+1.5; this.facingBack=false; this.flip=false; this.bob=0;
-    this.player=this.add.sprite(0,0,'karol_work',STAND.down).setOrigin(0.5,0.95).setScale(0.7); this.lastFace={dir:'down',flip:false};
+    this.player=this.add.image(0,0,'karol').setOrigin(0.5,1).setScale(1.2);
     this.playerShadow=this.add.image(0,0,'soft').setTint(0).setAlpha(0.3).setOrigin(0.5,0.5);
     this.carrySprite=this.add.image(0,0,'bag').setOrigin(0.5,1).setScale(1).setVisible(false);
 
@@ -709,17 +708,16 @@ class Setup extends Phaser.Scene{
   tidyCable(m){ m.done=true; this.tweens.add({targets:m.sprite,alpha:0.3,scaleX:1.2,duration:200}); this.tidied++; Audio.sfx('place'); this.addScore(8); this.phaseDoneCheck(); this.refreshHUD(); }
   takeEmpty(b){ b.taken=true; b.sprite.destroy(); this.carry={kind:'emptybag'}; Audio.sfx('pick'); }
   returnBag(){ this.carry=null; this.returned++; Audio.sfx('place'); this.addScore(8); this.phaseDoneCheck(); this.refreshHUD(); }
-  changeToFrak(){ this.changed=true; Audio.sfx('phase'); this.flashTip('Elegancko! Czas na gości.'); this.refreshHUD();
+  changeToFrak(){ this.changed=true; this.player.setTexture(this.facingBack?'karolFrak_b':'karolFrak'); Audio.sfx('phase'); this.flashTip('Elegancko! Czas na gości.'); this.refreshHUD();
     this.time.delayedCall(1200,()=>this.finish()); }
   phaseDoneCheck(){ // dzwonek przy zakończeniu fazy
     const ph=this.phaseIndex(); if(this._lastPhase!=null && ph!==this._lastPhase){ Audio.sfx('phase'); this.flashTip('Etap zaliczony!'); this.refreshMarkers(); } this._lastPhase=ph; }
 
   /* ---------- NPC ---------- */
   spawnNpc(){ if(!this.npcDefs.length){ return; } const def=this.npcDefs.shift();
-    const sheet={manager:'manager',photo:'camera',camera:'camera',booth:'booth',barman:'barman'}[def.key]||'manager';
-    const start=iso(5.5,-2.5,0); const spr=this.add.sprite(start.x,start.y,sheet,STAND.down).setOrigin(0.5,0.95).setScale(0.6);
+    const start=iso(5.5,-2.5,0); const spr=this.add.image(start.x,start.y,def.key).setOrigin(0.5,1).setScale(1.1);
     const standGx=5.5, standGy=1.2; // wchodzi na salę
-    this.npcActive={def,sheet,sprite:spr,gx:5.5,gy:-2.5,tgx:standGx,tgy:standGy,state:'enter',atTarget:false,bubble:null,timer:0};
+    this.npcActive={def,sprite:spr,gx:5.5,gy:-2.5,tgx:standGx,tgy:standGy,state:'enter',atTarget:false,bubble:null,timer:0};
   }
   resolveNpc(){ const n=this.npcActive; n.atTarget=true; n.state='leave'; if(n.bubble){n.bubble.destroy();n.bubble=null;} this.npcDone++; this.addScore(50);
     Audio.sfx('ding'); this.flashTip(Phaser.Utils.Array.GetRandom(['Świetna logistyka!','Koordynacja ekipy!','Wszystko dograne przed gośćmi!','Profesjonalizm!'])); this.refreshHUD(); }
@@ -743,9 +741,7 @@ class Setup extends Phaser.Scene{
     else if(n.state==='leave'){ if(n.tmark){n.tmark.destroy(); n.tmark=null;} if(move(5.5,-3,2.6)){ n.sprite.destroy(); this.npcActive=null; } }
     // pozycja sprite + głębia
     const sp=iso(n.gx,n.gy,0); n.sprite.setPosition(sp.x,sp.y).setDepth(tdepth(n.gx,n.gy,4));
-    if(n.state==='enter') n.sprite.setFlipX(false).play(n.sheet+'_down',true);
-    else if(n.state==='leave') n.sprite.setFlipX(false).play(n.sheet+'_up',true);
-    else { n.sprite.anims.stop(); n.sprite.setTexture(n.sheet,STAND.down); }
+    n.sprite.setFlipX(n.gx< (n.state==='leave'?n.gx+1:n.tgx));
   }
 
   /* ---------- FINISH ---------- */
@@ -759,8 +755,6 @@ class Setup extends Phaser.Scene{
   }
 
   /* ---------- UPDATE ---------- */
-  faceFor(ix,iy){ if(Math.abs(iy)>=Math.abs(ix)) return {dir: iy<0?'up':'down', flip:false}; return {dir:'side', flip: ix<0}; }
-
   update(time,delta){
     if(this.done){ return; }
     const dt=delta;
@@ -776,12 +770,11 @@ class Setup extends Phaser.Scene{
       const spd=(this.carry?2.6:3.4)*(dt/1000);
       this.px+=dgx*spd; this.py+=dgy*spd; this.clampPos();
     }
-    // render gracza (spritesheet + animacja 4-kier.)
-    const sheet = this.changed?'karol_frak':(this.carry?'karol_cases':'karol_work');
-    const fc = this.faceFor(ix,iy);
-    if(moving){ this.player.setFlipX(fc.flip).play(sheet+'_'+fc.dir,true); this.lastFace=fc; }
-    else { const f=this.lastFace||{dir:'down',flip:false}; this.player.anims.stop(); this.player.setTexture(sheet,STAND[f.dir]).setFlipX(f.flip); }
-    const pp=iso(this.px,this.py,0);
+    this.bob = moving ? this.bob+dt*0.012 : 0;
+    // render gracza
+    const baseTex = this.changed?'karolFrak':'karol';
+    this.player.setTexture(this.facingBack?baseTex+'_b':baseTex).setFlipX(this.flip);
+    const pp=iso(this.px,this.py, moving?Math.abs(Math.sin(this.bob))*3:0);
     this.player.setPosition(pp.x,pp.y).setDepth(tdepth(this.px,this.py,5));
     const sh=iso(this.px,this.py,0); this.playerShadow.setPosition(sh.x,sh.y).setScale(1.1,0.5).setDepth(tdepth(this.px,this.py,-1));
     if(this.carry){ this.carrySprite.setVisible(true).setPosition(pp.x,pp.y-30).setDepth(tdepth(this.px,this.py,6));
@@ -842,7 +835,7 @@ class Result extends Phaser.Scene{
     for(let i=0;i<3;i++){ const lit=i<stars; const st=this.add.text(sx+i*70,210,'★',{fontSize:'54px',color:lit?'#ffe487':'#3a3a4a'}).setOrigin(0.5);
       if(lit){ st.setScale(0); this.tweens.add({targets:st,scale:1,delay:300+i*200,ease:'Back.out',duration:400}); st.setShadow(0,0,'#d4af37',14); } }
 
-    const k=this.add.sprite(GW/2,300,'karol_frak',STAND.down).setScale(1.5).setOrigin(0.5,1); k.y=320;
+    const k=this.add.image(GW/2,300,'karolFrak').setScale(1.7).setOrigin(0.5,1); k.y=320;
     this.tweens.add({targets:k,angle:{from:-4,to:4},yoyo:true,repeat:-1,duration:700});
 
     this.add.text(GW/2,346,'Wynik: '+score+' pkt  •  Ekipa: '+npc+'/5',{fontFamily:'Segoe UI',fontSize:'20px',color:'#00ffcc',fontStyle:'bold'}).setOrigin(0.5);

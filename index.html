@@ -263,14 +263,11 @@ function drawChar(P,o,back){
 function drawItem(P,key){
   if(key==='bag'){ P(2,5,16,9,0x394150); P(2,4,16,2,0x4a5468); P(6,1,6,3,0x2a303c); P(9,5,2,9,0x222831); }
   else if(key==='bagEmpty'){ P(2,8,16,5,0x2c323e); P(6,7,6,2,0x222831); }
-  else if(key==='djtable'){ // Vonyx DB3 Pro DJ booth (z ekranem)
+  else if(key==='djtable'){ // Vonyx DB3 Pro DJ booth (czarna fasada)
     P(2,10,48,5,0x2c3240); P(2,9,48,1,0x3a4252); P(2,15,48,2,0x171a22);   // blat
     P(3,16,3,22,0x20252f); P(46,16,3,22,0x20252f);                         // boczne słupki
-    P(6,16,40,22,0x13161d);                                                // fasada
-    P(12,20,28,13,0x0a1420); P(13,21,26,11,0x14324e);                      // ekran
-    P(13,21,26,1,0x2f6e9e); P(13,26,26,1,0x20405e);
-    P(17,27,2,4,0x33e0ff); P(21,25,2,6,0xff2e8b); P(25,28,2,3,0xffe487); P(29,26,2,5,0x33e0ff); P(33,29,2,2,0xff2e8b); // EQ
-    P(14,22,12,1,0xffffff,0.25);                                           // pasek/logo
+    P(6,16,40,22,0x0c0e13);                                                // czarna fasada
+    P(6,16,40,1,0x191c24); P(6,37,40,1,0x05060a);                          // krawędzie fasady
     P(5,37,6,2,0x0e1116); P(41,37,6,2,0x0e1116); }                         // nóżki
   else if(key==='console'){ P(1,3,20,7,0x14181f); P(3,5,4,4,0x000); P(9,5,4,4,0x000); P(15,5,3,3,C.pink); P(4,6,2,2,C.neon); }
   else if(key==='laptop'){ P(2,6,14,5,0x2a2a32); P(3,1,12,6,0x14181f); P(4,2,10,4,C.sky); }
@@ -576,7 +573,7 @@ class Setup extends Phaser.Scene{
     this.slots.forEach(s=>{ if(s.placed) return; if(!this.depOk(s)) return;
       const p=iso(s.gx,s.gy,s.z);
       const carryingThis = this.carry && this.carry.id===s.id;
-      const m=this.add.image(p.x,p.y,'marker').setOrigin(0.5,0.5).setScale(0.5).setAlpha(carryingThis?0.95:0.4).setTint(carryingThis?C.green:0xffffff).setDepth(tdepth(s.gx,s.gy,-8));
+      const m=this.add.image(p.x,p.y,'marker').setOrigin(0.5,0.5).setScale(0.5).setAlpha(carryingThis?0.95:0.5).setTint(carryingThis?C.green:0xffe487).setDepth(88000);
       this.markerLayer.add(m);
       const t=this.add.text(p.x,p.y-14,s.label,{fontFamily:'Segoe UI',fontSize:'13px',color:carryingThis?'#b6ffd0':'#ffe487',fontStyle:'bold',backgroundColor:'#000a',padding:{x:5,y:2}}).setOrigin(0.5).setDepth(96000).setAlpha(carryingThis?1:0.92);
       this.markerLayer.add(t);
@@ -803,7 +800,8 @@ class Setup extends Phaser.Scene{
     add(this.add.rectangle(GW/2,GH/2,760,470,0x141022,0.98).setScrollFactor(0).setStrokeStyle(3,C.gold).setDepth(D+1));
     add(this.add.text(GW/2,GH/2-212,'PRZEBIERZ SIĘ WE FRAK',{fontFamily:'Segoe UI',fontSize:'22px',color:'#ffe487',fontStyle:'bold'}).setOrigin(0.5).setScrollFactor(0).setDepth(D+2));
     add(this.add.text(GW/2,GH/2-186,'Przeciągnij elementy na Karola — we właściwej kolejności',{fontFamily:'Segoe UI',fontSize:'13px',color:'#c9c9e0'}).setOrigin(0.5).setScrollFactor(0).setDepth(D+2));
-    const mx=GW/2-205, my=GH/2+155, S=6; this.dressMX=mx; this.dressMY=my; this.dressS=S;
+    const mx=GW/2-200, my=GH/2+188, S=4.4; this.dressMX=mx; this.dressMY=my; this.dressS=S;
+    this.dressMcx=mx; this.dressMcy=my-Math.round(76*S*0.46); this.dressR=Math.round(76*S*0.62); // strefa upuszczenia = cały manekin
     add(this.add.image(mx,my,'mannequin').setOrigin(0.5,1).setScale(S).setScrollFactor(0).setDepth(D+2));
     this.dressed=new Set();
     const garments=[
@@ -824,8 +822,8 @@ class Setup extends Phaser.Scene{
     this._dragEnd=(p,o)=>{ if(o.gkey&&!o.placed) this.onDressDrop(o,D); };
     this.input.on('drag',this._dragMove); this.input.on('dragend',this._dragEnd);
   }
-  onDressDrop(img,D){ const dist=Math.hypot(img.x-this.dressMX,img.y-(this.dressMY-60));
-    if(dist<120){ const missing=(this.dressReq[img.gkey]||[]).filter(r=>!this.dressed.has(r));
+  onDressDrop(img,D){ const dist=Math.hypot(img.x-this.dressMcx,img.y-this.dressMcy);
+    if(dist<this.dressR){ const missing=(this.dressReq[img.gkey]||[]).filter(r=>!this.dressed.has(r));
       if(missing.length===0){ const zo={g_pants:0,g_shirt:1,g_shoes:2,g_suspenders:3,g_vest:4,g_coat:5,g_bowtie:6,g_tophat:7};
         this.modalObjs.push(this.add.image(this.dressMX,this.dressMY,img.gkey).setOrigin(0.5,1).setScale(this.dressS).setScrollFactor(0).setDepth(D+2+(zo[img.gkey]||0)));
         this.dressed.add(img.gkey); img.placed=true; Audio.sfx('place'); this.dressHint.setText('');

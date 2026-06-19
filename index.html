@@ -306,7 +306,7 @@ function drawGarment(P,key){
   else if(key==='g_pants'){ P(7,26,3,6,0x1c2433); P(12,26,3,6,0x1c2433); P(8,24,6,3,0x1c2433); }
   else if(key==='g_shirt'){ P(6,15,10,12,0xffffff); P(4,15,2,9,0xfafafa); P(16,15,2,9,0xfafafa); P(9,13,4,2,0xffffff); }
   else if(key==='g_suspenders'){ P(8,15,1,11,0x1a1a22); P(13,15,1,11,0x1a1a22); P(8,15,6,1,0x1a1a22); }
-  else if(key==='g_vest'){ P(8,15,6,12,0x14141c); P(9,16,4,2,0x20202a); }
+  else if(key==='g_vest'){ P(8,15,6,12,0xffffff); P(9,16,4,1,0xeaeaf0); P(10,19,1,1,0x333); P(10,22,1,1,0x333); }   // biała kamizelka
   else if(key==='g_shoes'){ P(6,30,4,2,0x000); P(12,30,4,2,0x000); P(7,30,1,1,0x555); P(13,30,1,1,0x555); }
   else if(key==='g_bowtie'){ P(8,14,2,4,0xffffff); P(12,14,2,4,0xffffff); P(10,15,2,2,0x20202a); }
   else if(key==='g_coat'){ P(5,14,12,2,0x0b0b10);                       // ramiona
@@ -324,7 +324,7 @@ function drawGarmentIcon(P,key){
   else if(key==='g_shoes'){ P(3,11,7,4,0x111); P(10,11,7,4,0x111); P(3,14,7,1,0x000); P(10,14,7,1,0x000); P(4,11,2,1,0x666); }
   else if(key==='g_suspenders'){ P(6,4,2,12,0x1a1a22); P(12,4,2,12,0x1a1a22); P(6,4,8,2,0x1a1a22); P(8,9,4,1,0x33343e); }
   else if(key==='g_bowtie'){ P(5,8,4,4,0xffffff); P(11,8,4,4,0xffffff); P(9,8,2,4,0x20202a); }
-  else if(key==='g_vest'){ P(5,4,10,12,0xffffff); P(5,4,4,12,0x14141c); P(11,4,4,12,0x14141c); P(9,5,2,7,0xffffff); P(8,12,4,3,0x14141c); }
+  else if(key==='g_vest'){ P(5,4,10,12,0xffffff); P(6,4,2,12,0xdadae4); P(12,4,2,12,0xdadae4); P(9,5,1,1,0x333); P(9,8,1,1,0x333); P(9,11,1,1,0x333); P(7,4,6,2,0xc8c8d2); }   // biała kamizelka
   else if(key==='g_coat'){ P(4,5,12,11,0x0b0b10); P(3,5,14,2,0x0b0b10); P(8,5,1,8,0x33333c); P(11,5,1,8,0x33333c); P(9,6,2,7,0xffffff); P(5,14,3,3,0x0b0b10); P(12,14,3,3,0x0b0b10); }
   else if(key==='g_tophat'){ P(4,12,12,2,0x111); P(6,3,8,9,0x0a0a0a); P(6,11,8,1,0x333); }
 }
@@ -571,11 +571,12 @@ class Setup extends Phaser.Scene{
     this.markerLayer.removeAll(true);
     if(this.phaseIndex()!==2) return; // markery tylko w fazie rozstawiania
     this.slots.forEach(s=>{ if(s.placed) return; if(!this.depOk(s)) return;
-      const p=iso(s.gx,s.gy,s.z);
+      const mz = s.z>=40 ? s.z+36 : s.z;        // markery sprzętu na blat — unieś ponad gear
+      const p=iso(s.gx,s.gy,mz);
       const carryingThis = this.carry && this.carry.id===s.id;
-      const m=this.add.image(p.x,p.y,'marker').setOrigin(0.5,0.5).setScale(0.5).setAlpha(carryingThis?0.95:0.5).setTint(carryingThis?C.green:0xffe487).setDepth(88000);
+      const m=this.add.image(p.x,p.y,'marker').setOrigin(0.5,0.5).setScale(0.55).setAlpha(carryingThis?0.95:0.7).setTint(carryingThis?C.green:0xffe487).setDepth(88000);
       this.markerLayer.add(m);
-      const t=this.add.text(p.x,p.y-14,s.label,{fontFamily:'Segoe UI',fontSize:'13px',color:carryingThis?'#b6ffd0':'#ffe487',fontStyle:'bold',backgroundColor:'#000a',padding:{x:5,y:2}}).setOrigin(0.5).setDepth(96000).setAlpha(carryingThis?1:0.92);
+      const t=this.add.text(p.x,p.y-16,s.label,{fontFamily:'Segoe UI',fontSize:'13px',color:carryingThis?'#b6ffd0':'#ffe487',fontStyle:'bold',backgroundColor:'#000a',padding:{x:5,y:2}}).setOrigin(0.5).setDepth(96000).setAlpha(carryingThis?1:0.95);
       this.markerLayer.add(t);
     });
   }

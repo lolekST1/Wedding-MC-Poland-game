@@ -516,7 +516,7 @@ class Setup extends Phaser.Scene{
 
     // NPC harmonogram
     this.npcDefs=[
-      {key:'manager', name:'Menager sali', req:'Pokaż, gdzie stanie DJ-ka', target:{gx:6,gy:1.5}},
+      {key:'manager', name:'Menager sali', req:'Ułóż kolejność wesela!', modal:true, target:{gx:5.5,gy:1.2}},
       {key:'photo',   name:'Fotograf', req:'Gdzie gniazdko na ładowarki?', target:this.outlets[0]},
       {key:'camera',  name:'Kamerzysta', req:'Gdzie kamera, by nie zasłaniać?', target:{gx:8.5,gy:7.5}},
       {key:'booth',   name:'Fotobudka', req:'Róg z prądem na fotobudkę?', target:this.outlets[1]},
@@ -712,7 +712,9 @@ class Setup extends Phaser.Scene{
     // przebranie
     if(ph===6 && near(this.changeSpot.gx,this.changeSpot.gy,1.6)) return {label:'Przebierz się we frak',fn:()=>this.openDressModal()};
     // NPC
-    if(this.npcActive && this.npcActive.state==='ask'){ const tg=this.npcActive.def.target; if(near(tg.gx,tg.gy,1.4)) return {label:'Pokaż / załatw',fn:()=>this.resolveNpc()}; }
+    if(this.npcActive && this.npcActive.state==='ask'){ const n=this.npcActive;
+      if(n.def.modal){ if(near(n.gx,n.gy,1.8)) return {label:'Ułóż harmonogram',fn:()=>this.openManagerModal()}; }
+      else { const tg=n.def.target; if(near(tg.gx,tg.gy,1.4)) return {label:'Pokaż / załatw',fn:()=>this.resolveNpc()}; } }
     return null;
   }
 
@@ -836,6 +838,47 @@ class Setup extends Phaser.Scene{
   }
   closeModal(){ if(this._dragMove){ this.input.off('drag',this._dragMove); this.input.off('dragend',this._dragEnd); this._dragMove=this._dragEnd=null; }
     (this.modalObjs||[]).forEach(o=>{ if(o&&o.destroy) o.destroy(); }); this.modalObjs=[]; this.modalOpen=false; }
+
+  /* ---------- MODAL MANAGERA — kolejność wesela ---------- */
+  openManagerModal(){ if(this.modalOpen) return; this.modalOpen=true; const D=97000; this.modalObjs=[];
+    const add=o=>{ this.modalObjs.push(o); return o; };
+    add(this.add.rectangle(GW/2,GH/2,GW,GH,0x05050d,0.84).setScrollFactor(0).setDepth(D).setInteractive());
+    add(this.add.rectangle(GW/2,GH/2,800,500,0x141022,0.98).setScrollFactor(0).setStrokeStyle(3,C.gold).setDepth(D+1));
+    add(this.add.text(GW/2,GH/2-224,'MENAGER SALI — KOLEJNOŚĆ WESELA',{fontFamily:'Segoe UI',fontSize:'21px',color:'#ffe487',fontStyle:'bold'}).setOrigin(0.5).setScrollFactor(0).setDepth(D+2));
+    add(this.add.text(GW/2,GH/2-200,'Przeciągnij bloki do miejsc 1–6 we właściwej kolejności',{fontFamily:'Segoe UI',fontSize:'13px',color:'#c9c9e0'}).setOrigin(0.5).setScrollFactor(0).setDepth(D+2));
+    const correct=['Przywitanie chlebem i solą','Posiłek','Polonez','Pierwszy taniec','Animacje taneczne','Oczepiny'];
+    const sx=GW/2-180, sy=GH/2-150, sh=60;
+    this.mgrSlots=[];
+    for(let i=0;i<6;i++){ const y=sy+i*sh;
+      add(this.add.text(sx-178,y,(i+1)+'.',{fontFamily:'Segoe UI',fontSize:'22px',color:'#ffe487',fontStyle:'bold'}).setOrigin(0.5).setScrollFactor(0).setDepth(D+2));
+      const box=add(this.add.rectangle(sx,y,300,50,0x1b1830,1).setStrokeStyle(2,0x3a3a4a).setScrollFactor(0).setDepth(D+2));
+      this.mgrSlots.push({x:sx,y,box,tile:null,idx:i}); }
+    const tx=GW/2+200, ty=sy;
+    this.mgrHint=add(this.add.text(GW/2,GH/2+218,'',{fontFamily:'Segoe UI',fontSize:'15px',color:'#ff6b6b',fontStyle:'bold'}).setOrigin(0.5).setScrollFactor(0).setDepth(D+3));
+    Phaser.Utils.Array.Shuffle([0,1,2,3,4,5]).forEach((ci,row)=>{ const y=ty+row*sh;
+      const cont=add(this.add.container(tx,y).setScrollFactor(0).setDepth(D+5));
+      const r=this.add.rectangle(0,0,300,48,0x2a2747,1).setStrokeStyle(2,C.gold,0.6);
+      const t=this.add.text(0,0,correct[ci],{fontFamily:'Segoe UI',fontSize:'13px',color:'#fff',fontStyle:'bold'}).setOrigin(0.5);
+      cont.add([r,t]); cont.rect=r; cont.correctPos=ci; cont.slot=null; cont.homeX=tx; cont.homeY=y;
+      cont.setInteractive(new Phaser.Geom.Rectangle(-150,-24,300,48),Phaser.Geom.Rectangle.Contains); this.input.setDraggable(cont); });
+    this._dragMove=(p,o,x,y)=>{ if(o.correctPos!=null){ o.x=x; o.y=y; o.setDepth(D+20); } };
+    this._dragEnd=(p,o)=>{ if(o.correctPos!=null) this.onMgrDrop(o,D); };
+    this.input.on('drag',this._dragMove); this.input.on('dragend',this._dragEnd);
+  }
+  onMgrDrop(tile,D){ let best=null,bd=1e9; this.mgrSlots.forEach(s=>{ const d=Math.hypot(tile.x-s.x,tile.y-s.y); if(d<bd){ bd=d; best=s; } });
+    if(best && bd<64 && (!best.tile || best.tile===tile)){
+      if(tile.slot) tile.slot.tile=null; best.tile=tile; tile.slot=best; tile.x=best.x; tile.y=best.y; tile.setDepth(D+6); Audio.sfx('place');
+    } else { if(tile.slot){ tile.slot.tile=null; tile.slot=null; } this.tweens.add({targets:tile,x:tile.homeX,y:tile.homeY,duration:160}); tile.setDepth(D+5); }
+    this.checkMgr(D);
+  }
+  checkMgr(D){ const full=this.mgrSlots.every(s=>s.tile);
+    if(!full){ this.mgrHint.setText(''); this.mgrSlots.forEach(s=>s.box.setStrokeStyle(2,0x3a3a4a)); return; }
+    const ok=this.mgrSlots.every(s=>s.tile.correctPos===s.idx);
+    if(ok){ this.mgrHint.setColor('#46d67a').setText('Idealna kolejność! 🎉'); this.mgrSlots.forEach(s=>s.box.setStrokeStyle(2,C.green));
+      this.time.delayedCall(800,()=>{ this.closeModal(); this.resolveNpc(); }); }
+    else { this.mgrHint.setColor('#ff6b6b').setText('Zła kolejność — popraw bloki'); Audio.sfx('err');
+      this.mgrSlots.forEach(s=>s.box.setStrokeStyle(2, s.tile.correctPos===s.idx?C.green:0xff6b6b)); }
+  }
   phaseDoneCheck(){ // dzwonek przy zakończeniu fazy
     const ph=this.phaseIndex(); if(this._lastPhase!=null && ph!==this._lastPhase){ Audio.sfx('phase'); this.flashTip('Etap zaliczony!'); this.refreshMarkers(); this.renderPorts(); } this._lastPhase=ph; }
 
@@ -856,9 +899,9 @@ class Setup extends Phaser.Scene{
         n.bubble.add(this.add.rectangle(0,0,Math.max(150,n.def.req.length*7),34,0xffffff,0.96).setStrokeStyle(2,0x333));
         n.bubble.add(this.add.text(0,-7,n.def.name,{fontFamily:'Segoe UI',fontSize:'10px',color:'#a36',fontStyle:'bold'}).setOrigin(0.5));
         n.bubble.add(this.add.text(0,6,n.def.req,{fontFamily:'Segoe UI',fontSize:'11px',color:'#222'}).setOrigin(0.5));
-        // marker celu
-        const tp=iso(n.def.target.gx,n.def.target.gy,2); n.tmark=this.add.image(tp.x,tp.y,'marker').setScale(0.5).setTint(C.pink).setAlpha(0.7).setDepth(tdepth(n.def.target.gx,n.def.target.gy,-6));
-        this.tweens.add({targets:n.tmark,alpha:0.25,yoyo:true,repeat:-1,duration:500});
+        // marker celu (nie dla NPC z modalem — wtedy podchodzisz do NPC)
+        if(!n.def.modal){ const tp=iso(n.def.target.gx,n.def.target.gy,2); n.tmark=this.add.image(tp.x,tp.y,'marker').setScale(0.5).setTint(C.pink).setAlpha(0.7).setDepth(tdepth(n.def.target.gx,n.def.target.gy,-6));
+          this.tweens.add({targets:n.tmark,alpha:0.25,yoyo:true,repeat:-1,duration:500}); }
       } }
     else if(n.state==='ask'){ n.timer+=dt; const p=iso(n.gx,n.gy,40); if(n.bubble) n.bubble.setPosition(p.x,p.y);
         if(n.timer>16000){ // zbyt długo — drobna kara, odchodzi

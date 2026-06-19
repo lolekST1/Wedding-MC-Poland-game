@@ -263,7 +263,15 @@ function drawChar(P,o,back){
 function drawItem(P,key){
   if(key==='bag'){ P(2,5,16,9,0x394150); P(2,4,16,2,0x4a5468); P(6,1,6,3,0x2a303c); P(9,5,2,9,0x222831); }
   else if(key==='bagEmpty'){ P(2,8,16,5,0x2c323e); P(6,7,6,2,0x222831); }
-  else if(key==='djtable'){ P(4,10,32,12,0x20242e); P(4,8,32,3,0x2c3340); P(6,22,3,8,0x15181f); P(31,22,3,8,0x15181f); P(8,11,24,2,0x3a4252); }
+  else if(key==='djtable'){ // Vonyx DB3 Pro DJ booth (z ekranem)
+    P(2,10,48,5,0x2c3240); P(2,9,48,1,0x3a4252); P(2,15,48,2,0x171a22);   // blat
+    P(3,16,3,22,0x20252f); P(46,16,3,22,0x20252f);                         // boczne słupki
+    P(6,16,40,22,0x13161d);                                                // fasada
+    P(12,20,28,13,0x0a1420); P(13,21,26,11,0x14324e);                      // ekran
+    P(13,21,26,1,0x2f6e9e); P(13,26,26,1,0x20405e);
+    P(17,27,2,4,0x33e0ff); P(21,25,2,6,0xff2e8b); P(25,28,2,3,0xffe487); P(29,26,2,5,0x33e0ff); P(33,29,2,2,0xff2e8b); // EQ
+    P(14,22,12,1,0xffffff,0.25);                                           // pasek/logo
+    P(5,37,6,2,0x0e1116); P(41,37,6,2,0x0e1116); }                         // nóżki
   else if(key==='console'){ P(1,3,20,7,0x14181f); P(3,5,4,4,0x000); P(9,5,4,4,0x000); P(15,5,3,3,C.pink); P(4,6,2,2,C.neon); }
   else if(key==='laptop'){ P(2,6,14,5,0x2a2a32); P(3,1,12,6,0x14181f); P(4,2,10,4,C.sky); }
   else if(key==='dmx'){ P(1,3,12,9,0x1a1f2a); P(3,5,8,3,0x39d0a0); P(3,9,2,2,C.gold); P(6,9,2,2,C.gold); }
@@ -303,9 +311,25 @@ function drawGarment(P,key){
   else if(key==='g_suspenders'){ P(8,15,1,11,0x1a1a22); P(13,15,1,11,0x1a1a22); P(8,15,6,1,0x1a1a22); }
   else if(key==='g_vest'){ P(8,15,6,12,0x14141c); P(9,16,4,2,0x20202a); }
   else if(key==='g_shoes'){ P(6,30,4,2,0x000); P(12,30,4,2,0x000); P(7,30,1,1,0x555); P(13,30,1,1,0x555); }
-  else if(key==='g_bowtie'){ P(9,15,4,2,0xffffff); P(10,14,2,1,0xffffff); }
-  else if(key==='g_coat'){ P(5,15,4,13,0x0b0b10); P(13,15,4,13,0x0b0b10); P(4,15,2,9,0x0b0b10); P(16,15,2,9,0x0b0b10); P(6,26,3,5,0x0b0b10); P(13,26,3,5,0x0b0b10); }
+  else if(key==='g_bowtie'){ P(8,14,2,4,0xffffff); P(12,14,2,4,0xffffff); P(10,15,2,2,0x20202a); }
+  else if(key==='g_coat'){ P(5,14,12,2,0x0b0b10);                       // ramiona
+    P(4,15,2,11,0x0b0b10); P(16,15,2,11,0x0b0b10);                       // rękawy
+    P(5,15,4,13,0x0b0b10); P(13,15,4,13,0x0b0b10);                       // przody (środek odkryty)
+    P(8,15,1,7,0x23232c); P(13,15,1,7,0x23232c);                         // klapy
+    P(5,27,3,5,0x0b0b10); P(14,27,3,5,0x0b0b10); }                       // poły fraka
   else if(key==='g_tophat'){ P(6,4,10,2,0x000000); P(6,-1,10,6,0x0a0a0a); P(6,3,10,1,0x222222); }
+}
+
+// ikony garderoby do kafelków modala (wyśrodkowane ~20x20)
+function drawGarmentIcon(P,key){
+  if(key==='g_shirt'){ P(5,5,10,11,0xffffff); P(4,5,2,4,0xeaeaf0); P(14,5,2,4,0xeaeaf0); P(8,4,4,2,0xffffff); P(9,6,2,8,0xdadae4); }
+  else if(key==='g_pants'){ P(6,4,8,3,0x1c2433); P(6,6,3,11,0x1c2433); P(11,6,3,11,0x1c2433); }
+  else if(key==='g_shoes'){ P(3,11,7,4,0x111); P(10,11,7,4,0x111); P(3,14,7,1,0x000); P(10,14,7,1,0x000); P(4,11,2,1,0x666); }
+  else if(key==='g_suspenders'){ P(6,4,2,12,0x1a1a22); P(12,4,2,12,0x1a1a22); P(6,4,8,2,0x1a1a22); P(8,9,4,1,0x33343e); }
+  else if(key==='g_bowtie'){ P(5,8,4,4,0xffffff); P(11,8,4,4,0xffffff); P(9,8,2,4,0x20202a); }
+  else if(key==='g_vest'){ P(5,4,10,12,0xffffff); P(5,4,4,12,0x14141c); P(11,4,4,12,0x14141c); P(9,5,2,7,0xffffff); P(8,12,4,3,0x14141c); }
+  else if(key==='g_coat'){ P(4,5,12,11,0x0b0b10); P(3,5,14,2,0x0b0b10); P(8,5,1,8,0x33333c); P(11,5,1,8,0x33333c); P(9,6,2,7,0xffffff); P(5,14,3,3,0x0b0b10); P(12,14,3,3,0x0b0b10); }
+  else if(key==='g_tophat'){ P(4,12,12,2,0x111); P(6,3,8,9,0x0a0a0a); P(6,11,8,1,0x333); }
 }
 
 const PXF=2, MARGIN=4;   // supersampling + ramka pod obrys
@@ -354,13 +378,15 @@ function genAssets(scene){
   // przedmioty
   const iOpt={rim:true};
   ['bag','bagEmpty','djtable','console','laptop','dmx','speaker','spkstand','light','lightstand','outlet','screen','car','cablecoil']
-    .forEach(key=>{ const sizes={bag:[20,16],bagEmpty:[20,14],djtable:[40,32],console:[22,11],laptop:[18,12],dmx:[14,13],speaker:[18,30],spkstand:[16,30],light:[16,11],lightstand:[14,34],outlet:[10,10],screen:[30,34],car:[80,58],cablecoil:[16,14]}[key];
+    .forEach(key=>{ const sizes={bag:[20,16],bagEmpty:[20,14],djtable:[52,40],console:[22,11],laptop:[18,12],dmx:[14,13],speaker:[18,30],spkstand:[16,30],light:[16,11],lightstand:[14,34],outlet:[10,10],screen:[30,34],car:[80,58],cablecoil:[16,14]}[key];
       mk(key,sizes[0],sizes[1],P=>drawItem(P,key), key==='car'?{shade:{top:0.12,bot:0.22},rim:true}:iOpt); });
   mk('marker',64,34,P=>drawItem(P,'marker'),{noOutline:true,noShade:true});
   mk('port',10,10,P=>drawItem(P,'port'),{noShade:true});
   // garderoba + manekin (modal przebierania)
   ['mannequin','g_pants','g_shirt','g_suspenders','g_vest','g_shoes','g_bowtie','g_coat','g_tophat']
     .forEach(k=>mk(k,22,34,P=>drawGarment(P,k),{shade:{top:0.06,bot:0.10},rim:true}));
+  ['g_pants','g_shirt','g_suspenders','g_vest','g_shoes','g_bowtie','g_coat','g_tophat']
+    .forEach(k=>mk('gi_'+k,20,20,P=>drawGarmentIcon(P,k),{shade:{top:0.05,bot:0.08}}));
   // miękka poświata (legacy graphics, bez obrysu)
   const g=scene.make.graphics({x:0,y:0,add:false});
   for(let r=32;r>0;r-=2){ g.fillStyle(0xffffff,0.06); g.fillCircle(32,32,r); } g.generateTexture('soft',64,64); g.destroy();
@@ -420,10 +446,10 @@ class Setup extends Phaser.Scene{
 
     // definicje slotów (przedmioty do rozstawienia)
     this.slots=[
-      {key:'djtable', gx:6,gy:1.5,z:0, dep:null, label:'Stół DJ'},
-      {key:'console', gx:6,gy:1.5,z:14, dep:'djtable', label:'Konsola'},
-      {key:'laptop',  gx:6.7,gy:1.5,z:14, dep:'djtable', label:'Laptop'},
-      {key:'dmx',     gx:5.3,gy:1.5,z:14, dep:'djtable', label:'DMX'},
+      {key:'djtable', gx:6,gy:1.5,z:0, dep:null, label:'DJ Booth'},
+      {key:'console', gx:6.05,gy:1.65,z:50, dep:'djtable', label:'Konsola'},
+      {key:'laptop',  gx:5.45,gy:1.35,z:54, dep:'djtable', label:'Laptop'},
+      {key:'dmx',     gx:6.65,gy:1.5,z:50, dep:'djtable', label:'DMX'},
       {key:'spkstand',gx:1.8,gy:2.5,z:0, dep:null, label:'Statyw L', id:'sstL'},
       {key:'spkstand',gx:10.2,gy:2.5,z:0, dep:null, label:'Statyw P', id:'sstR'},
       {key:'speaker', gx:1.8,gy:2.5,z:24, dep:'sstL', label:'Głośnik L', id:'spkL'},
@@ -459,7 +485,7 @@ class Setup extends Phaser.Scene{
 
     // pozycje kluczowe
     this.car={gx:6,gy:-2.2}; this.staging={gx:4,gy:5};
-    this.outlets=[ {gx:0.6,gy:1.5},{gx:11.4,gy:5},{gx:6,gy:8.4} ];
+    this.outlets=[ {gx:0.6,gy:4.2},{gx:11.4,gy:5},{gx:6,gy:8.4} ];
     this.outlets.forEach(o=>{ const p=iso(o.gx,o.gy,18); this.add.image(p.x,p.y,'outlet').setOrigin(0.5,1).setDepth(tdepth(o.gx,o.gy,-5)).setScale(1); });
     // samochód + parawan
     const cp=iso(this.car.gx,this.car.gy,0); this.add.image(cp.x,cp.y,'car').setOrigin(0.5,1).setDepth(tdepth(this.car.gx,this.car.gy,5)).setScale(1);
@@ -724,8 +750,8 @@ class Setup extends Phaser.Scene{
     this.phaseDoneCheck(); this.refreshHUD(); this.refreshMarkers();
   }
   // pozycja końca połączenia (slot id albo 'outletN')
-  connPos(ref){ if(typeof ref==='string' && ref.indexOf('outlet')===0){ const o=this.outlets[+ref.slice(6)]; return {gx:o.gx,gy:o.gy,z:18}; }
-    const s=this.slots.find(x=>x.id===ref); return {gx:s.gx,gy:s.gy,z:s.z||8}; }
+  connPos(ref){ if(typeof ref==='string' && ref.indexOf('outlet')===0){ const o=this.outlets[+ref.slice(6)]; return {gx:o.gx,gy:o.gy,z:12}; }
+    const s=this.slots.find(x=>x.id===ref); return {gx:s.gx,gy:s.gy,z:4}; }   // przy podstawie urządzenia
   // kontekst kabli: chwyć wtyk przy jednym końcu, podłącz przy drugim
   cableCtx(){ const near=(p,r)=>Math.hypot(this.px-p.gx,this.py-p.gy)<(r||1.2);
     if(this.plug){ const conn=this.plug; const t=this.connPos(conn.to); if(near(t,1.4)) return {label:'Podłącz kabel',fn:()=>this.connectPlug()};
@@ -735,7 +761,7 @@ class Setup extends Phaser.Scene{
     return null; }
   grabPlug(conn){ this.plug=conn; Audio.sfx('pick'); this.renderPorts(); }
   connectPlug(){ const conn=this.plug; const f=this.connPos(conn.from), t=this.connPos(conn.to);
-    const aw=iso(f.gx,f.gy,3), bw=iso(t.gx,t.gy,t.z!=null?t.z:8);
+    const aw=iso(f.gx,f.gy,f.z!=null?f.z:4), bw=iso(t.gx,t.gy,t.z!=null?t.z:4);
     const g=this.drawTangledCable(aw,bw,conn.col,(f.gx+t.gx)/2,(f.gy+t.gy)/2);
     this.cableObjs.push({conn,g,f,t}); this.cables.push(conn.id); this.cabled++; this.plug=null;
     Audio.sfx('connect'); this.addScore(15); this.floatText(t.gx,t.gy,'⚡','#ffd23f'); this.phaseDoneCheck(); this.refreshHUD(); this.renderPorts();
@@ -761,7 +787,7 @@ class Setup extends Phaser.Scene{
     if(this.tidied>=3) this.straightenCables(); this.phaseDoneCheck(); this.refreshHUD(); }
   straightenCables(){ // pokręcone → równe linie tuż przy ziemi, ukryte pod szarą taśmą
     this.cableObjs.forEach((o,i)=>{ o.g.destroy();
-      const aw=iso(o.f.gx,o.f.gy,2), bw=iso(o.t.gx,o.t.gy,o.t.z!=null?o.t.z:8); const off=(i-2)*1.4;
+      const aw=iso(o.f.gx,o.f.gy,o.f.z!=null?o.f.z:4), bw=iso(o.t.gx,o.t.gy,o.t.z!=null?o.t.z:4); const off=(i-2)*1.4;
       const g=this.add.graphics().setDepth(tdepth((o.f.gx+o.t.gx)/2,(o.f.gy+o.t.gy)/2,1)); g.lineStyle(2,o.conn.col,0.9); g.lineBetween(aw.x+off,aw.y,bw.x+off,bw.y);
       const tape=this.add.graphics().setDepth(tdepth((o.f.gx+o.t.gx)/2,(o.f.gy+o.t.gy)/2,2)); tape.lineStyle(7,0x787c86,0.6); tape.lineBetween(aw.x,aw.y+1,bw.x,bw.y+1); });
     Audio.sfx('phase'); this.flashTip('Kable uprzątnięte i oklejone taśmą!'); }
@@ -789,9 +815,9 @@ class Setup extends Phaser.Scene{
     const tx=GW/2+50, ty=GH/2-150, cw=150, ch=82;
     garments.forEach((g,i)=>{ const col=i%2,row=(i/2)|0,cx=tx+col*cw,cy=ty+row*ch;
       const bg=add(this.add.rectangle(cx,cy,cw-14,ch-12,0x20203a,1).setStrokeStyle(2,0x444).setScrollFactor(0).setDepth(D+5));
-      const lab=add(this.add.text(cx+6,cy,g.label,{fontFamily:'Segoe UI',fontSize:'13px',color:'#dfe',fontStyle:'bold'}).setOrigin(0,0.5).setScrollFactor(0).setDepth(D+6));
-      const img=add(this.add.image(cx-40,cy,g.key).setOrigin(0.5,0.5).setScale(2.4).setScrollFactor(0).setDepth(D+6));
-      img.homeX=cx-40; img.homeY=cy; img.gkey=g.key; img.bg=bg; img.lab=lab; img.placed=false;
+      const lab=add(this.add.text(cx+2,cy,g.label,{fontFamily:'Segoe UI',fontSize:'13px',color:'#dfe',fontStyle:'bold'}).setOrigin(0,0.5).setScrollFactor(0).setDepth(D+6));
+      const img=add(this.add.image(cx-42,cy,'gi_'+g.key).setOrigin(0.5,0.5).setScale(2.1).setScrollFactor(0).setDepth(D+6));
+      img.homeX=cx-42; img.homeY=cy; img.gkey=g.key; img.bg=bg; img.lab=lab; img.placed=false;
       img.setInteractive({draggable:true,useHandCursor:true}); });
     this.dressHint=add(this.add.text(GW/2,GH/2+208,'',{fontFamily:'Segoe UI',fontSize:'14px',color:'#ff6b6b',fontStyle:'bold'}).setOrigin(0.5).setScrollFactor(0).setDepth(D+3));
     this._dragMove=(p,o,x,y)=>{ if(o.gkey&&!o.placed){ o.x=x; o.y=y; o.setDepth(D+20); } };

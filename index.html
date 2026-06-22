@@ -169,8 +169,8 @@
 function startGame(){
 
 const GW=960, GH=600;
-const TW=64, TH=32;                 // kafel izo (2:1)
-const OX=440, OY=180;               // origin ekranu
+const TW=80, TH=40;                 // kafel izo (2:1) — większa sala
+const OX=420, OY=176;               // origin ekranu (wyśrodkowany)
 const SITE_URL='http://www.wodzirejkarol.pl';
 const RW=12, RH=9;                  // rozmiar sali (kafle)
 const SETUP_TIME=185;               // sekund "do przyjścia gości"
@@ -367,18 +367,27 @@ function genAssets(scene){
   const mkFloor=(key,fn)=>{ const W=TW,H=TH; const ct=scene.textures.exists(key)?scene.textures.get(key):scene.textures.createCanvas(key,W,H);
     const ctx=ct.context||ct.getContext(); ctx.imageSmoothingEnabled=false; ctx.clearRect(0,0,W,H);
     ctx.save(); ctx.beginPath(); ctx.moveTo(W/2,-1); ctx.lineTo(W+1,H/2); ctx.lineTo(W/2,H+1); ctx.lineTo(-1,H/2); ctx.closePath(); ctx.clip(); fn(ctx,W,H); ctx.restore(); ct.refresh(); };
-  const floorTile=(ctx,W,H,base,seam,outside)=>{
+  const floorTile=(ctx,W,H,base,seam,outside,dir)=>{
+    dir=dir||1; const slope=0.5*dir;
     ctx.fillStyle=_rgba(base,1); ctx.fillRect(0,0,W,H);
-    if(!outside){ ctx.strokeStyle=_rgba(seam,0.5); ctx.lineWidth=1;       // deski wzdłuż osi izo
-      for(let c=-H;c<H;c+=7){ ctx.beginPath(); ctx.moveTo(0,c); ctx.lineTo(W,0.5*W+c); ctx.stroke(); } }
-    let s=(base&0xffff)||7; const rnd=()=>{ s=(s*1103515245+12345)&0x7fffffff; return s/0x7fffffff; }; // ziarno deterministyczne
-    for(let i=0;i<(outside?90:60);i++){ const x=(rnd()*W)|0,y=(rnd()*H)|0,up=rnd()<0.5; ctx.fillStyle='rgba('+(up?255:0)+','+(up?255:0)+','+(up?255:0)+','+(outside?0.05:0.06)+')'; ctx.fillRect(x,y,1,1); }
-    ctx.fillStyle='rgba(255,255,255,0.07)'; ctx.fillRect(0,0,W,3);          // górna krawędź
-    ctx.fillStyle='rgba(0,0,0,0.18)'; ctx.fillRect(0,H-3,W,3);              // dolna krawędź
+    let s=((base^(dir*97))&0x7fff)||7; const rnd=()=>{ s=(s*1103515245+12345)&0x7fffffff; return s/0x7fffffff; };
+    if(!outside){
+      // parkiet — pasy desek wzdłuż osi izo, każdy pas lekko inny odcień
+      for(let c=-W; c<W*1.7; c+=8){ const sh=(rnd()-0.5)*0.22, lit=sh>=0;
+        ctx.strokeStyle='rgba('+(lit?255:0)+','+(lit?248:0)+','+(lit?230:0)+','+Math.abs(sh).toFixed(2)+')';
+        ctx.lineWidth=7; ctx.beginPath(); ctx.moveTo(-2, slope*-2+c+3.5); ctx.lineTo(W+2, slope*(W+2)+c+3.5); ctx.stroke(); }
+      ctx.strokeStyle=_rgba(seam,0.6); ctx.lineWidth=1;            // fugi między deskami
+      for(let c=-W;c<W*1.7;c+=8){ ctx.beginPath(); ctx.moveTo(-2, slope*-2+c); ctx.lineTo(W+2, slope*(W+2)+c); ctx.stroke(); }
+      ctx.fillStyle='rgba(255,250,235,0.05)';                      // delikatny połysk
+      ctx.beginPath(); ctx.moveTo(W*0.18,0); ctx.lineTo(W*0.5,0); ctx.lineTo(W*0.3,H); ctx.lineTo(0,H); ctx.closePath(); ctx.fill();
+    }
+    for(let i=0;i<(outside?90:46);i++){ const x=(rnd()*W)|0,y=(rnd()*H)|0,d=rnd()<0.5; ctx.fillStyle='rgba('+(d?255:30)+','+(d?245:20)+','+(d?220:10)+',0.05)'; ctx.fillRect(x,y,1,1); }
+    ctx.fillStyle='rgba(255,250,235,0.06)'; ctx.fillRect(0,0,W,2);
+    ctx.fillStyle='rgba(0,0,0,0.22)'; ctx.fillRect(0,H-2,W,2);
   };
-  mkFloor('floorWood', (ctx,W,H)=>floorTile(ctx,W,H,0x6a4a2c,0x4a3320,false));
-  mkFloor('floorWoodB',(ctx,W,H)=>floorTile(ctx,W,H,0x5a3f25,0x402c1c,false));
-  mkFloor('floorOut',  (ctx,W,H)=>floorTile(ctx,W,H,0x2a2c33,0x202228,true));
+  mkFloor('floorWood', (ctx,W,H)=>floorTile(ctx,W,H,0x6e4c2c,0x382414,false, 1));
+  mkFloor('floorWoodB',(ctx,W,H)=>floorTile(ctx,W,H,0x6e4c2c,0x382414,false,-1));   // ten sam ton, przeciwny kierunek = jodełka
+  mkFloor('floorOut',  (ctx,W,H)=>floorTile(ctx,W,H,0x2a2c33,0x202228,true, 1));
   // postacie
   const chars={
     karol:   {shirt:0x2b3a55,pants:0x1c2433,skin:0xf1c9a5,hair:0x111111,curly:true},
@@ -533,6 +542,11 @@ class Setup extends Phaser.Scene{
     this.buildHUD();
     this.buildControls();
 
+    // ambient — drobinki światła w powietrzu
+    for(let i=0;i<14;i++){ const sx=Phaser.Math.Between(120,840), sy=Phaser.Math.Between(130,520);
+      const d=this.add.image(sx,sy,'soft').setTint(0xffe9a0).setAlpha(Phaser.Math.FloatBetween(0.05,0.13)).setScale(Phaser.Math.FloatBetween(0.12,0.34)).setDepth(-70000);
+      this.tweens.add({targets:d, y:sy-Phaser.Math.Between(36,70), alpha:0.02, yoyo:true, repeat:-1, ease:'Sine.inOut', duration:Phaser.Math.Between(4200,8000), delay:Phaser.Math.Between(0,4000)}); }
+
     // NPC harmonogram
     this.npcDefs=[
       {key:'manager', name:'Menager sali', req:'Ułóż kolejność wesela!', modal:true, target:{gx:5.5,gy:1.2}},
@@ -554,35 +568,63 @@ class Setup extends Phaser.Scene{
     this.clockText.setText('Goście za: '+this.fmt(Math.max(0,this.secs))); this.clockText.setColor(this.secs<30?'#ff6b6b':this.secs<60?'#ffd23f':'#00ffcc'); }
   fmt(s){ const m=Math.floor(s/60); const ss=s%60; return m+':'+(ss<10?'0':'')+ss; }
 
-  /* ---------- RENDER SALI ---------- */
+  /* ---------- RENDER SALI (pałac) ---------- */
   drawRoom(){
     const g=this.add.graphics().setDepth(-99000);
-    // podłoga — stemplowane kafle-romby (parkiet / asfalt)
+    // podłoga — kafle parkietu (jodełka: floorWood/floorWoodB = przeciwne kierunki desek)
     for(let gx=0;gx<RW;gx++) for(let gy=-3;gy<RH;gy++){
-      const inside = gy>=0;
-      const outDoor = gy<0 && gx>=4 && gx<=7;
+      const inside = gy>=0, outDoor = gy<0 && gx>=4 && gx<=7;
       if(gy<0 && !outDoor) continue;
       const p=iso(gx,gy,0);
       const key = inside ? ((gx+gy)%2===0?'floorWood':'floorWoodB') : 'floorOut';
       this.add.image(p.x,p.y,key).setOrigin(0.5,0.5).setDepth(-100000);
     }
-    // ściany (tylne krawędzie: gx=0 i gy=0), wysokość WH — teksturowane
-    const WH=46;
+    // czerwony chodnik od drzwi w głąb sali
+    const carpet=this.add.graphics().setDepth(-99500);
+    const poly=(gg,pts,col,a)=>{ gg.fillStyle(col,a==null?1:a); gg.beginPath(); gg.moveTo(pts[0].x,pts[0].y); pts.slice(1).forEach(p=>gg.lineTo(p.x,p.y)); gg.closePath(); gg.fillPath(); };
+    poly(carpet,[iso(4.5,0,0),iso(6.5,0,0),iso(6.5,7.6,0),iso(4.5,7.6,0)],0x7c1124,0.92);
+    poly(carpet,[iso(4.85,0,0),iso(6.15,0,0),iso(6.15,7.6,0),iso(4.85,7.6,0)],0xab2740,0.5);
+    carpet.lineStyle(2,C.gold,0.5); carpet.beginPath(); [iso(4.5,0,0),iso(6.5,0,0),iso(6.5,7.6,0),iso(4.5,7.6,0)].forEach((p,i)=>i?carpet.lineTo(p.x,p.y):carpet.moveTo(p.x,p.y)); carpet.closePath(); carpet.strokePath();
+
+    // ===== ŚCIANY pałacowe =====
+    const WH=58;
+    const band=(x1,y1,x2,y2,yoff,h,col,a)=>{ g.fillStyle(col,a==null?1:a); g.beginPath(); g.moveTo(x1,y1-yoff); g.lineTo(x2,y2-yoff); g.lineTo(x2,y2-yoff-h); g.lineTo(x1,y1-yoff-h); g.closePath(); g.fillPath(); };
+    const deco=(x1,y1,x2,y2,t0,t1,y0,h,col,a)=>{ const ax=x1+(x2-x1)*t0,ay=y1+(y2-y1)*t0,bx=x1+(x2-x1)*t1,by=y1+(y2-y1)*t1;
+      g.fillStyle(col,a==null?1:a); g.beginPath(); g.moveTo(ax,ay-y0); g.lineTo(bx,by-y0); g.lineTo(bx,by-y0-h); g.lineTo(ax,ay-y0-h); g.closePath(); g.fillPath(); };
     const wall=(x1,y1,x2,y2,top)=>{
-      const base=top?0x322d4a:0x262138;
-      const band=(yoff,h,col,a)=>{ g.fillStyle(col,a==null?1:a); g.beginPath(); g.moveTo(x1,y1-yoff); g.lineTo(x2,y2-yoff); g.lineTo(x2,y2-yoff-h); g.lineTo(x1,y1-yoff-h); g.closePath(); g.fillPath(); };
-      band(0,WH,base);                         // panel
-      band(WH/2,WH/2,0xffffff,0.05);           // górna połowa jaśniej (światło)
-      band(0,4,0x14111f);                      // cokół
-      band(WH-4,4,C.gold,0.32);                // listwa górna (akcent)
-      for(let m=12;m<WH-6;m+=12) band(m,1,0x000000,0.16); // fugi paneli
+      const upper=top?0x3a3056:0x342a4c, lower=top?0x2a2342:0x241d38;
+      band(x1,y1,x2,y2,0,WH,upper);                 // tło ściany
+      band(x1,y1,x2,y2,WH/2,WH/2,0xffffff,0.04);    // światło u góry
+      band(x1,y1,x2,y2,0,20,lower);                 // boazeria (wainscot)
+      band(x1,y1,x2,y2,19,2,C.gold,0.5);            // listwa (chair rail)
+      band(x1,y1,x2,y2,0,3,0x14111f);               // cokół
+      band(x1,y1,x2,y2,WH-6,6,C.gold,0.5);          // gzyms (cornice)
+      band(x1,y1,x2,y2,WH-9,2,0x000000,0.22);
     };
-    // ściana NW (wzdłuż gy, gx=0)
-    for(let gy=0;gy<RH;gy++){ const a=iso(0,gy,0), b=iso(0,gy+1,0); wall(a.x,a.y,b.x,b.y,false); }
-    // ściana NE (wzdłuż gx, gy=0) — z przerwą na drzwi gx 4..7
-    for(let gx=0;gx<RW;gx++){ if(gx>=4&&gx<=6) continue; const a=iso(gx,0,0), b=iso(gx+1,0,0); wall(a.x,a.y,b.x,b.y,true); }
+    const painting=(x1,y1,x2,y2)=>{ deco(x1,y1,x2,y2,0.28,0.72,WH*0.40,WH*0.40,C.gold,0.95);
+      deco(x1,y1,x2,y2,0.34,0.66,WH*0.44,WH*0.32,0x2a3a5a,1); deco(x1,y1,x2,y2,0.37,0.63,WH*0.58,WH*0.13,0x6a8ab0,0.7); deco(x1,y1,x2,y2,0.37,0.63,WH*0.45,WH*0.13,0x9a6a3a,0.7); };
+    const drape=(x1,y1,x2,y2)=>{ deco(x1,y1,x2,y2,0.18,0.82,0,WH,0x6e0f1e,0.95);
+      deco(x1,y1,x2,y2,0.18,0.30,0,WH,0x4a0a16,0.6); deco(x1,y1,x2,y2,0.46,0.56,0,WH,0x4a0a16,0.55); deco(x1,y1,x2,y2,0.70,0.82,0,WH,0x4a0a16,0.6); deco(x1,y1,x2,y2,0.18,0.82,WH-5,5,C.gold,0.6); };
+    const sconce=(x1,y1,x2,y2)=>{ deco(x1,y1,x2,y2,0.46,0.54,WH*0.48,WH*0.20,C.gold,0.95); deco(x1,y1,x2,y2,0.43,0.57,WH*0.70,4,0xffe9a0,0.95); };
+    const decorate=(x1,y1,x2,y2,ty)=>{ if(ty==='painting')painting(x1,y1,x2,y2); else if(ty==='drape')drape(x1,y1,x2,y2); else if(ty==='sconce')sconce(x1,y1,x2,y2); };
+    // NW (gx=0, wzdłuż gy)
+    for(let gy=0;gy<RH;gy++){ const a=iso(0,gy,0), b=iso(0,gy+1,0); wall(a.x,a.y,b.x,b.y,false);
+      decorate(a.x,a.y,b.x,b.y,{1:'sconce',2:'painting',4:'sconce',5:'painting',7:'drape'}[gy]); }
+    // NE (gy=0, wzdłuż gx) — drzwi gx4..6
+    for(let gx=0;gx<RW;gx++){ if(gx>=4&&gx<=6) continue; const a=iso(gx,0,0), b=iso(gx+1,0,0); wall(a.x,a.y,b.x,b.y,true);
+      decorate(a.x,a.y,b.x,b.y,{1:'painting',2:'sconce',7:'sconce',8:'drape',9:'painting',10:'drape'}[gx]); }
+
+    // ===== ŻYRANDOLE =====
+    const ch=this.add.graphics().setDepth(-80000);
+    const chandelier=(cx,cy)=>{ ch.fillStyle(0xb9952f,1); ch.fillRect(cx-1,cy-48,2,48);
+      ch.fillStyle(0xffe9a0,0.10); ch.fillCircle(cx,cy,30); ch.fillStyle(C.gold,1); ch.fillCircle(cx,cy,6);
+      for(let i=0;i<6;i++){ const a=i/6*Math.PI*2, ax=cx+Math.cos(a)*19, ay=cy+Math.sin(a)*8;
+        ch.lineStyle(2,C.gold,1); ch.lineBetween(cx,cy,ax,ay); ch.fillStyle(C.gold,1); ch.fillCircle(ax,ay,2);
+        ch.fillStyle(0xfff2bf,1); ch.fillCircle(ax,ay-4,2.4); ch.fillStyle(0xffe9a0,0.16); ch.fillCircle(ax,ay-4,7); } };
+    chandelier(OX-20,OY-54); chandelier(OX+150,OY-18);
+
     // neon z marką na ścianie
-    const np=iso(2,0,0); this.add.text(np.x,np.y-58,'WEDDING MC POLAND',{fontFamily:'Segoe UI',fontSize:'13px',color:'#00ffcc'}).setOrigin(0,1).setDepth(-98000).setShadow(0,0,'#00ffcc',8).setAngle(26);
+    const np=iso(2,0,0); this.add.text(np.x,np.y-78,'WEDDING MC POLAND',{fontFamily:'Segoe UI',fontSize:'13px',color:'#00ffcc'}).setOrigin(0,1).setDepth(-78000).setShadow(0,0,'#00ffcc',8).setAngle(26);
   }
 
   /* ---------- MARKERY ---------- */

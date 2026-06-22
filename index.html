@@ -506,6 +506,7 @@ class Setup extends Phaser.Scene{
       {id:'djtable', from:'djtable', to:'outlet0', col:0xffcf5a}
     ];
     this.plug=null; this.cableObjs=[]; this.portLayer=null; this.modalOpen=false;
+    this.lightFX=[]; this._disco=null; this._stepT=0;
     this.npcDone=0; this.npcActive=null; this.npcQueue=[];
 
     // pozycje kluczowe
@@ -622,6 +623,9 @@ class Setup extends Phaser.Scene{
         ch.lineStyle(2,C.gold,1); ch.lineBetween(cx,cy,ax,ay); ch.fillStyle(C.gold,1); ch.fillCircle(ax,ay,2);
         ch.fillStyle(0xfff2bf,1); ch.fillCircle(ax,ay-4,2.4); ch.fillStyle(0xffe9a0,0.16); ch.fillCircle(ax,ay-4,7); } };
     chandelier(OX-20,OY-54); chandelier(OX+150,OY-18);
+    // migoczące poświaty żyrandoli
+    [[OX-20,OY-54],[OX+150,OY-18]].forEach(([cx,cy])=>{ const gl=this.add.image(cx,cy,'soft').setTint(0xffe9a0).setScale(1.7).setAlpha(0.16).setDepth(-79000);
+      this.tweens.add({targets:gl,alpha:0.30,scale:1.85,yoyo:true,repeat:-1,ease:'Sine.inOut',duration:Phaser.Math.Between(700,1300)}); });
 
     // neon z marką na ścianie
     const np=iso(2,0,0); this.add.text(np.x,np.y-78,'WEDDING MC POLAND',{fontFamily:'Segoe UI',fontSize:'13px',color:'#00ffcc'}).setOrigin(0,1).setDepth(-78000).setShadow(0,0,'#00ffcc',8).setAngle(26);
@@ -711,7 +715,26 @@ class Setup extends Phaser.Scene{
   floatText(gx,gy,t,col){ const p=iso(gx,gy,30); const o=this.add.text(p.x,p.y,t,{fontFamily:'Segoe UI',fontSize:'14px',color:col,fontStyle:'bold'}).setOrigin(0.5).setDepth(96000);
     this.tweens.add({targets:o,y:p.y-26,alpha:0,duration:650,onComplete:()=>o.destroy()}); }
 
-  /* ---------- STEROWANIE ---------- */
+  /* ---------- JUICE ---------- */
+  burstAt(x,y,col,n){ n=n||12;
+    for(let i=0;i<n;i++){ const a=Math.random()*Math.PI*2, sp=Phaser.Math.Between(18,60);
+      const c=this.add.circle(x,y,Phaser.Math.Between(2,4),col,1).setDepth(96500);
+      this.tweens.add({targets:c,x:x+Math.cos(a)*sp,y:y+Math.sin(a)*sp-12,alpha:0,scale:0.2,duration:Phaser.Math.Between(340,640),ease:'Quad.out',onComplete:()=>c.destroy()}); }
+    const f=this.add.circle(x,y,9,0xffffff,0.7).setDepth(96400); this.tweens.add({targets:f,scale:2.6,alpha:0,duration:240,onComplete:()=>f.destroy()}); }
+  footDust(){ const sh=iso(this.px,this.py,0); const d=this.add.ellipse(sh.x,sh.y,11,5,0xffffff,0.16).setDepth(tdepth(this.px,this.py,-2));
+    this.tweens.add({targets:d,scaleX:2.1,scaleY:2.1,alpha:0,duration:480,onComplete:()=>d.destroy()}); }
+  shake(d,i){ this.cameras.main.shake(d||140,i||0.005); }
+
+  /* ---------- DYNAMICZNE ŚWIATŁO ---------- */
+  addLightGlow(s){ const p=iso(s.gx,s.gy,s.z); const glow=this.add.image(p.x,p.y,'soft').setTint(0x33e0ff).setAlpha(0.16).setScale(1.1).setDepth(tdepth(s.gx,s.gy,2));
+    this.tweens.add({targets:glow,alpha:0.28,scale:1.3,yoyo:true,repeat:-1,duration:900,ease:'Sine.inOut'});
+    const fp=iso(s.gx,s.gy,0); const pool=this.add.ellipse(fp.x,fp.y+18,110,54,0x33e0ff,0.0).setDepth(tdepth(s.gx,s.gy,-3));
+    (this.lightFX=this.lightFX||[]).push({id:s.id,glow,pool,on:false}); }
+  lightOn(id){ const fx=(this.lightFX||[]).find(f=>f.id===id); if(!fx||fx.on) return; fx.on=true;
+    this.tweens.add({targets:fx.glow,alpha:0.5,scale:1.7,duration:300}); this.tweens.add({targets:fx.pool,fillAlpha:0.22,duration:300});
+    this.ensureDisco(); }
+  ensureDisco(){ if(this._disco) return; const pal=[0x33e0ff,0xff2e8b,0xffe487,0x46d67a,0x9b5cff]; let k=0;
+    this._disco=this.time.addEvent({delay:360,loop:true,callback:()=>{ k++; (this.lightFX||[]).filter(f=>f.on).forEach((f,j)=>{ const c=pal[(k+j)%pal.length]; f.glow.setTint(c); f.pool.setFillStyle(c, f.pool.fillAlpha); }); }}); }
   buildControls(){
     this.cursors=this.input.keyboard.createCursorKeys();
     this.keys=this.input.keyboard.addKeys('W,A,S,D,SPACE');
@@ -808,6 +831,8 @@ class Setup extends Phaser.Scene{
   placeItem(s){ s.placed=true; const p=iso(s.gx,s.gy,s.z); const spr=this.add.image(p.x,p.y,s.key).setOrigin(0.5,1).setScale(1).setDepth(tdepth(s.gx,s.gy,s.z*0.1+3));
     this.placedSprites[s.id]=spr; this.tweens.add({targets:spr,scale:{from:1.25,to:1},duration:200,ease:'Back.out'});
     this.carry=null; this.placedCount++; Audio.sfx('place'); this.addScore(12); this.floatText(s.gx,s.gy,'✓','#46d67a');
+    this.burstAt(p.x,p.y-6,C.gold,12); this.shake(90,0.003);                 // juice
+    if(s.id==='liL'||s.id==='liR') this.addLightGlow(s);                     // lampa = poświata (standby)
     this.phaseDoneCheck(); this.refreshHUD(); this.refreshMarkers();
   }
   // pozycja końca połączenia (slot id albo 'outletN')
@@ -826,6 +851,8 @@ class Setup extends Phaser.Scene{
     const g=this.drawTangledCable(aw,bw,conn.col,(f.gx+t.gx)/2,(f.gy+t.gy)/2);
     this.cableObjs.push({conn,g,f,t}); this.cables.push(conn.id); this.cabled++; this.plug=null;
     Audio.sfx('connect'); this.addScore(15); this.floatText(t.gx,t.gy,'⚡','#ffd23f'); this.phaseDoneCheck(); this.refreshHUD(); this.renderPorts();
+    this.burstAt(bw.x,bw.y,conn.col,10); this.shake(170,0.006);              // juice: iskra + wstrząs przy podłączeniu prądu
+    if(conn.id==='liL'||conn.id==='liR') this.lightOn(conn.id);              // zasilona lampa = świeci (disco)
     if(this.cabled>=this.conns.length) this.spawnTidy();
   }
   drawTangledCable(aw,bw,col,mgx,mgy){ const g=this.add.graphics().setDepth(tdepth(mgx,mgy,1));
@@ -950,7 +977,13 @@ class Setup extends Phaser.Scene{
     this.npcActive={def,sprite:spr,gx:5.5,gy:-2.5,tgx:standGx,tgy:standGy,state:'enter',atTarget:false,bubble:null,timer:0};
   }
   resolveNpc(){ const n=this.npcActive; n.atTarget=true; n.state='leave'; if(n.bubble){n.bubble.destroy();n.bubble=null;} this.npcDone++; this.addScore(50);
-    Audio.sfx('ding'); this.flashTip(Phaser.Utils.Array.GetRandom(['Świetna logistyka!','Koordynacja ekipy!','Wszystko dograne przed gośćmi!','Profesjonalizm!'])); this.refreshHUD(); }
+    Audio.sfx('ding'); this.flashTip(Phaser.Utils.Array.GetRandom(['Świetna logistyka!','Koordynacja ekipy!','Wszystko dograne przed gośćmi!','Profesjonalizm!'])); this.refreshHUD();
+    // reakcja ekipy: emoji + podskok/puls
+    const e=Phaser.Utils.Array.GetRandom(['👍','❤️','🎉','✨','😍','🙌']); const ep=iso(n.gx,n.gy,48);
+    const et=this.add.text(ep.x,ep.y,e,{fontSize:'24px'}).setOrigin(0.5).setDepth(96000);
+    this.tweens.add({targets:et,y:ep.y-30,scale:{from:0.4,to:1.2},alpha:{from:1,to:0},duration:1100,ease:'Quad.out',onComplete:()=>et.destroy()});
+    if(n.sprite){ this.tweens.add({targets:n.sprite,scaleX:n.sprite.scaleX*1.16,scaleY:n.sprite.scaleY*1.16,yoyo:true,repeat:2,duration:130}); }
+    const cp=iso(n.gx,n.gy,30); this.burstAt(cp.x,cp.y,C.gold,8); }
 
   updateNpc(dt){
     const n=this.npcActive; if(!n) return;
@@ -999,6 +1032,7 @@ class Setup extends Phaser.Scene{
       let dgx=ix/TW + iy/TH, dgy=-ix/TW + iy/TH; const l=Math.hypot(dgx,dgy)||1; dgx/=l; dgy/=l;
       const spd=(this.carry?2.6:3.4)*(dt/1000);
       this.px+=dgx*spd; this.py+=dgy*spd; this.clampPos();
+      this._stepT=(this._stepT||0)-dt; if(this._stepT<=0){ this._stepT=240; this.footDust(); }   // ślad kroków
     }
     this.bob = moving ? this.bob+dt*0.012 : 0;
     // render gracza

@@ -74,24 +74,35 @@
 
   #poster{
     position:absolute; inset:0; display:flex; flex-direction:column;
-    align-items:center; justify-content:center; text-align:center; gap:18px;
+    align-items:center; justify-content:center; text-align:center;
     background:
       radial-gradient(circle at 30% 30%, rgba(0,255,204,.18), transparent 45%),
       radial-gradient(circle at 75% 70%, rgba(255,46,139,.20), transparent 45%),
       linear-gradient(160deg,#140d2b,#0a0a18);
-    padding:24px; cursor:pointer; z-index:5;
+    padding:clamp(14px,3vh,28px); z-index:5; overflow-y:auto;
   }
-  #poster h1{ font-size:clamp(22px,5vw,42px); margin:0; letter-spacing:1px; color:#fff; text-shadow:0 0 16px rgba(0,255,204,.55); }
-  #poster h1 .accent{color:var(--gold); text-shadow:0 0 18px rgba(212,175,55,.7)}
-  #poster p{margin:0; max-width:560px; color:#c9c9e0; font-size:clamp(13px,2.6vw,16px); line-height:1.5}
-  #playBtn{
-    border:none; cursor:pointer; font-weight:700; letter-spacing:1px;
-    font-size:clamp(16px,3.4vw,22px); color:#0a0a18; padding:14px 34px; border-radius:50px;
-    background:linear-gradient(90deg,var(--gold),#ffe487,var(--gold));
-    box-shadow:0 0 24px rgba(212,175,55,.6); transition:transform .15s ease, box-shadow .15s ease;
-  }
-  #playBtn:hover{transform:scale(1.06); box-shadow:0 0 34px rgba(212,175,55,.9)}
-  #loadingTxt{font-size:13px;color:var(--neon);min-height:18px}
+  .menu{ width:min(94%,820px); display:flex; flex-direction:column; align-items:center; gap:clamp(14px,3.2vh,30px); margin:auto; }
+  #poster h1{ font-size:clamp(28px,7vw,52px); margin:0; letter-spacing:1px; color:#fff; text-shadow:0 0 16px rgba(0,255,204,.55); line-height:1.05; }
+  #poster h1 .accent{color:var(--gold); text-shadow:0 0 18px rgba(212,175,55,.7); font-size:.78em}
+  #poster .sub{margin:0; max-width:640px; color:#00ffcc; font-size:clamp(15px,3.6vw,21px); line-height:1.4; font-weight:600}
+  .cards{ width:100%; display:flex; flex-direction:column; gap:clamp(12px,2.4vh,18px); }
+  .task-card{ width:100%; display:flex; align-items:center; justify-content:space-between; gap:14px; text-align:left;
+    border:2px solid #3a3a4a; border-radius:14px; background:#171520; padding:clamp(14px,2.6vh,22px) clamp(16px,4vw,28px);
+    color:#c9c9e0; font-family:inherit; }
+  button.task-card{ cursor:pointer; }
+  .task-card.active{ border-color:var(--gold); background:linear-gradient(100deg,#1b2740,#241a36); box-shadow:0 0 22px rgba(212,175,55,.28); }
+  .task-card.active:hover{ transform:translateY(-2px); box-shadow:0 0 30px rgba(212,175,55,.45); }
+  .task-card.locked{ opacity:.6; }
+  .tc-txt{ display:flex; flex-direction:column; gap:5px; }
+  .tc-title{ font-size:clamp(17px,4.6vw,25px); font-weight:700; color:#fff; }
+  .task-card.active .tc-title{ color:#ffe487; }
+  .tc-desc{ font-size:clamp(13px,3vw,17px); color:#c9c9e0; line-height:1.35; }
+  .tc-go{ font-size:clamp(16px,4.2vw,22px); font-weight:700; letter-spacing:1px; color:#0a0a18; white-space:nowrap;
+    background:linear-gradient(90deg,var(--gold),#ffe487,var(--gold)); padding:clamp(10px,1.6vh,14px) clamp(18px,4vw,30px);
+    border-radius:50px; box-shadow:0 0 18px rgba(212,175,55,.55); }
+  .tc-lock{ font-size:clamp(22px,5.5vw,30px); }
+  #poster .ctrls{ margin:0; color:#9aa; font-size:clamp(11px,2.8vw,15px); line-height:1.5 }
+  #loadingTxt{font-size:clamp(12px,2.6vw,14px);color:var(--neon);min-height:18px}
 
   #seo-copy{max-width:960px;width:min(96vw,960px);margin:14px auto 0;color:#aab; font-size:13px;line-height:1.6;text-align:center}
   #seo-copy a{color:var(--gold);font-weight:600;text-decoration:none}
@@ -125,11 +136,21 @@
 
   <div id="game-shell">
     <div id="game-container"></div>
-    <div id="poster" role="button" tabindex="0" aria-label="Załaduj i uruchom grę">
-      <h1>Wodzirej Karol<br><span class="accent">Master of the Dancefloor</span></h1>
-      <p>Profesjonalna logistyka wesela w izometrycznej grze: rozstaw sprzęt, ogarnij ekipę i zdąż przed gośćmi.</p>
-      <button id="playBtn" type="button">▶ GRAJ TERAZ</button>
-      <div id="loadingTxt" aria-live="polite"></div>
+    <div id="poster" role="region" aria-label="Menu gry — wybierz zadanie">
+      <div class="menu">
+        <h1>WODZIREJ KAROL<br><span class="accent">Master of the Dancefloor</span></h1>
+        <p class="sub">Profesjonalna logistyka wesela w izometrycznej grze — wybierz zadanie:</p>
+        <div class="cards">
+          <button class="task-card active" id="task1" type="button">
+            <span class="tc-txt"><span class="tc-title">1. Load-in: Rozstawienie sprzętu</span><span class="tc-desc">Rozpakuj i ustaw sprzęt, ogarnij ekipę i zdąż przed gośćmi.</span></span>
+            <span class="tc-go">▶ GRAJ</span>
+          </button>
+          <div class="task-card locked"><span class="tc-txt"><span class="tc-title">2. Parkiet z gośćmi</span><span class="tc-desc">Rozgrzej parkiet i czytaj salę. (Wkrótce)</span></span><span class="tc-lock">🔒</span></div>
+          <div class="task-card locked"><span class="tc-txt"><span class="tc-title">3. Wesele międzynarodowe PL/EN</span><span class="tc-desc">Płynne dwujęzyczne prowadzenie. (Wkrótce)</span></span><span class="tc-lock">🔒</span></div>
+        </div>
+        <p class="ctrls">Sterowanie: Strzałki / WASD • Akcja: Spacja • na telefonie: joystick + AKCJA</p>
+        <div id="loadingTxt" aria-live="polite"></div>
+      </div>
     </div>
   </div>
 
@@ -146,7 +167,7 @@
    ========================================================================= */
 (function(){
   const poster=document.getElementById('poster');
-  const playBtn=document.getElementById('playBtn');
+  const card1=document.getElementById('task1');
   const loadTxt=document.getElementById('loadingTxt');
   let loading=false;
   function loadGame(){
@@ -158,9 +179,8 @@
     s.onerror=()=>{ loadTxt.textContent='Błąd ładowania. Sprawdź połączenie i spróbuj ponownie.'; loading=false; };
     document.head.appendChild(s);
   }
-  playBtn.addEventListener('click',e=>{e.stopPropagation();loadGame();});
-  poster.addEventListener('click',loadGame);
-  poster.addEventListener('keydown',e=>{ if(e.key==='Enter'||e.key===' '){e.preventDefault();loadGame();}});
+  card1.addEventListener('click',loadGame);
+  card1.addEventListener('keydown',e=>{ if(e.key==='Enter'||e.key===' '){e.preventDefault();loadGame();}});
 })();
 
 /* =========================================================================
@@ -422,7 +442,7 @@ function genAssets(scene){
 =========================================================================== */
 class Boot extends Phaser.Scene{
   constructor(){ super('Boot'); }
-  create(){ genAssets(this); this.registry.set('best',this.registry.get('best')||0); this.scene.start('Hub'); }
+  create(){ genAssets(this); this.registry.set('best',this.registry.get('best')||0); this.scene.start('Setup'); }
 }
 
 /* ===========================================================================
@@ -467,6 +487,8 @@ class Setup extends Phaser.Scene{
 
   create(){
     this.cameras.main.setBackgroundColor('#08070f');
+    Audio.startMusic();                         // muzyka od razu (gest = klik karty w menu)
+    this.input.once('pointerdown',()=>Audio.resume()); this.input.keyboard.once('keydown',()=>Audio.resume());
     this.drawRoom();
 
     // definicje slotów (przedmioty do rozstawienia)
@@ -1129,7 +1151,7 @@ class Result extends Phaser.Scene{
     const mkBtn=(x,txt,fn)=>{ const b=this.add.text(x,506,txt,{fontFamily:'Segoe UI',fontSize:'20px',color:'#fff',backgroundColor:'#2a2747',padding:{x:18,y:11},fontStyle:'bold'}).setOrigin(0.5).setInteractive();
       b.on('pointerover',()=>b.setBackgroundColor('#3a3760')); b.on('pointerout',()=>b.setBackgroundColor('#2a2747')); b.on('pointerdown',fn); return b; };
     mkBtn(GW/2-140,'↻ Powtórz',()=>this.scene.start('Setup'));
-    mkBtn(GW/2+140,'≡ Wybór zadania',()=>this.scene.start('Hub'));
+    mkBtn(GW/2+140,'≡ Menu',()=>window.location.reload());
   }
 }
 

@@ -53,6 +53,10 @@
 }
 </script>
 
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@600;800&display=swap" rel="stylesheet">
+
 <style>
   :root{ --gold:#d4af37; --bg:#0a0a18; --neon:#00ffcc; --pink:#ff2e8b; }
   *{box-sizing:border-box}
@@ -73,35 +77,36 @@
   #game-container canvas{display:block}
 
   #poster{
-    position:absolute; inset:0; display:flex; flex-direction:column;
+    position:fixed; inset:0; display:flex; flex-direction:column;
     align-items:center; justify-content:center; text-align:center;
     background:
       radial-gradient(circle at 30% 30%, rgba(0,255,204,.18), transparent 45%),
       radial-gradient(circle at 75% 70%, rgba(255,46,139,.20), transparent 45%),
       linear-gradient(160deg,#140d2b,#0a0a18);
-    padding:clamp(14px,3vh,28px); z-index:5; overflow-y:auto;
+    padding:clamp(12px,3vh,30px); z-index:100; overflow-y:auto;
   }
-  .menu{ width:min(94%,820px); display:flex; flex-direction:column; align-items:center; gap:clamp(14px,3.2vh,30px); margin:auto; }
-  #poster h1{ font-size:clamp(28px,7vw,52px); margin:0; letter-spacing:1px; color:#fff; text-shadow:0 0 16px rgba(0,255,204,.55); line-height:1.05; }
-  #poster h1 .accent{color:var(--gold); text-shadow:0 0 18px rgba(212,175,55,.7); font-size:.78em}
-  #poster .sub{margin:0; max-width:640px; color:#00ffcc; font-size:clamp(15px,3.6vw,21px); line-height:1.4; font-weight:600}
-  .cards{ width:100%; display:flex; flex-direction:column; gap:clamp(12px,2.4vh,18px); }
+  .menu{ width:min(92%,860px); display:flex; flex-direction:column; align-items:center; gap:clamp(12px,3vh,28px); margin:auto; }
+  #poster h1{ font-family:'Orbitron','Segoe UI',sans-serif; font-size:clamp(26px,6.5vw,54px); margin:0; letter-spacing:1px; color:#fff; text-shadow:0 0 16px rgba(0,255,204,.55); line-height:1.1; }
+  #poster h1 .accent{color:var(--gold); text-shadow:0 0 18px rgba(212,175,55,.7); font-size:.74em; letter-spacing:2px}
+  #poster .sub{margin:0; max-width:680px; color:#00ffcc; font-size:clamp(15px,3.4vw,21px); line-height:1.4; font-weight:600}
+  .cards{ width:100%; display:flex; flex-direction:column; gap:clamp(10px,2.2vh,18px); }
   .task-card{ width:100%; display:flex; align-items:center; justify-content:space-between; gap:14px; text-align:left;
-    border:2px solid #3a3a4a; border-radius:14px; background:#171520; padding:clamp(14px,2.6vh,22px) clamp(16px,4vw,28px);
-    color:#c9c9e0; font-family:inherit; }
-  button.task-card{ cursor:pointer; }
+    border:2px solid #3a3a4a; border-radius:14px; background:#171520; padding:clamp(12px,2.4vh,22px) clamp(14px,3.6vw,28px);
+    color:#c9c9e0; font-family:inherit; min-height:64px; }
+  button.task-card{ cursor:pointer; transition:transform .15s ease, box-shadow .15s ease; }
   .task-card.active{ border-color:var(--gold); background:linear-gradient(100deg,#1b2740,#241a36); box-shadow:0 0 22px rgba(212,175,55,.28); }
   .task-card.active:hover{ transform:translateY(-2px); box-shadow:0 0 30px rgba(212,175,55,.45); }
-  .task-card.locked{ opacity:.6; }
+  .task-card.locked{ opacity:.55; pointer-events:none; cursor:default; }
   .tc-txt{ display:flex; flex-direction:column; gap:5px; }
-  .tc-title{ font-size:clamp(17px,4.6vw,25px); font-weight:700; color:#fff; }
+  .tc-title{ font-size:clamp(17px,4.4vw,25px); font-weight:700; color:#fff; }
   .task-card.active .tc-title{ color:#ffe487; }
   .tc-desc{ font-size:clamp(13px,3vw,17px); color:#c9c9e0; line-height:1.35; }
-  .tc-go{ font-size:clamp(16px,4.2vw,22px); font-weight:700; letter-spacing:1px; color:#0a0a18; white-space:nowrap;
+  .tc-go{ font-size:clamp(16px,4vw,22px); font-weight:700; letter-spacing:1px; color:#0a0a18; white-space:nowrap;
     background:linear-gradient(90deg,var(--gold),#ffe487,var(--gold)); padding:clamp(10px,1.6vh,14px) clamp(18px,4vw,30px);
     border-radius:50px; box-shadow:0 0 18px rgba(212,175,55,.55); }
-  .tc-lock{ font-size:clamp(22px,5.5vw,30px); }
-  #poster .ctrls{ margin:0; color:#9aa; font-size:clamp(11px,2.8vw,15px); line-height:1.5 }
+  .tc-lock{ font-size:clamp(20px,5vw,28px); }
+  #poster .ctrls{ margin:0; color:#9aa; font-size:clamp(11px,2.6vw,15px); line-height:1.6 }
+  #poster .ctrls b{ color:#cdd; font-weight:600 }
   #loadingTxt{font-size:clamp(12px,2.6vw,14px);color:var(--neon);min-height:18px}
 
   #seo-copy{max-width:960px;width:min(96vw,960px);margin:14px auto 0;color:#aab; font-size:13px;line-height:1.6;text-align:center}
@@ -148,7 +153,7 @@
           <div class="task-card locked"><span class="tc-txt"><span class="tc-title">2. Parkiet z gośćmi</span><span class="tc-desc">Rozgrzej parkiet i czytaj salę. (Wkrótce)</span></span><span class="tc-lock">🔒</span></div>
           <div class="task-card locked"><span class="tc-txt"><span class="tc-title">3. Wesele międzynarodowe PL/EN</span><span class="tc-desc">Płynne dwujęzyczne prowadzenie. (Wkrótce)</span></span><span class="tc-lock">🔒</span></div>
         </div>
-        <p class="ctrls">Sterowanie: Strzałki / WASD • Akcja: Spacja • na telefonie: joystick + AKCJA</p>
+        <p class="ctrls"><b>Sterowanie:</b> Strzałki / WASD&nbsp;•&nbsp;Akcja: Spacja<br>📱 na telefonie: joystick + przycisk AKCJA</p>
         <div id="loadingTxt" aria-live="polite"></div>
       </div>
     </div>

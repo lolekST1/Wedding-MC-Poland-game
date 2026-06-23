@@ -199,8 +199,20 @@ const OX=528, OY=176;               // origin ekranu (wyśrodkowany dla GW=1200)
 const SITE_URL='http://www.wodzirejkarol.pl';
 const RW=12, RH=9;                  // rozmiar sali (kafle)
 const SETUP_TIME=185;               // sekund "do przyjścia gości"
+const IS_MOBILE = (typeof navigator!=='undefined') && ((navigator.maxTouchPoints||0)>0 || (typeof window!=='undefined' && window.innerWidth<900));
 
 const C={ gold:0xd4af37, neon:0x00ffcc, pink:0xff2e8b, red:0xff5252, green:0x46d67a, sky:0x66ccff };
+
+// konfiguracja postaci (kolory/rekwizyty) — łatwa do strojenia
+const CHARS={
+  karol:   {shirt:0x2b3a55,pants:0x1c2433,skin:0xf1c9a5,hair:0x111111,curly:true},
+  karolFrak:{shirt:0x0b0b10,pants:0x0b0b10,hat:'top',bow:true,vest:true,curly:true,ponytail:true,shoes:true,skin:0xf1c9a5,hair:0x111111},
+  manager: {shirt:0x6a4a8a,pants:0x2a2436,hair:0x3a2a18,prop:'tray'},
+  photo:   {shirt:0x2f7a52,pants:0x223026,hair:0x20140c,prop:'camera'},
+  camera:  {shirt:0x335a8a,pants:0x223040,hair:0x20140c,prop:'cam'},
+  booth:   {shirt:0x8a3c7a,pants:0x402838,hair:0x301020,prop:'booth'},
+  barman:  {shirt:0xdedede,pants:0x222,hair:0x20140c,prop:'tray'}
+};
 
 function iso(gx,gy,z){ return { x: OX+(gx-gy)*(TW/2), y: OY+(gx+gy)*(TH/2) - (z||0) }; }
 function tdepth(gx,gy,bonus){ return (gx+gy)*100 + (bonus||0); }
@@ -413,18 +425,9 @@ function genAssets(scene){
   mkFloor('floorWood', (ctx,W,H)=>floorTile(ctx,W,H,0x6e4c2c,0x382414,false, 1));
   mkFloor('floorWoodB',(ctx,W,H)=>floorTile(ctx,W,H,0x6e4c2c,0x382414,false,-1));   // ten sam ton, przeciwny kierunek = jodełka
   mkFloor('floorOut',  (ctx,W,H)=>floorTile(ctx,W,H,0x2a2c33,0x202228,true, 1));
-  // postacie
-  const chars={
-    karol:   {shirt:0x2b3a55,pants:0x1c2433,skin:0xf1c9a5,hair:0x111111,curly:true},
-    karolFrak:{shirt:0x0b0b10,pants:0x0b0b10,hat:'top',bow:true,vest:true,curly:true,ponytail:true,shoes:true,skin:0xf1c9a5,hair:0x111111},
-    manager: {shirt:0x6a4a8a,pants:0x2a2436,hair:0x3a2a18,prop:'tray'},
-    photo:   {shirt:0x2f7a52,pants:0x223026,hair:0x20140c,prop:'camera'},
-    camera:  {shirt:0x335a8a,pants:0x223040,hair:0x20140c,prop:'cam'},
-    booth:   {shirt:0x8a3c7a,pants:0x402838,hair:0x301020,prop:'booth'},
-    barman:  {shirt:0xdedede,pants:0x222,hair:0x20140c,prop:'tray'}
-  };
+  // postacie (konfiguracja w CHARS na poziomie modułu — łatwa do strojenia)
   const cOpt={shade:{top:0.08,bot:0.12},rim:true};
-  Object.keys(chars).forEach(k=>{ mk(k,22,34,P=>drawChar(P,chars[k],false),cOpt); mk(k+'_b',22,34,P=>drawChar(P,chars[k],true),cOpt); });
+  Object.keys(CHARS).forEach(k=>{ mk(k,22,34,P=>drawChar(P,CHARS[k],false),cOpt); mk(k+'_b',22,34,P=>drawChar(P,CHARS[k],true),cOpt); });
   // przedmioty
   const iOpt={rim:true};
   ['bag','bagEmpty','djtable','console','laptop','dmx','speaker','spkstand','light','lightstand','outlet','screen','car','cablecoil']
@@ -447,7 +450,13 @@ function genAssets(scene){
 =========================================================================== */
 class Boot extends Phaser.Scene{
   constructor(){ super('Boot'); }
-  create(){ genAssets(this); this.registry.set('best',this.registry.get('best')||0); this.scene.start('Setup'); }
+  create(){
+    try{ genAssets(this); }
+    catch(e){ console.error('genAssets failed',e);
+      this.add.text(GW/2,GH/2,'Ups! Nie udało się przygotować grafiki.\nOdśwież stronę, by spróbować ponownie.',
+        {fontFamily:'Segoe UI',fontSize:'22px',color:'#ffe487',align:'center',fontStyle:'bold'}).setOrigin(0.5);
+      return; }
+    this.registry.set('best',this.registry.get('best')||0); this.scene.start('Setup'); }
 }
 
 /* ===========================================================================
@@ -570,8 +579,12 @@ class Setup extends Phaser.Scene{
     this.buildHUD();
     this.buildControls();
 
+    // sprzątanie przy wyjściu ze sceny (replay/menu) — zatrzymaj timery i listenery
+    this.events.once('shutdown',()=>{ if(this._disco){ this._disco.remove(); this._disco=null; }
+      if(this._dragMove){ this.input.off('drag',this._dragMove); this.input.off('dragend',this._dragEnd); this._dragMove=this._dragEnd=null; } });
+
     // ambient — drobinki światła w powietrzu
-    for(let i=0;i<16;i++){ const sx=Phaser.Math.Between(150,1050), sy=Phaser.Math.Between(130,540);
+    for(let i=0;i<(IS_MOBILE?7:16);i++){ const sx=Phaser.Math.Between(150,1050), sy=Phaser.Math.Between(130,540);
       const d=this.add.image(sx,sy,'soft').setTint(0xffe9a0).setAlpha(Phaser.Math.FloatBetween(0.05,0.13)).setScale(Phaser.Math.FloatBetween(0.12,0.34)).setDepth(-70000);
       this.tweens.add({targets:d, y:sy-Phaser.Math.Between(36,70), alpha:0.02, yoyo:true, repeat:-1, ease:'Sine.inOut', duration:Phaser.Math.Between(4200,8000), delay:Phaser.Math.Between(0,4000)}); }
 
@@ -1128,7 +1141,7 @@ class Result extends Phaser.Scene{
     this.cameras.main.setBackgroundColor('#0c0a16');
     const score=this.registry.get('finalScore')||0, stars=this.registry.get('stars')||1;
     const best=this.registry.get('best')||0, late=this.registry.get('late'), npc=this.registry.get('npcDone')||0;
-    for(let i=0;i<60;i++){ const c=this.add.rectangle(Phaser.Math.Between(0,GW),Phaser.Math.Between(-300,0),6,11,Phaser.Utils.Array.GetRandom([C.gold,C.neon,C.pink,C.green]));
+    for(let i=0;i<(IS_MOBILE?30:60);i++){ const c=this.add.rectangle(Phaser.Math.Between(0,GW),Phaser.Math.Between(-300,0),6,11,Phaser.Utils.Array.GetRandom([C.gold,C.neon,C.pink,C.green]));
       this.tweens.add({targets:c,y:GH+20,angle:360,duration:Phaser.Math.Between(2600,5200),repeat:-1,delay:Phaser.Math.Between(0,2200)}); }
     this.add.rectangle(GW/2,GH/2,720,476,0x05050d,0.92).setStrokeStyle(3,C.gold);
 

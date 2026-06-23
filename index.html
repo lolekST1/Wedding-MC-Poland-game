@@ -64,7 +64,7 @@
     min-height:100dvh; overflow:hidden;
   }
   #game-shell{
-    position:relative; width:min(96vw,960px); aspect-ratio:8/5;
+    position:relative; width:min(96vw,1200px); aspect-ratio:2/1;
     border:3px solid var(--gold); border-radius:10px;
     box-shadow:0 0 40px rgba(212,175,55,.35), inset 0 0 60px rgba(0,0,0,.6);
     overflow:hidden; background:#05050d;
@@ -168,9 +168,9 @@
    ========================================================================= */
 function startGame(){
 
-const GW=960, GH=600;
-const TW=80, TH=40;                 // kafel izo (2:1) — większa sala
-const OX=420, OY=176;               // origin ekranu (wyśrodkowany)
+const GW=1200, GH=600;
+const TW=96, TH=40;                 // kafel izo (szerszy, by wypełnić ekran 2:1)
+const OX=528, OY=176;               // origin ekranu (wyśrodkowany dla GW=1200)
 const SITE_URL='http://www.wodzirejkarol.pl';
 const RW=12, RH=9;                  // rozmiar sali (kafle)
 const SETUP_TIME=185;               // sekund "do przyjścia gości"
@@ -544,7 +544,7 @@ class Setup extends Phaser.Scene{
     this.buildControls();
 
     // ambient — drobinki światła w powietrzu
-    for(let i=0;i<14;i++){ const sx=Phaser.Math.Between(120,840), sy=Phaser.Math.Between(130,520);
+    for(let i=0;i<16;i++){ const sx=Phaser.Math.Between(150,1050), sy=Phaser.Math.Between(130,540);
       const d=this.add.image(sx,sy,'soft').setTint(0xffe9a0).setAlpha(Phaser.Math.FloatBetween(0.05,0.13)).setScale(Phaser.Math.FloatBetween(0.12,0.34)).setDepth(-70000);
       this.tweens.add({targets:d, y:sy-Phaser.Math.Between(36,70), alpha:0.02, yoyo:true, repeat:-1, ease:'Sine.inOut', duration:Phaser.Math.Between(4200,8000), delay:Phaser.Math.Between(0,4000)}); }
 
@@ -674,20 +674,20 @@ class Setup extends Phaser.Scene{
 
   /* ---------- HUD ---------- */
   buildHUD(){
-    this.add.rectangle(0,0,GW,30,0x000000,0.45).setOrigin(0,0).setDepth(90000);
-    this.scoreText=this.add.text(12,7,'★ 0',{fontFamily:'Segoe UI',fontSize:'18px',color:'#ffe487',fontStyle:'bold'}).setDepth(90001);
-    this.clockText=this.add.text(GW/2,7,'Goście za: '+this.fmt(SETUP_TIME),{fontFamily:'Segoe UI',fontSize:'18px',color:'#00ffcc',fontStyle:'bold'}).setOrigin(0.5,0).setDepth(90001);
+    this.add.rectangle(0,0,GW,38,0x000000,0.5).setOrigin(0,0).setDepth(90000);
+    this.scoreText=this.add.text(14,9,'★ 0',{fontFamily:'Segoe UI',fontSize:'22px',color:'#ffe487',fontStyle:'bold'}).setDepth(90001);
+    this.clockText=this.add.text(GW/2,9,'Goście za: '+this.fmt(SETUP_TIME),{fontFamily:'Segoe UI',fontSize:'22px',color:'#00ffcc',fontStyle:'bold'}).setOrigin(0.5,0).setDepth(90001);
     // mute
-    this.muteBtn=this.add.text(GW-12,7,'🔊',{fontSize:'18px'}).setOrigin(1,0).setDepth(90001).setInteractive();
+    this.muteBtn=this.add.text(GW-14,9,'🔊',{fontSize:'22px'}).setOrigin(1,0).setDepth(90001).setInteractive();
     this.muteBtn.on('pointerdown',()=>{ const m=Audio.toggleMute(); this.muteBtn.setText(m?'🔇':'🔊'); });
 
     // checklist
-    this.checkText=this.add.text(12,40,'',{fontFamily:'Segoe UI',fontSize:'13px',color:'#dfe',lineSpacing:3}).setDepth(90001);
+    this.checkText=this.add.text(14,46,'',{fontFamily:'Segoe UI',fontSize:'16px',color:'#dfe',lineSpacing:4,fontStyle:'bold'}).setDepth(90001).setShadow(1,1,'#000',2);
     // hint
-    this.hintBar=this.add.rectangle(GW/2,GH-26,GW-40,30,0x000000,0.5).setDepth(90000);
-    this.hintText=this.add.text(GW/2,GH-26,'',{fontFamily:'Segoe UI',fontSize:'15px',color:'#ffe487',fontStyle:'bold'}).setOrigin(0.5).setDepth(90001);
+    this.hintBar=this.add.rectangle(GW/2,GH-28,GW-40,34,0x000000,0.55).setDepth(90000);
+    this.hintText=this.add.text(GW/2,GH-28,'',{fontFamily:'Segoe UI',fontSize:'18px',color:'#ffe487',fontStyle:'bold'}).setOrigin(0.5).setDepth(90001);
     // prompt akcji
-    this.promptText=this.add.text(0,0,'',{fontFamily:'Segoe UI',fontSize:'13px',color:'#fff',backgroundColor:'#000a',padding:{x:6,y:3}}).setOrigin(0.5,1).setDepth(95000).setVisible(false);
+    this.promptText=this.add.text(0,0,'',{fontFamily:'Segoe UI',fontSize:'16px',color:'#fff',backgroundColor:'#000a',padding:{x:8,y:4}}).setOrigin(0.5,1).setDepth(95000).setVisible(false);
     // tip
     this.tipText=this.add.text(GW/2,70,'',{fontFamily:'Segoe UI',fontSize:'18px',color:'#00ffcc',fontStyle:'bold'}).setOrigin(0.5).setDepth(95001).setAlpha(0).setShadow(0,0,'#00ffcc',8);
     this.refreshHUD();
@@ -881,16 +881,29 @@ class Setup extends Phaser.Scene{
     Audio.sfx('phase'); this.flashTip('Kable uprzątnięte i oklejone taśmą!'); }
   takeEmpty(b){ b.taken=true; b.sprite.destroy(); this.carry={kind:'emptybag'}; Audio.sfx('pick'); }
   returnBag(){ this.carry=null; this.returned++; Audio.sfx('place'); this.addScore(8); this.phaseDoneCheck(); this.refreshHUD(); }
-  changeToFrak(){ this.changed=true; this.player.setTexture(this.facingBack?'karolFrak_b':'karolFrak'); Audio.sfx('phase'); this.flashTip('Elegancko! Czas na gości.'); this.refreshHUD();
-    this.time.delayedCall(1200,()=>this.finish()); }
+  changeToFrak(){ this.changed=true; this.player.setTexture(this.facingBack?'karolFrak_b':'karolFrak'); Audio.sfx('phase'); this.flashTip('Goście wchodzą — zaczynamy wesele! 🎉'); this.refreshHUD();
+    this.spawnGuests(); this.time.delayedCall(3000,()=>this.finish()); }
+  // FINAŁ: goście wchodzą drzwiami po dywanie na salę
+  spawnGuests(){ const keys=['manager','photo','camera','booth','barman','manager','photo','barman','camera','booth'];
+    for(let i=0;i<10;i++){ const k=keys[i%keys.length];
+      const door=iso(5+(Math.random()*1.6-0.8),-2.8,0);
+      const tg={gx:1.6+Math.random()*8.8, gy:2.2+Math.random()*5}; const tp=iso(tg.gx,tg.gy,0);
+      const spr=this.add.image(door.x,door.y,k).setOrigin(0.5,1).setScale(1.1).setDepth(tdepth(tg.gx,tg.gy,4)).setFlipX(tp.x<door.x);
+      const dur=1400+Math.random()*1000;
+      this.tweens.add({targets:spr,x:tp.x,y:tp.y,duration:dur,delay:i*120,ease:'Sine.inOut'});
+      this.tweens.add({targets:spr,scaleY:1.06,yoyo:true,repeat:-1,duration:200,delay:i*120});   // dreptanie
+      this.time.delayedCall(i*120+dur+30,()=>{ Audio.sfx('ding'); const e=this.add.text(tp.x,tp.y-62,Phaser.Utils.Array.GetRandom(['👏','🎉','🥳','❤️','✨']),{fontSize:'22px'}).setOrigin(0.5).setDepth(96000);
+        this.tweens.add({targets:e,y:tp.y-84,alpha:0,duration:1200,onComplete:()=>e.destroy()}); });
+    }
+  }
 
   /* ---------- MODAL PRZEBIERANIA ---------- */
   openDressModal(){ if(this.modalOpen) return; this.modalOpen=true; const D=97000; this.modalObjs=[];
     const add=o=>{ this.modalObjs.push(o); return o; };
     add(this.add.rectangle(GW/2,GH/2,GW,GH,0x05050d,0.84).setScrollFactor(0).setDepth(D).setInteractive());
-    add(this.add.rectangle(GW/2,GH/2,760,470,0x141022,0.98).setScrollFactor(0).setStrokeStyle(3,C.gold).setDepth(D+1));
-    add(this.add.text(GW/2,GH/2-212,'PRZEBIERZ SIĘ WE FRAK',{fontFamily:'Segoe UI',fontSize:'22px',color:'#ffe487',fontStyle:'bold'}).setOrigin(0.5).setScrollFactor(0).setDepth(D+2));
-    add(this.add.text(GW/2,GH/2-186,'Przeciągnij elementy na Karola — we właściwej kolejności',{fontFamily:'Segoe UI',fontSize:'13px',color:'#c9c9e0'}).setOrigin(0.5).setScrollFactor(0).setDepth(D+2));
+    add(this.add.rectangle(GW/2,GH/2,860,510,0x141022,0.98).setScrollFactor(0).setStrokeStyle(3,C.gold).setDepth(D+1));
+    add(this.add.text(GW/2,GH/2-226,'PRZEBIERZ SIĘ WE FRAK',{fontFamily:'Segoe UI',fontSize:'28px',color:'#ffe487',fontStyle:'bold'}).setOrigin(0.5).setScrollFactor(0).setDepth(D+2));
+    add(this.add.text(GW/2,GH/2-196,'Przeciągnij elementy na Karola — we właściwej kolejności',{fontFamily:'Segoe UI',fontSize:'16px',color:'#c9c9e0'}).setOrigin(0.5).setScrollFactor(0).setDepth(D+2));
     const mx=GW/2-200, my=GH/2+188, S=4.4; this.dressMX=mx; this.dressMY=my; this.dressS=S;
     this.dressMcx=mx; this.dressMcy=my-Math.round(76*S*0.46); this.dressR=Math.round(76*S*0.62); // strefa upuszczenia = cały manekin
     add(this.add.image(mx,my,'mannequin').setOrigin(0.5,1).setScale(S).setScrollFactor(0).setDepth(D+2));
@@ -901,14 +914,15 @@ class Setup extends Phaser.Scene{
       {key:'g_bowtie',label:'Muszka',req:['g_shirt']}, {key:'g_vest',label:'Kamizelka',req:['g_suspenders']},
       {key:'g_coat',label:'Marynarka',req:['g_vest']}, {key:'g_tophat',label:'Cylinder',req:[]} ];
     this.dressReq={}; this.dressLabels={}; garments.forEach(g=>{ this.dressReq[g.key]=g.req; this.dressLabels[g.key]=g.label; });
-    const tx=GW/2+50, ty=GH/2-150, cw=150, ch=82;
+    const tx=GW/2+70, ty=GH/2-156, cw=186, ch=90; const bw=cw-12, bh=ch-12;
     garments.forEach((g,i)=>{ const col=i%2,row=(i/2)|0,cx=tx+col*cw,cy=ty+row*ch;
-      const bg=add(this.add.rectangle(cx,cy,cw-14,ch-12,0x20203a,1).setStrokeStyle(2,0x444).setScrollFactor(0).setDepth(D+5));
-      const lab=add(this.add.text(cx+2,cy,g.label,{fontFamily:'Segoe UI',fontSize:'13px',color:'#dfe',fontStyle:'bold'}).setOrigin(0,0.5).setScrollFactor(0).setDepth(D+6));
-      const img=add(this.add.image(cx-42,cy,'gi_'+g.key).setOrigin(0.5,0.5).setScale(2.1).setScrollFactor(0).setDepth(D+6));
-      img.homeX=cx-42; img.homeY=cy; img.gkey=g.key; img.bg=bg; img.lab=lab; img.placed=false;
-      img.setInteractive({draggable:true,useHandCursor:true}); });
-    this.dressHint=add(this.add.text(GW/2,GH/2+208,'',{fontFamily:'Segoe UI',fontSize:'14px',color:'#ff6b6b',fontStyle:'bold'}).setOrigin(0.5).setScrollFactor(0).setDepth(D+3));
+      const chip=add(this.add.container(cx,cy).setScrollFactor(0).setDepth(D+5));
+      const box=this.add.rectangle(0,0,bw,bh,0x20203a,1).setStrokeStyle(2,0x555);
+      const ic=this.add.image(-bw/2+30,0,'gi_'+g.key).setScale(2.5);
+      const lab=this.add.text(-bw/2+58,0,g.label,{fontFamily:'Segoe UI',fontSize:'17px',color:'#eef',fontStyle:'bold'}).setOrigin(0,0.5);
+      chip.add([box,ic,lab]); chip.gkey=g.key; chip.homeX=cx; chip.homeY=cy; chip.placed=false; chip.box=box;
+      chip.setInteractive(new Phaser.Geom.Rectangle(-bw/2,-bh/2,bw,bh),Phaser.Geom.Rectangle.Contains); this.input.setDraggable(chip); });
+    this.dressHint=add(this.add.text(GW/2,GH/2+222,'',{fontFamily:'Segoe UI',fontSize:'17px',color:'#ff6b6b',fontStyle:'bold'}).setOrigin(0.5).setScrollFactor(0).setDepth(D+3));
     this._dragMove=(p,o,x,y)=>{ if(o.gkey&&!o.placed){ o.x=x; o.y=y; o.setDepth(D+20); } };
     this._dragEnd=(p,o)=>{ if(o.gkey&&!o.placed) this.onDressDrop(o,D); };
     this.input.on('drag',this._dragMove); this.input.on('dragend',this._dragEnd);
@@ -917,8 +931,8 @@ class Setup extends Phaser.Scene{
     if(dist<this.dressR){ const missing=(this.dressReq[img.gkey]||[]).filter(r=>!this.dressed.has(r));
       if(missing.length===0){ const zo={g_pants:0,g_shirt:1,g_shoes:2,g_suspenders:3,g_vest:4,g_coat:5,g_bowtie:6,g_tophat:7};
         this.modalObjs.push(this.add.image(this.dressMX,this.dressMY,img.gkey).setOrigin(0.5,1).setScale(this.dressS).setScrollFactor(0).setDepth(D+2+(zo[img.gkey]||0)));
-        this.dressed.add(img.gkey); img.placed=true; Audio.sfx('place'); this.dressHint.setText('');
-        img.bg.destroy(); img.lab.destroy(); img.destroy();
+        this.dressed.add(img.gkey); img.placed=true; Audio.sfx('place'); this.dressHint.setText(''); this.burstAt(this.dressMcx,this.dressMcy,C.gold,8);
+        img.destroy();
         if(this.dressed.size>=8){ this.dressHint.setColor('#46d67a').setText('Elegancko! Gotowe.'); this.time.delayedCall(650,()=>{ this.closeModal(); this.changeToFrak(); }); }
         return;
       } else { this.dressHint.setText('Najpierw załóż: '+missing.map(r=>this.dressLabels[r]).join(', ')); Audio.sfx('err'); } }
@@ -931,24 +945,24 @@ class Setup extends Phaser.Scene{
   openManagerModal(){ if(this.modalOpen) return; this.modalOpen=true; const D=97000; this.modalObjs=[];
     const add=o=>{ this.modalObjs.push(o); return o; };
     add(this.add.rectangle(GW/2,GH/2,GW,GH,0x05050d,0.84).setScrollFactor(0).setDepth(D).setInteractive());
-    add(this.add.rectangle(GW/2,GH/2,800,500,0x141022,0.98).setScrollFactor(0).setStrokeStyle(3,C.gold).setDepth(D+1));
-    add(this.add.text(GW/2,GH/2-224,'MENAGER SALI — KOLEJNOŚĆ WESELA',{fontFamily:'Segoe UI',fontSize:'21px',color:'#ffe487',fontStyle:'bold'}).setOrigin(0.5).setScrollFactor(0).setDepth(D+2));
-    add(this.add.text(GW/2,GH/2-200,'Przeciągnij bloki do miejsc 1–6 we właściwej kolejności',{fontFamily:'Segoe UI',fontSize:'13px',color:'#c9c9e0'}).setOrigin(0.5).setScrollFactor(0).setDepth(D+2));
+    add(this.add.rectangle(GW/2,GH/2,900,520,0x141022,0.98).setScrollFactor(0).setStrokeStyle(3,C.gold).setDepth(D+1));
+    add(this.add.text(GW/2,GH/2-234,'MENAGER SALI — KOLEJNOŚĆ WESELA',{fontFamily:'Segoe UI',fontSize:'26px',color:'#ffe487',fontStyle:'bold'}).setOrigin(0.5).setScrollFactor(0).setDepth(D+2));
+    add(this.add.text(GW/2,GH/2-204,'Przeciągnij bloki do miejsc 1–6 we właściwej kolejności',{fontFamily:'Segoe UI',fontSize:'16px',color:'#c9c9e0'}).setOrigin(0.5).setScrollFactor(0).setDepth(D+2));
     const correct=['Przywitanie chlebem i solą','Posiłek','Polonez','Pierwszy taniec','Animacje taneczne','Oczepiny'];
-    const sx=GW/2-180, sy=GH/2-150, sh=60;
+    const sx=GW/2-175, sy=GH/2-150, sh=60, bw=340, bh=52;
     this.mgrSlots=[];
     for(let i=0;i<6;i++){ const y=sy+i*sh;
-      add(this.add.text(sx-178,y,(i+1)+'.',{fontFamily:'Segoe UI',fontSize:'22px',color:'#ffe487',fontStyle:'bold'}).setOrigin(0.5).setScrollFactor(0).setDepth(D+2));
-      const box=add(this.add.rectangle(sx,y,300,50,0x1b1830,1).setStrokeStyle(2,0x3a3a4a).setScrollFactor(0).setDepth(D+2));
+      add(this.add.text(sx-bw/2-24,y,(i+1)+'.',{fontFamily:'Segoe UI',fontSize:'26px',color:'#ffe487',fontStyle:'bold'}).setOrigin(0.5).setScrollFactor(0).setDepth(D+2));
+      const box=add(this.add.rectangle(sx,y,bw,bh,0x1b1830,1).setStrokeStyle(2,0x3a3a4a).setScrollFactor(0).setDepth(D+2));
       this.mgrSlots.push({x:sx,y,box,tile:null,idx:i}); }
-    const tx=GW/2+200, ty=sy;
-    this.mgrHint=add(this.add.text(GW/2,GH/2+218,'',{fontFamily:'Segoe UI',fontSize:'15px',color:'#ff6b6b',fontStyle:'bold'}).setOrigin(0.5).setScrollFactor(0).setDepth(D+3));
+    const tx=GW/2+210, ty=sy;
+    this.mgrHint=add(this.add.text(GW/2,GH/2+232,'',{fontFamily:'Segoe UI',fontSize:'18px',color:'#ff6b6b',fontStyle:'bold'}).setOrigin(0.5).setScrollFactor(0).setDepth(D+3));
     Phaser.Utils.Array.Shuffle([0,1,2,3,4,5]).forEach((ci,row)=>{ const y=ty+row*sh;
       const cont=add(this.add.container(tx,y).setScrollFactor(0).setDepth(D+5));
-      const r=this.add.rectangle(0,0,300,48,0x2a2747,1).setStrokeStyle(2,C.gold,0.6);
-      const t=this.add.text(0,0,correct[ci],{fontFamily:'Segoe UI',fontSize:'13px',color:'#fff',fontStyle:'bold'}).setOrigin(0.5);
+      const r=this.add.rectangle(0,0,bw,bh,0x2a2747,1).setStrokeStyle(2,C.gold,0.6);
+      const t=this.add.text(0,0,correct[ci],{fontFamily:'Segoe UI',fontSize:'16px',color:'#fff',fontStyle:'bold'}).setOrigin(0.5);
       cont.add([r,t]); cont.rect=r; cont.correctPos=ci; cont.slot=null; cont.homeX=tx; cont.homeY=y;
-      cont.setInteractive(new Phaser.Geom.Rectangle(-150,-24,300,48),Phaser.Geom.Rectangle.Contains); this.input.setDraggable(cont); });
+      cont.setInteractive(new Phaser.Geom.Rectangle(-bw/2,-bh/2,bw,bh),Phaser.Geom.Rectangle.Contains); this.input.setDraggable(cont); });
     this._dragMove=(p,o,x,y)=>{ if(o.correctPos!=null){ o.x=x; o.y=y; o.setDepth(D+20); } };
     this._dragEnd=(p,o)=>{ if(o.correctPos!=null) this.onMgrDrop(o,D); };
     this.input.on('drag',this._dragMove); this.input.on('dragend',this._dragEnd);
@@ -1089,7 +1103,7 @@ class Result extends Phaser.Scene{
     const best=this.registry.get('best')||0, late=this.registry.get('late'), npc=this.registry.get('npcDone')||0;
     for(let i=0;i<60;i++){ const c=this.add.rectangle(Phaser.Math.Between(0,GW),Phaser.Math.Between(-300,0),6,11,Phaser.Utils.Array.GetRandom([C.gold,C.neon,C.pink,C.green]));
       this.tweens.add({targets:c,y:GH+20,angle:360,duration:Phaser.Math.Between(2600,5200),repeat:-1,delay:Phaser.Math.Between(0,2200)}); }
-    this.add.rectangle(GW/2,GH/2,640,440,0x05050d,0.9).setStrokeStyle(3,C.gold);
+    this.add.rectangle(GW/2,GH/2,720,476,0x05050d,0.92).setStrokeStyle(3,C.gold);
 
     this.add.text(GW/2,110,'SPRZĘT GOTOWY!',{fontFamily:'Segoe UI',fontSize:'40px',color:'#d4af37',fontStyle:'bold'}).setOrigin(0.5).setShadow(0,0,'#d4af37',18);
     this.add.text(GW/2,152, late?'Zdążyłeś tuż przed gośćmi — profesjonalista ratuje sytuację!':'Wszystko dograne z zapasem czasu. Klasa!',
@@ -1102,18 +1116,20 @@ class Result extends Phaser.Scene{
     const k=this.add.image(GW/2,300,'karolFrak').setScale(1.7).setOrigin(0.5,1); k.y=320;
     this.tweens.add({targets:k,angle:{from:-4,to:4},yoyo:true,repeat:-1,duration:700});
 
-    this.add.text(GW/2,346,'Wynik: '+score+' pkt  •  Ekipa: '+npc+'/5',{fontFamily:'Segoe UI',fontSize:'20px',color:'#00ffcc',fontStyle:'bold'}).setOrigin(0.5);
-    this.add.text(GW/2,374,'Najlepszy wynik: '+best,{fontFamily:'Segoe UI',fontSize:'13px',color:'#9aa'}).setOrigin(0.5);
-    this.add.text(GW/2,406,'Tyle pracy i logistyki kryje się ZANIM zabrzmi pierwszy kawałek.\nKarol i jego zespół ogarną to za Ciebie — bezbłędnie.',
-      {fontFamily:'Segoe UI',fontSize:'13px',color:'#c9c9e0',align:'center',lineSpacing:3}).setOrigin(0.5);
+    this.add.text(GW/2,344,'Wynik: '+score+' pkt  •  Ekipa: '+npc+'/5',{fontFamily:'Segoe UI',fontSize:'23px',color:'#00ffcc',fontStyle:'bold'}).setOrigin(0.5);
+    this.add.text(GW/2,372,'Najlepszy wynik: '+best,{fontFamily:'Segoe UI',fontSize:'15px',color:'#9aa'}).setOrigin(0.5);
+    this.add.text(GW/2,404,'Tyle pracy i logistyki kryje się ZANIM zabrzmi pierwszy kawałek.\nKarol i jego zespół ogarną to za Ciebie — bezbłędnie.',
+      {fontFamily:'Segoe UI',fontSize:'15px',color:'#c9c9e0',align:'center',lineSpacing:4}).setOrigin(0.5);
 
     const cta=this.add.text(GW/2,452,'✦ SPRAWDŹ WOLNY TERMIN U KAROLA ✦',{fontFamily:'Segoe UI',fontSize:'19px',color:'#0a0a18',backgroundColor:'#d4af37',padding:{x:22,y:11},fontStyle:'bold'}).setOrigin(0.5).setInteractive().setShadow(0,0,'#d4af37',12);
     this.tweens.add({targets:cta,scale:{from:1,to:1.05},yoyo:true,repeat:-1,duration:650});
     cta.on('pointerover',()=>cta.setBackgroundColor('#ffe487')); cta.on('pointerout',()=>cta.setBackgroundColor('#d4af37'));
     cta.on('pointerdown',()=>window.open(SITE_URL,'_blank','noopener'));
 
-    this.add.text(GW/2-90,500,'↻ Powtórz',{fontFamily:'Segoe UI',fontSize:'15px',color:'#fff'}).setOrigin(0.5).setInteractive().on('pointerdown',()=>this.scene.start('Setup'));
-    this.add.text(GW/2+90,500,'≡ Wybór zadania',{fontFamily:'Segoe UI',fontSize:'15px',color:'#fff'}).setOrigin(0.5).setInteractive().on('pointerdown',()=>this.scene.start('Hub'));
+    const mkBtn=(x,txt,fn)=>{ const b=this.add.text(x,506,txt,{fontFamily:'Segoe UI',fontSize:'20px',color:'#fff',backgroundColor:'#2a2747',padding:{x:18,y:11},fontStyle:'bold'}).setOrigin(0.5).setInteractive();
+      b.on('pointerover',()=>b.setBackgroundColor('#3a3760')); b.on('pointerout',()=>b.setBackgroundColor('#2a2747')); b.on('pointerdown',fn); return b; };
+    mkBtn(GW/2-140,'↻ Powtórz',()=>this.scene.start('Setup'));
+    mkBtn(GW/2+140,'≡ Wybór zadania',()=>this.scene.start('Hub'));
   }
 }
 

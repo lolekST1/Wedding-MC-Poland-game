@@ -73,3 +73,23 @@ Actions are context-sensitive: `getContext()` returns the relevant `{label, fn}`
 Two drag-and-drop modals share the same `this.modalObjs` / `closeModal()` pattern:
 - **Dressing modal** (`openDressModal`) — drag garments onto mannequin in dependency order
 - **Manager modal** (`openManagerModal`) — sort 6 wedding-schedule blocks into correct order
+
+## Localization (PL/EN i18n)
+
+All user-facing strings live in the `I18N = {pl:{…}, en:{…}}` dictionary at the top of the body `<script>`. Game code reads them via `t('key')`. Never hardcode display text — add a key to **both** locales and use `t()`.
+
+- Language resolution order (`detectLang`): `?lang=pl|en` → `window.WK_LANG` → `localStorage('wk_lang')` → `<html lang>` → browser language.
+- `window.WK_LANG` (set near the top of the script) forces a page's language. This is the **only** difference between the two shipped files:
+  - `index.html` → `window.WK_LANG = 'pl'`
+  - `index-en.html` → `window.WK_LANG = 'en'` (also `<html lang="en">`)
+- The client hosts these files directly on their own server (PL site = `index.html`, EN site = `index-en.html`). Same engine, two files — keep them in sync; when editing the game, regenerate `index-en.html` from `index.html` (swap only the `WK_LANG` line and `<html lang>`).
+- Syntax-check after edits: extract non-`src`, non-`ld+json` `<script>` blocks and run through `node` `vm.Script`. Optionally assert every `t('…')` key exists in both `pl` and `en`.
+
+## Deploy & ops notes
+
+- **Develop on branch `claude/laughing-brown-sdtwqg`.** Deploy = merge to `main` → Pages workflow runs. Only deploy on explicit user request.
+- **Post-squash divergence:** PRs are squash-merged, so after each merge the feature branch diverges and the next PR shows merge conflicts. Fix: `git fetch origin main && git reset --hard origin/main && git cherry-pick <new-commit> && git push --force-with-lease`.
+- **Deploy status: use `curl`, NOT the GitHub Actions MCP tool** — `actions_list`/`actions_get` return ~300k-char payloads (full repo metadata) that blow the token budget. Instead:
+  `curl -s "https://api.github.com/repos/lolekST1/Wedding-MC-Poland-game/actions/workflows/pages.yml/runs?branch=main&per_page=1" | python3 -c "import sys,json;r=json.load(sys.stdin)['workflow_runs'][0];print(r['head_sha'][:7],r['status'],r['conclusion'])"`
+- Live (reference) URLs: PL `https://lolekst1.github.io/Wedding-MC-Poland-game/`, EN `…/index-en.html`. No custom domain (no CNAME).
+- Business site: `wodzirejkarol.pl` (external host — not reachable from here; deliver files for manual upload).

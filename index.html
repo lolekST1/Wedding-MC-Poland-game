@@ -108,6 +108,10 @@
   #poster .ctrls{ margin:0; color:#9aa; font-size:clamp(11px,2.6vw,15px); line-height:1.6 }
   #poster .ctrls b{ color:#cdd; font-weight:600 }
   #loadingTxt{font-size:clamp(12px,2.6vw,14px);color:var(--neon);min-height:18px}
+  .lang-toggle{ display:flex; gap:0; align-self:flex-end; margin-bottom:-6px; border:1px solid #4a4a5e; border-radius:8px; overflow:hidden }
+  .lang-toggle button{ font:inherit; font-weight:700; font-size:clamp(12px,2.4vw,15px); letter-spacing:1px; cursor:pointer;
+    background:transparent; color:#9aa; border:none; padding:6px 14px; }
+  .lang-toggle button.on{ background:var(--gold); color:#0a0a18 }
 
   #seo-copy{max-width:960px;width:min(96vw,960px);margin:14px auto 0;color:#aab; font-size:13px;line-height:1.6;text-align:center}
   #seo-copy a{color:var(--gold);font-weight:600;text-decoration:none}
@@ -134,32 +138,35 @@
 </head>
 <body>
 
-<div id="rotateHint">🔄 Obróć telefon poziomo dla najlepszej rozgrywki</div>
+<div id="rotateHint" data-i18n="rotate">🔄 Obróć telefon poziomo dla najlepszej rozgrywki</div>
 
 <main>
   <h1 class="visually-hidden">Wodzirej Karol: Master of the Dancefloor – izometryczna gra promująca profesjonalnego wodzireja i DJ-a Wedding MC Poland</h1>
 
   <div id="game-shell">
     <div id="game-container"></div>
-    <div id="poster" role="region" aria-label="Menu gry — wybierz zadanie">
+    <div id="poster" role="region" aria-label="Menu">
       <div class="menu">
+        <div class="lang-toggle" role="group" aria-label="Język / Language">
+          <button id="langPL" type="button">PL</button><button id="langEN" type="button">EN</button>
+        </div>
         <h1>WODZIREJ KAROL<br><span class="accent">Master of the Dancefloor</span></h1>
-        <p class="sub">Profesjonalna logistyka wesela w izometrycznej grze — wybierz zadanie:</p>
+        <p class="sub" data-i18n="menuSub">Profesjonalna logistyka wesela w izometrycznej grze — wybierz zadanie:</p>
         <div class="cards">
           <button class="task-card active" id="task1" type="button">
-            <span class="tc-txt"><span class="tc-title">1. Load-in: Rozstawienie sprzętu</span><span class="tc-desc">Rozpakuj i ustaw sprzęt, ogarnij ekipę i zdąż przed gośćmi.</span></span>
-            <span class="tc-go">▶ GRAJ</span>
+            <span class="tc-txt"><span class="tc-title" data-i18n="task1title">1. Load-in: Rozstawienie sprzętu</span><span class="tc-desc" data-i18n="task1desc">Rozpakuj i ustaw sprzęt, ogarnij ekipę i zdąż przed gośćmi.</span></span>
+            <span class="tc-go" data-i18n="play">▶ GRAJ</span>
           </button>
-          <div class="task-card locked"><span class="tc-txt"><span class="tc-title">2. Parkiet z gośćmi</span><span class="tc-desc">Rozgrzej parkiet i czytaj salę. (Wkrótce)</span></span><span class="tc-lock">🔒</span></div>
-          <div class="task-card locked"><span class="tc-txt"><span class="tc-title">3. Wesele międzynarodowe PL/EN</span><span class="tc-desc">Płynne dwujęzyczne prowadzenie. (Wkrótce)</span></span><span class="tc-lock">🔒</span></div>
+          <div class="task-card locked"><span class="tc-txt"><span class="tc-title" data-i18n="task2title">2. Parkiet z gośćmi</span><span class="tc-desc" data-i18n="task2desc">Rozgrzej parkiet i czytaj salę. (Wkrótce)</span></span><span class="tc-lock">🔒</span></div>
+          <div class="task-card locked"><span class="tc-txt"><span class="tc-title" data-i18n="task3title">3. Wesele międzynarodowe PL/EN</span><span class="tc-desc" data-i18n="task3desc">Płynne dwujęzyczne prowadzenie. (Wkrótce)</span></span><span class="tc-lock">🔒</span></div>
         </div>
-        <p class="ctrls"><b>Sterowanie:</b> Strzałki / WASD&nbsp;•&nbsp;Akcja: Spacja<br>📱 na telefonie: joystick + przycisk AKCJA</p>
+        <p class="ctrls" data-i18n-html="controls"><b>Sterowanie:</b> Strzałki / WASD&nbsp;•&nbsp;Akcja: Spacja<br>📱 na telefonie: joystick + przycisk AKCJA</p>
         <div id="loadingTxt" aria-live="polite"></div>
       </div>
     </div>
   </div>
 
-  <p id="seo-copy">
+  <p id="seo-copy" data-i18n-html="seo">
     <strong>Wodzirej Karol</strong> to profesjonalny wodzirej i DJ prowadzący wesela polskie oraz międzynarodowe jako
     <strong>Wedding MC Poland</strong>. Zagraj i zobacz, ile pracy i logistyki kryje się za bezbłędnym weselem.
     <a href="http://www.wodzirejkarol.pl" target="_blank" rel="noopener">Sprawdź wolny termin u Karola →</a>
@@ -168,20 +175,105 @@
 
 <script>
 /* =========================================================================
+   I18N — dwujęzyczność PL / EN
+   ========================================================================= */
+const I18N={
+ pl:{
+  docTitle:'Wodzirej Karol: Master of the Dancefloor – gra | Wedding MC Poland',
+  menuSub:'Profesjonalna logistyka wesela w izometrycznej grze — wybierz zadanie:',
+  task1title:'1. Load-in: Rozstawienie sprzętu', task1desc:'Rozpakuj i ustaw sprzęt, ogarnij ekipę i zdąż przed gośćmi.',
+  task2title:'2. Parkiet z gośćmi', task2desc:'Rozgrzej parkiet i czytaj salę. (Wkrótce)',
+  task3title:'3. Wesele międzynarodowe PL/EN', task3desc:'Płynne dwujęzyczne prowadzenie. (Wkrótce)',
+  play:'▶ GRAJ', loading:'Ładowanie sali…', loadErr:'Błąd ładowania. Sprawdź połączenie i spróbuj ponownie.',
+  controls:'<b>Sterowanie:</b> Strzałki / WASD&nbsp;•&nbsp;Akcja: Spacja<br>📱 na telefonie: joystick + przycisk AKCJA',
+  seo:'<strong>Wodzirej Karol</strong> to profesjonalny wodzirej i DJ prowadzący wesela polskie oraz międzynarodowe jako <strong>Wedding MC Poland</strong>. Zagraj i zobacz, ile pracy i logistyki kryje się za bezbłędnym weselem. <a href="http://www.wodzirejkarol.pl" target="_blank" rel="noopener">Sprawdź wolny termin u Karola →</a>',
+  rotate:'🔄 Obróć telefon poziomo dla najlepszej rozgrywki', genErr:'Ups! Nie udało się przygotować grafiki.\nOdśwież stronę, by spróbować ponownie.',
+  guestsIn:'Goście za: ', guestsSoon:'Goście zaraz wejdą! Kończ szybko!',
+  ckCarry:'Wnieś torby', ckUnpack:'Rozpakuj', ckPlace:'Rozstaw sprzęt', ckCable:'Okabluj', ckTidy:'Sprzątnij kable', ckReturn:'Zanieś torby', ckChange:'Przebierz się',
+  h0:'Wnieś torby ze sprzętem z auta na salę', h1:'Rozpakuj torby w strefie odkładczej', h2:'Zanieś sprzęt na świecące się miejsca (najpierw stół DJ)', h3:'Podłącz kable: głośniki, światła i zasilanie', h4:'Uprzątnij kable, żeby było bezpiecznie i estetycznie', h5:'Zanieś puste torby z powrotem do auta', h6:'Przebierz się we frak przy parawanie', hDone:'Gotowe! Świetna robota.',
+  stageDone:'Etap zaliczony!', cablesTidy:'Kable uprzątnięte i oklejone taśmą!', guestsEnter:'Goście wchodzą — zaczynamy wesele! 🎉', npcLeft:'NPC odszedł nieobsłużony…',
+  staging:'ZNIEŚ TORBY TUTAJ', carPickup:'🚐 ODBIERZ SPRZĘT', carReturn:'🚐 ZWRÓĆ TORBY', dropped:'Odłożono',
+  pPutBag:'Połóż torbę', pDropBag:'Odłóż torbę', pBagToCar:'Włóż torbę do auta', pPlace:'Postaw: ', pDropHere:'Odłóż tutaj', pTakeBag:'Weź torbę', pTakeBagCar:'Weź torbę z auta', pUnpack:'Rozpakuj (przytrzymaj)', pPickup:'Podnieś: ', pGrabPlug:'Chwyć wtyk', pConnect:'Podłącz kabel', pDropPlug:'Odłóż wtyk', pTidy:'Uprzątnij kabel', pTakeEmpty:'Weź pustą torbę', pChange:'Przebierz się we frak', pSchedule:'Ułóż harmonogram', pShow:'Pokaż / załatw',
+  keySpace:'[Spacja] ', keyAction:'[AKCJA] ',
+  slot_djtable:'Stół DJ', slot_console:'Konsola', slot_laptop:'Laptop', slot_dmx:'DMX', slot_sstL:'Statyw L', slot_sstR:'Statyw P', slot_spkL:'Głośnik L', slot_spkR:'Głośnik P', slot_lstL:'Statyw św. L', slot_lstR:'Statyw św. P', slot_liL:'Lampa L', slot_liR:'Lampa P',
+  npc_manager:'Menager sali', npc_photo:'Fotograf', npc_camera:'Kamerzysta', npc_booth:'Fotobudka', npc_barman:'Barman',
+  req_manager:'Ułóż kolejność wesela!', req_photo:'Gdzie gniazdko na ładowarki?', req_camera:'Gdzie kamera, by nie zasłaniać?', req_booth:'Róg z prądem na fotobudkę?', req_barman:'Przedłużacz do baru?',
+  npcTips:['Świetna logistyka!','Koordynacja ekipy!','Wszystko dograne przed gośćmi!','Profesjonalizm!'],
+  dressTitle:'PRZEBIERZ SIĘ WE FRAK', dressSub:'Przeciągnij elementy na Karola — we właściwej kolejności', dressFirst:'Najpierw załóż: ', dressDone:'Elegancko! Gotowe.',
+  g_shirt:'Koszula', g_pants:'Spodnie', g_shoes:'Buty', g_suspenders:'Szelki', g_bowtie:'Muszka', g_vest:'Kamizelka', g_coat:'Marynarka', g_tophat:'Cylinder',
+  mgrTitle:'MENAGER SALI — KOLEJNOŚĆ WESELA', mgrSub:'Przeciągnij bloki do miejsc 1–6 we właściwej kolejności', mgrPerfect:'Idealna kolejność! 🎉', mgrWrong:'Zła kolejność — popraw bloki',
+  blk:['Przywitanie chlebem i solą','Posiłek','Polonez','Pierwszy taniec','Animacje taneczne','Oczepiny'],
+  resReady:'SPRZĘT GOTOWY!', resLate:'Zdążyłeś tuż przed gośćmi — profesjonalista ratuje sytuację!', resOnTime:'Wszystko dograne z zapasem czasu. Klasa!',
+  resScore:(s,n)=>'Wynik: '+s+' pkt  •  Ekipa: '+n+'/5', resBest:'Najlepszy wynik: ',
+  resCopy:'Tyle pracy i logistyki kryje się ZANIM zabrzmi pierwszy kawałek.\nKarol i jego zespół ogarną to za Ciebie — bezbłędnie.',
+  resCta:'✦ SPRAWDŹ WOLNY TERMIN U KAROLA ✦', resReplay:'↻ Powtórz', resMenu:'≡ Menu'
+ },
+ en:{
+  docTitle:'Wodzirej Karol: Master of the Dancefloor – game | Wedding MC Poland',
+  menuSub:'Professional wedding logistics in an isometric game — pick a task:',
+  task1title:'1. Load-in: Set up the gear', task1desc:'Unpack and set up the gear, wrangle the crew and beat the guests.',
+  task2title:'2. Dancefloor with guests', task2desc:'Warm up the floor and read the room. (Soon)',
+  task3title:'3. International wedding PL/EN', task3desc:'Smooth bilingual hosting. (Soon)',
+  play:'▶ PLAY', loading:'Loading the venue…', loadErr:'Loading error. Check your connection and try again.',
+  controls:'<b>Controls:</b> Arrows / WASD&nbsp;•&nbsp;Action: Space<br>📱 on phone: joystick + ACTION button',
+  seo:'<strong>Wodzirej Karol</strong> is a professional wedding host (MC) and DJ for Polish and international weddings as <strong>Wedding MC Poland</strong>. Play and see how much work and logistics go into a flawless wedding. <a href="http://www.wodzirejkarol.pl" target="_blank" rel="noopener">Check Karol\'s availability →</a>',
+  rotate:'🔄 Rotate your phone to landscape for the best experience', genErr:'Oops! Failed to prepare the graphics.\nRefresh the page to try again.',
+  guestsIn:'Guests in: ', guestsSoon:'Guests are about to enter! Hurry!',
+  ckCarry:'Carry bags', ckUnpack:'Unpack', ckPlace:'Set up gear', ckCable:'Wire up', ckTidy:'Tidy cables', ckReturn:'Return bags', ckChange:'Get changed',
+  h0:'Carry the gear bags from the van into the hall', h1:'Unpack the bags in the drop zone', h2:'Bring gear to the glowing spots (DJ booth first)', h3:'Connect the cables: speakers, lights and power', h4:'Tidy the cables — safe and neat', h5:'Carry the empty bags back to the van', h6:'Get changed into the tailcoat by the screen', hDone:'Done! Great job.',
+  stageDone:'Stage complete!', cablesTidy:'Cables tidied and taped down!', guestsEnter:'Guests are entering — let the wedding begin! 🎉', npcLeft:'The guest left unattended…',
+  staging:'DROP BAGS HERE', carPickup:'🚐 PICK UP GEAR', carReturn:'🚐 RETURN BAGS', dropped:'Dropped',
+  pPutBag:'Put bag down', pDropBag:'Drop bag', pBagToCar:'Put bag in van', pPlace:'Place: ', pDropHere:'Drop here', pTakeBag:'Take bag', pTakeBagCar:'Take bag from van', pUnpack:'Unpack (hold)', pPickup:'Pick up: ', pGrabPlug:'Grab plug', pConnect:'Connect cable', pDropPlug:'Drop plug', pTidy:'Tidy cable', pTakeEmpty:'Take empty bag', pChange:'Change into tailcoat', pSchedule:'Arrange schedule', pShow:'Show / handle',
+  keySpace:'[Space] ', keyAction:'[ACTION] ',
+  slot_djtable:'DJ Booth', slot_console:'Console', slot_laptop:'Laptop', slot_dmx:'DMX', slot_sstL:'Stand L', slot_sstR:'Stand R', slot_spkL:'Speaker L', slot_spkR:'Speaker R', slot_lstL:'Light stand L', slot_lstR:'Light stand R', slot_liL:'Lamp L', slot_liR:'Lamp R',
+  npc_manager:'Venue manager', npc_photo:'Photographer', npc_camera:'Cameraman', npc_booth:'Photo booth', npc_barman:'Bartender',
+  req_manager:'Arrange the wedding schedule!', req_photo:'Where\'s the outlet for chargers?', req_camera:'Where to put the camera so it won\'t block?', req_booth:'A corner with power for the photo booth?', req_barman:'An extension cord for the bar?',
+  npcTips:['Great logistics!','Team coordination!','All set before the guests!','True professional!'],
+  dressTitle:'GET CHANGED INTO THE TAILCOAT', dressSub:'Drag the items onto Karol — in the right order', dressFirst:'First put on: ', dressDone:'Dapper! All set.',
+  g_shirt:'Shirt', g_pants:'Trousers', g_shoes:'Shoes', g_suspenders:'Suspenders', g_bowtie:'Bow tie', g_vest:'Waistcoat', g_coat:'Tailcoat', g_tophat:'Top hat',
+  mgrTitle:'VENUE MANAGER — WEDDING ORDER', mgrSub:'Drag the blocks into slots 1–6 in the right order', mgrPerfect:'Perfect order! 🎉', mgrWrong:'Wrong order — fix the blocks',
+  blk:['Welcome with bread & salt','Meal','Polonaise','First dance','Dance animations','Oczepiny (bouquet toss)'],
+  resReady:'GEAR READY!', resLate:'You made it just before the guests — a pro saves the day!', resOnTime:'All set with time to spare. Class!',
+  resScore:(s,n)=>'Score: '+s+' pts  •  Crew: '+n+'/5', resBest:'Best score: ',
+  resCopy:'That\'s how much work and logistics happen BEFORE the first track plays.\nKarol and his team handle it for you — flawlessly.',
+  resCta:'✦ CHECK KAROL\'S AVAILABILITY ✦', resReplay:'↻ Replay', resMenu:'≡ Menu'
+ }
+};
+function detectLang(){ try{ const u=new URLSearchParams(location.search).get('lang'); if(u==='en'||u==='pl') return u;
+  const ls=localStorage.getItem('wk_lang'); if(ls==='en'||ls==='pl') return ls;
+  const hl=(document.documentElement.lang||'').toLowerCase(); if(hl.indexOf('en')===0) return 'en'; if(hl.indexOf('pl')===0) return 'pl';
+  const nl=((navigator.languages&&navigator.languages[0])||navigator.language||'pl').toLowerCase(); return nl.indexOf('pl')===0?'pl':'en';
+ }catch(e){ return 'pl'; } }
+let LANG=detectLang();
+function t(k){ const v=(I18N[LANG]&&I18N[LANG][k]); return v!=null?v : (I18N.pl[k]!=null?I18N.pl[k]:k); }
+function applyLang(){ LANG = (I18N[LANG]?LANG:'pl');
+  document.documentElement.lang=LANG; document.title=t('docTitle');
+  document.querySelectorAll('[data-i18n]').forEach(el=>{ el.textContent=t(el.getAttribute('data-i18n')); });
+  document.querySelectorAll('[data-i18n-html]').forEach(el=>{ el.innerHTML=t(el.getAttribute('data-i18n-html')); });
+  const lp=document.getElementById('langPL'), le=document.getElementById('langEN');
+  if(lp&&le){ lp.classList.toggle('on',LANG==='pl'); le.classList.toggle('on',LANG==='en'); }
+}
+function setLang(l){ if(l!==LANG){ LANG=l; try{localStorage.setItem('wk_lang',l)}catch(e){} applyLang(); } }
+
+/* =========================================================================
    ŁADOWANIE SILNIKA NA ŻĄDANIE (PageSpeed)
    ========================================================================= */
 (function(){
+  applyLang();
   const poster=document.getElementById('poster');
   const card1=document.getElementById('task1');
   const loadTxt=document.getElementById('loadingTxt');
+  const lp=document.getElementById('langPL'), le=document.getElementById('langEN');
+  if(lp) lp.addEventListener('click',()=>setLang('pl'));
+  if(le) le.addEventListener('click',()=>setLang('en'));
   let loading=false;
   function loadGame(){
     if(loading) return; loading=true;
-    loadTxt.textContent='Ładowanie sali…';
+    loadTxt.textContent=t('loading');
     const s=document.createElement('script');
     s.src='https://cdn.jsdelivr.net/npm/phaser@3.80.1/dist/phaser.min.js';
-    s.onload=()=>{ loadTxt.textContent='Gotowe!'; startGame(); poster.style.display='none'; };
-    s.onerror=()=>{ loadTxt.textContent='Błąd ładowania. Sprawdź połączenie i spróbuj ponownie.'; loading=false; };
+    s.onload=()=>{ startGame(); poster.style.display='none'; };
+    s.onerror=()=>{ loadTxt.textContent=t('loadErr'); loading=false; };
     document.head.appendChild(s);
   }
   card1.addEventListener('click',loadGame);
@@ -453,7 +545,7 @@ class Boot extends Phaser.Scene{
   create(){
     try{ genAssets(this); }
     catch(e){ console.error('genAssets failed',e);
-      this.add.text(GW/2,GH/2,'Ups! Nie udało się przygotować grafiki.\nOdśwież stronę, by spróbować ponownie.',
+      this.add.text(GW/2,GH/2,t('genErr'),
         {fontFamily:'Segoe UI',fontSize:'22px',color:'#ffe487',align:'center',fontStyle:'bold'}).setOrigin(0.5);
       return; }
     this.registry.set('best',this.registry.get('best')||0); this.scene.start('Setup'); }
@@ -520,7 +612,7 @@ class Setup extends Phaser.Scene{
       {key:'light',   gx:3,gy:6.5,z:26, dep:'lstL', label:'Lampa L', id:'liL'},
       {key:'light',   gx:9,gy:6.5,z:26, dep:'lstR', label:'Lampa P', id:'liR'}
     ];
-    this.slots.forEach(s=>{ s.id=s.id||s.key; s.placed=false; });
+    this.slots.forEach(s=>{ s.id=s.id||s.key; s.placed=false; s.label=t('slot_'+s.id); });
 
     // zawartość toreb (w kolejności wnoszenia/rozpakowania)
     this.bagContents=[ ['djtable'], ['console','laptop','dmx'], ['sstL','sstR'], ['spkL','spkR'], ['lstL','lstR','liL','liR'] ];
@@ -562,9 +654,9 @@ class Setup extends Phaser.Scene{
     const stp=iso(this.staging.gx,this.staging.gy,0);
     this.stageMark=this.add.image(stp.x,stp.y,'marker').setOrigin(0.5,0.5).setScale(0.85).setTint(C.gold).setAlpha(0.5).setDepth(tdepth(this.staging.gx,this.staging.gy,-9));
     this.tweens.add({targets:this.stageMark,alpha:0.9,yoyo:true,repeat:-1,duration:700});
-    this.stageLabel=this.add.text(stp.x,stp.y-42,'ZNIEŚ TORBY TUTAJ',{fontFamily:'Segoe UI',fontSize:'14px',color:'#ffe487',fontStyle:'bold',backgroundColor:'#000a',padding:{x:6,y:3}}).setOrigin(0.5).setDepth(96000);
+    this.stageLabel=this.add.text(stp.x,stp.y-42,t('staging'),{fontFamily:'Segoe UI',fontSize:'14px',color:'#ffe487',fontStyle:'bold',backgroundColor:'#000a',padding:{x:6,y:3}}).setOrigin(0.5).setDepth(96000);
     // etykieta auta
-    this.carLabel=this.add.text(cp.x,cp.y-124,'🚐 ODBIERZ SPRZĘT',{fontFamily:'Segoe UI',fontSize:'13px',color:'#fff',fontStyle:'bold',backgroundColor:'#000a',padding:{x:6,y:3}}).setOrigin(0.5).setDepth(96000);
+    this.carLabel=this.add.text(cp.x,cp.y-124,t('carPickup'),{fontFamily:'Segoe UI',fontSize:'13px',color:'#fff',fontStyle:'bold',backgroundColor:'#000a',padding:{x:6,y:3}}).setOrigin(0.5).setDepth(96000);
 
     // markery celów (duchy)
     this.markerLayer=this.add.container(0,0);
@@ -590,11 +682,11 @@ class Setup extends Phaser.Scene{
 
     // NPC harmonogram
     this.npcDefs=[
-      {key:'manager', name:'Menager sali', req:'Ułóż kolejność wesela!', modal:true, target:{gx:5.5,gy:1.2}},
-      {key:'photo',   name:'Fotograf', req:'Gdzie gniazdko na ładowarki?', target:this.outlets[0]},
-      {key:'camera',  name:'Kamerzysta', req:'Gdzie kamera, by nie zasłaniać?', target:{gx:8.5,gy:7.5}},
-      {key:'booth',   name:'Fotobudka', req:'Róg z prądem na fotobudkę?', target:this.outlets[1]},
-      {key:'barman',  name:'Barman', req:'Przedłużacz do baru?', target:this.outlets[2]}
+      {key:'manager', name:t('npc_manager'), req:t('req_manager'), modal:true, target:{gx:5.5,gy:1.2}},
+      {key:'photo',   name:t('npc_photo'), req:t('req_photo'), target:this.outlets[0]},
+      {key:'camera',  name:t('npc_camera'), req:t('req_camera'), target:{gx:8.5,gy:7.5}},
+      {key:'booth',   name:t('npc_booth'), req:t('req_booth'), target:this.outlets[1]},
+      {key:'barman',  name:t('npc_barman'), req:t('req_barman'), target:this.outlets[2]}
     ];
     this.npcSpawnT=6;
 
@@ -605,8 +697,8 @@ class Setup extends Phaser.Scene{
     this.tutorial=true;
   }
 
-  timeLeft(){ this.secs--; if(this.secs<=0 && !this.late){ this.late=true; Audio.sfx('err'); this.flashTip('Goście zaraz wejdą! Kończ szybko!'); }
-    this.clockText.setText('Goście za: '+this.fmt(Math.max(0,this.secs))); this.clockText.setColor(this.secs<30?'#ff6b6b':this.secs<60?'#ffd23f':'#00ffcc'); }
+  timeLeft(){ this.secs--; if(this.secs<=0 && !this.late){ this.late=true; Audio.sfx('err'); this.flashTip(t('guestsSoon')); }
+    this.clockText.setText(t('guestsIn')+this.fmt(Math.max(0,this.secs))); this.clockText.setColor(this.secs<30?'#ff6b6b':this.secs<60?'#ffd23f':'#00ffcc'); }
   fmt(s){ const m=Math.floor(s/60); const ss=s%60; return m+':'+(ss<10?'0':'')+ss; }
 
   /* ---------- RENDER SALI (pałac) ---------- */
@@ -701,14 +793,14 @@ class Setup extends Phaser.Scene{
   }
   phaseHint(){
     switch(this.phaseIndex()){
-      case 0: return 'Wnieś torby ze sprzętem z auta na salę';
-      case 1: return 'Rozpakuj torby w strefie odkładczej';
-      case 2: return 'Zanieś sprzęt na świecące się miejsca (najpierw stół DJ)';
-      case 3: return 'Podłącz kable: głośniki, światła i zasilanie';
-      case 4: return 'Uprzątnij kable, żeby było bezpiecznie i estetycznie';
-      case 5: return 'Zanieś puste torby z powrotem do auta';
-      case 6: return 'Przebierz się we frak przy parawanie';
-      default: return 'Gotowe! Świetna robota.';
+      case 0: return t('h0');
+      case 1: return t('h1');
+      case 2: return t('h2');
+      case 3: return t('h3');
+      case 4: return t('h4');
+      case 5: return t('h5');
+      case 6: return t('h6');
+      default: return t('hDone');
     }
   }
 
@@ -716,7 +808,7 @@ class Setup extends Phaser.Scene{
   buildHUD(){
     this.add.rectangle(0,0,GW,38,0x000000,0.5).setOrigin(0,0).setDepth(90000);
     this.scoreText=this.add.text(14,9,'★ 0',{fontFamily:'Segoe UI',fontSize:'22px',color:'#ffe487',fontStyle:'bold'}).setDepth(90001);
-    this.clockText=this.add.text(GW/2,9,'Goście za: '+this.fmt(SETUP_TIME),{fontFamily:'Segoe UI',fontSize:'22px',color:'#00ffcc',fontStyle:'bold'}).setOrigin(0.5,0).setDepth(90001);
+    this.clockText=this.add.text(GW/2,9,t('guestsIn')+this.fmt(SETUP_TIME),{fontFamily:'Segoe UI',fontSize:'22px',color:'#00ffcc',fontStyle:'bold'}).setOrigin(0.5,0).setDepth(90001);
     // mute
     this.muteBtn=this.add.text(GW-14,9,'🔊',{fontSize:'22px'}).setOrigin(1,0).setDepth(90001).setInteractive();
     this.muteBtn.on('pointerdown',()=>{ const m=Audio.toggleMute(); this.muteBtn.setText(m?'🔇':'🔊'); });
@@ -735,20 +827,20 @@ class Setup extends Phaser.Scene{
   refreshHUD(){
     this.scoreText.setText('★ '+this.score);
     const L=[
-      ['Wnieś torby', this.carriedIn, this.totalBags],
-      ['Rozpakuj', this.unpacked, this.totalBags],
-      ['Rozstaw sprzęt', this.placedCount, this.slots.length],
-      ['Okabluj', this.cabled, this.cableTargets.length],
-      ['Sprzątnij kable', this.tidied, 3],
-      ['Zanieś torby', this.returned, this.totalBags],
-      ['Przebierz się', this.changed?1:0, 1]
+      [t('ckCarry'), this.carriedIn, this.totalBags],
+      [t('ckUnpack'), this.unpacked, this.totalBags],
+      [t('ckPlace'), this.placedCount, this.slots.length],
+      [t('ckCable'), this.cabled, this.cableTargets.length],
+      [t('ckTidy'), this.tidied, 3],
+      [t('ckReturn'), this.returned, this.totalBags],
+      [t('ckChange'), this.changed?1:0, 1]
     ];
     const ph=this.phaseIndex();
     this.checkText.setText(L.map((r,i)=>{ const done=r[1]>=r[2]; const cur=i===ph; return (done?'✓ ':cur?'▶ ':'   ')+r[0]+'  '+r[1]+'/'+r[2]; }).join('\n'));
     this.hintText.setText('🎯 '+this.phaseHint());
     // strefa odkładcza widoczna podczas wnoszenia/rozpakowania; etykieta auta wg fazy
     if(this.stageMark){ const showStage=ph<=1; this.stageMark.setVisible(showStage); this.stageLabel.setVisible(showStage); }
-    if(this.carLabel){ this.carLabel.setVisible(ph===0||ph===5).setText(ph===5?'🚐 ZWRÓĆ TORBY':'🚐 ODBIERZ SPRZĘT'); }
+    if(this.carLabel){ this.carLabel.setVisible(ph===0||ph===5).setText(ph===5?t('carReturn'):t('carPickup')); }
   }
   flashTip(t){ this.tipText.setText(t).setAlpha(1); this.tweens.killTweensOf(this.tipText); this.tweens.add({targets:this.tipText,alpha:0,delay:1300,duration:600}); }
   addScore(n){ this.score+=n; this.refreshHUD(); }
@@ -807,38 +899,38 @@ class Setup extends Phaser.Scene{
     const near=(gx,gy,r)=>Math.hypot(this.px-gx,this.py-gy)<(r||1.2);
     // carrying?
     if(this.carry){
-      if(this.carry.kind==='bag'){ if(near(this.staging.gx,this.staging.gy,1.6)) return {label:'Połóż torbę',fn:()=>this.dropBag()};
-        return {label:'Odłóż torbę',fn:()=>this.dropBagHere(false)}; }
-      else if(this.carry.kind==='emptybag'){ if(near(this.car.gx,this.car.gy,1.8)) return {label:'Włóż torbę do auta',fn:()=>this.returnBag()};
-        return {label:'Odłóż torbę',fn:()=>this.dropBagHere(true)}; }
-      else if(this.carry.kind==='item'){ const s=this.slots.find(x=>x.id===this.carry.id); if(s&&!s.placed&&this.depOk(s)&&near(s.gx,s.gy,1.4)) return {label:'Postaw: '+s.label,fn:()=>this.placeItem(s)};
-        return {label:'Odłóż tutaj',fn:()=>this.dropItemHere()}; }
+      if(this.carry.kind==='bag'){ if(near(this.staging.gx,this.staging.gy,1.6)) return {label:t('pPutBag'),fn:()=>this.dropBag()};
+        return {label:t('pDropBag'),fn:()=>this.dropBagHere(false)}; }
+      else if(this.carry.kind==='emptybag'){ if(near(this.car.gx,this.car.gy,1.8)) return {label:t('pBagToCar'),fn:()=>this.returnBag()};
+        return {label:t('pDropBag'),fn:()=>this.dropBagHere(true)}; }
+      else if(this.carry.kind==='item'){ const s=this.slots.find(x=>x.id===this.carry.id); if(s&&!s.placed&&this.depOk(s)&&near(s.gx,s.gy,1.4)) return {label:t('pPlace')+s.label,fn:()=>this.placeItem(s)};
+        return {label:t('pDropHere'),fn:()=>this.dropItemHere()}; }
       return null;
     }
     const ph=this.phaseIndex();
     // luźna (odłożona) torba — ponowne podniesienie
     const lb=this.looseBags.find(b=>near(b.gx,b.gy,1.3));
-    if(lb) return {label:'Weź torbę',fn:()=>this.takeLooseBag(lb)};
+    if(lb) return {label:t('pTakeBag'),fn:()=>this.takeLooseBag(lb)};
     // wnoszenie toreb
-    if(this.bagsAtCar>0 && near(this.car.gx,this.car.gy,1.8)) return {label:'Weź torbę z auta',fn:()=>this.takeBag()};
+    if(this.bagsAtCar>0 && near(this.car.gx,this.car.gy,1.8)) return {label:t('pTakeBagCar'),fn:()=>this.takeBag()};
     // rozpakowanie
     const ub=this.stagingBags.find(b=>!b.unpacked && near(b.gx,b.gy,1.3));
-    if(ub) return {label:'Rozpakuj (przytrzymaj)',hold:true,fn:()=>this.unpackBag(ub)};
+    if(ub) return {label:t('pUnpack'),hold:true,fn:()=>this.unpackBag(ub)};
     // podnoszenie przedmiotu
     const li=this.looseItems.find(it=>near(it.gx,it.gy,1.2));
-    if(li && ph===2) return {label:'Podnieś: '+(this.slots.find(s=>s.id===li.id)||{}).label,fn:()=>this.pickItem(li)};
+    if(li && ph===2) return {label:t('pPickup')+(this.slots.find(s=>s.id===li.id)||{}).label,fn:()=>this.pickItem(li)};
     // okablowanie
     if(ph===3){ const c=this.cableCtx(); if(c) return c; }
     // sprzątanie
-    if(ph===4){ const c=this.messyNear(); if(c) return {label:'Uprzątnij kabel',fn:()=>this.tidyCable(c)}; }
+    if(ph===4){ const c=this.messyNear(); if(c) return {label:t('pTidy'),fn:()=>this.tidyCable(c)}; }
     // zwrot toreb
-    if(ph===5){ const eb=this.emptyBags.find(b=>!b.taken && near(b.gx,b.gy,1.3)); if(eb) return {label:'Weź pustą torbę',fn:()=>this.takeEmpty(eb)}; }
+    if(ph===5){ const eb=this.emptyBags.find(b=>!b.taken && near(b.gx,b.gy,1.3)); if(eb) return {label:t('pTakeEmpty'),fn:()=>this.takeEmpty(eb)}; }
     // przebranie
-    if(ph===6 && near(this.changeSpot.gx,this.changeSpot.gy,1.6)) return {label:'Przebierz się we frak',fn:()=>this.openDressModal()};
+    if(ph===6 && near(this.changeSpot.gx,this.changeSpot.gy,1.6)) return {label:t('pChange'),fn:()=>this.openDressModal()};
     // NPC
     if(this.npcActive && this.npcActive.state==='ask'){ const n=this.npcActive;
-      if(n.def.modal){ if(near(n.gx,n.gy,1.8)) return {label:'Ułóż harmonogram',fn:()=>this.openManagerModal()}; }
-      else { const tg=n.def.target; if(near(tg.gx,tg.gy,1.4)) return {label:'Pokaż / załatw',fn:()=>this.resolveNpc()}; } }
+      if(n.def.modal){ if(near(n.gx,n.gy,1.8)) return {label:t('pSchedule'),fn:()=>this.openManagerModal()}; }
+      else { const tg=n.def.target; if(near(tg.gx,tg.gy,1.4)) return {label:t('pShow'),fn:()=>this.resolveNpc()}; } }
     return null;
   }
 
@@ -848,11 +940,11 @@ class Setup extends Phaser.Scene{
   dropItemHere(){ const s=this.slots.find(x=>x.id===this.carry.id); const gx=this.px, gy=this.py;
     const p=iso(gx,gy,0); const spr=this.add.image(p.x,p.y,s.key).setOrigin(0.5,1).setScale(1).setDepth(tdepth(gx,gy,2));
     this.looseItems.push({id:s.id,gx,gy,sprite:spr}); this.carry=null; this.carrySprite.setVisible(false);
-    Audio.sfx('place'); this.floatText(gx,gy,'Odłożono','#ffd23f'); this.refreshMarkers(); }
+    Audio.sfx('place'); this.floatText(gx,gy,t('dropped'),'#ffd23f'); this.refreshMarkers(); }
   dropBagHere(empty){ const gx=this.px, gy=this.py; const p=iso(gx,gy,0);
     const spr=this.add.image(p.x,p.y,empty?'bagEmpty':'bag').setOrigin(0.5,1).setScale(1).setDepth(tdepth(gx,gy,2));
     this.looseBags.push({gx,gy,sprite:spr,empty:!!empty}); this.carry=null;
-    Audio.sfx('place'); this.floatText(gx,gy,'Odłożono','#ffd23f'); }
+    Audio.sfx('place'); this.floatText(gx,gy,t('dropped'),'#ffd23f'); }
   takeLooseBag(b){ Phaser.Utils.Array.Remove(this.looseBags,b); b.sprite.destroy(); this.carry={kind:b.empty?'emptybag':'bag'}; Audio.sfx('pick'); }
   dropBag(){ const idx=this.stagingBags.length; const gx=this.staging.gx+((idx%3)-1)*0.7, gy=this.staging.gy+Math.floor(idx/3)*0.7;
     const p=iso(gx,gy,0); const spr=this.add.image(p.x,p.y,'bag').setOrigin(0.5,1).setScale(1).setDepth(tdepth(gx,gy,2));
@@ -880,10 +972,10 @@ class Setup extends Phaser.Scene{
     const s=this.slots.find(x=>x.id===ref); return {gx:s.gx,gy:s.gy,z:4}; }   // przy podstawie urządzenia
   // kontekst kabli: chwyć wtyk przy jednym końcu, podłącz przy drugim
   cableCtx(){ const near=(p,r)=>Math.hypot(this.px-p.gx,this.py-p.gy)<(r||1.2);
-    if(this.plug){ const conn=this.plug; const t=this.connPos(conn.to); if(near(t,1.4)) return {label:'Podłącz kabel',fn:()=>this.connectPlug()};
-      const f=this.connPos(conn.from); if(near(f,1.2)) return {label:'Odłóż wtyk',fn:()=>{ this.plug=null; this.renderPorts(); }}; return null; }
+    if(this.plug){ const conn=this.plug; const tp=this.connPos(conn.to); if(near(tp,1.4)) return {label:t('pConnect'),fn:()=>this.connectPlug()};
+      const f=this.connPos(conn.from); if(near(f,1.2)) return {label:t('pDropPlug'),fn:()=>{ this.plug=null; this.renderPorts(); }}; return null; }
     for(const conn of this.conns){ if(this.cables.includes(conn.id)) continue; const f=this.connPos(conn.from);
-      if(near(f,1.2)) return {label:'Chwyć wtyk',fn:()=>this.grabPlug(conn)}; }
+      if(near(f,1.2)) return {label:t('pGrabPlug'),fn:()=>this.grabPlug(conn)}; }
     return null; }
   grabPlug(conn){ this.plug=conn; Audio.sfx('pick'); this.renderPorts(); }
   connectPlug(){ const conn=this.plug; const f=this.connPos(conn.from), t=this.connPos(conn.to);
@@ -918,10 +1010,10 @@ class Setup extends Phaser.Scene{
       const aw=iso(o.f.gx,o.f.gy,o.f.z!=null?o.f.z:4), bw=iso(o.t.gx,o.t.gy,o.t.z!=null?o.t.z:4); const off=(i-2)*1.4;
       const g=this.add.graphics().setDepth(tdepth((o.f.gx+o.t.gx)/2,(o.f.gy+o.t.gy)/2,1)); g.lineStyle(2,o.conn.col,0.9); g.lineBetween(aw.x+off,aw.y,bw.x+off,bw.y);
       const tape=this.add.graphics().setDepth(tdepth((o.f.gx+o.t.gx)/2,(o.f.gy+o.t.gy)/2,2)); tape.lineStyle(7,0x787c86,0.6); tape.lineBetween(aw.x,aw.y+1,bw.x,bw.y+1); });
-    Audio.sfx('phase'); this.flashTip('Kable uprzątnięte i oklejone taśmą!'); }
+    Audio.sfx('phase'); this.flashTip(t('cablesTidy')); }
   takeEmpty(b){ b.taken=true; b.sprite.destroy(); this.carry={kind:'emptybag'}; Audio.sfx('pick'); }
   returnBag(){ this.carry=null; this.returned++; Audio.sfx('place'); this.addScore(8); this.phaseDoneCheck(); this.refreshHUD(); }
-  changeToFrak(){ this.changed=true; this.player.setTexture(this.facingBack?'karolFrak_b':'karolFrak'); Audio.sfx('phase'); this.flashTip('Goście wchodzą — zaczynamy wesele! 🎉'); this.refreshHUD();
+  changeToFrak(){ this.changed=true; this.player.setTexture(this.facingBack?'karolFrak_b':'karolFrak'); Audio.sfx('phase'); this.flashTip(t('guestsEnter')); this.refreshHUD();
     this.spawnGuests(); this.time.delayedCall(3000,()=>this.finish()); }
   // FINAŁ: goście wchodzą drzwiami po dywanie na salę
   spawnGuests(){ const keys=['manager','photo','camera','booth','barman','manager','photo','barman','camera','booth'];
@@ -942,17 +1034,17 @@ class Setup extends Phaser.Scene{
     const add=o=>{ this.modalObjs.push(o); return o; };
     add(this.add.rectangle(GW/2,GH/2,GW,GH,0x05050d,0.84).setScrollFactor(0).setDepth(D).setInteractive());
     add(this.add.rectangle(GW/2,GH/2,860,510,0x141022,0.98).setScrollFactor(0).setStrokeStyle(3,C.gold).setDepth(D+1));
-    add(this.add.text(GW/2,GH/2-226,'PRZEBIERZ SIĘ WE FRAK',{fontFamily:'Segoe UI',fontSize:'28px',color:'#ffe487',fontStyle:'bold'}).setOrigin(0.5).setScrollFactor(0).setDepth(D+2));
-    add(this.add.text(GW/2,GH/2-196,'Przeciągnij elementy na Karola — we właściwej kolejności',{fontFamily:'Segoe UI',fontSize:'16px',color:'#c9c9e0'}).setOrigin(0.5).setScrollFactor(0).setDepth(D+2));
+    add(this.add.text(GW/2,GH/2-226,t('dressTitle'),{fontFamily:'Segoe UI',fontSize:'28px',color:'#ffe487',fontStyle:'bold'}).setOrigin(0.5).setScrollFactor(0).setDepth(D+2));
+    add(this.add.text(GW/2,GH/2-196,t('dressSub'),{fontFamily:'Segoe UI',fontSize:'16px',color:'#c9c9e0'}).setOrigin(0.5).setScrollFactor(0).setDepth(D+2));
     const mx=GW/2-200, my=GH/2+188, S=4.4; this.dressMX=mx; this.dressMY=my; this.dressS=S;
     this.dressMcx=mx; this.dressMcy=my-Math.round(76*S*0.46); this.dressR=Math.round(76*S*0.62); // strefa upuszczenia = cały manekin
     add(this.add.image(mx,my,'mannequin').setOrigin(0.5,1).setScale(S).setScrollFactor(0).setDepth(D+2));
     this.dressed=new Set();
     const garments=[
-      {key:'g_shirt',label:'Koszula',req:[]}, {key:'g_pants',label:'Spodnie',req:[]},
-      {key:'g_shoes',label:'Buty',req:[]}, {key:'g_suspenders',label:'Szelki',req:['g_shirt','g_pants']},
-      {key:'g_bowtie',label:'Muszka',req:['g_shirt']}, {key:'g_vest',label:'Kamizelka',req:['g_suspenders']},
-      {key:'g_coat',label:'Marynarka',req:['g_vest']}, {key:'g_tophat',label:'Cylinder',req:[]} ];
+      {key:'g_shirt',label:t('g_shirt'),req:[]}, {key:'g_pants',label:t('g_pants'),req:[]},
+      {key:'g_shoes',label:t('g_shoes'),req:[]}, {key:'g_suspenders',label:t('g_suspenders'),req:['g_shirt','g_pants']},
+      {key:'g_bowtie',label:t('g_bowtie'),req:['g_shirt']}, {key:'g_vest',label:t('g_vest'),req:['g_suspenders']},
+      {key:'g_coat',label:t('g_coat'),req:['g_vest']}, {key:'g_tophat',label:t('g_tophat'),req:[]} ];
     this.dressReq={}; this.dressLabels={}; garments.forEach(g=>{ this.dressReq[g.key]=g.req; this.dressLabels[g.key]=g.label; });
     const tx=GW/2+70, ty=GH/2-156, cw=186, ch=90; const bw=cw-12, bh=ch-12;
     garments.forEach((g,i)=>{ const col=i%2,row=(i/2)|0,cx=tx+col*cw,cy=ty+row*ch;
@@ -973,9 +1065,9 @@ class Setup extends Phaser.Scene{
         this.modalObjs.push(this.add.image(this.dressMX,this.dressMY,img.gkey).setOrigin(0.5,1).setScale(this.dressS).setScrollFactor(0).setDepth(D+2+(zo[img.gkey]||0)));
         this.dressed.add(img.gkey); img.placed=true; Audio.sfx('place'); this.dressHint.setText(''); this.burstAt(this.dressMcx,this.dressMcy,C.gold,8);
         img.destroy();
-        if(this.dressed.size>=8){ this.dressHint.setColor('#46d67a').setText('Elegancko! Gotowe.'); this.time.delayedCall(650,()=>{ this.closeModal(); this.changeToFrak(); }); }
+        if(this.dressed.size>=8){ this.dressHint.setColor('#46d67a').setText(t('dressDone')); this.time.delayedCall(650,()=>{ this.closeModal(); this.changeToFrak(); }); }
         return;
-      } else { this.dressHint.setText('Najpierw załóż: '+missing.map(r=>this.dressLabels[r]).join(', ')); Audio.sfx('err'); } }
+      } else { this.dressHint.setText(t('dressFirst')+missing.map(r=>this.dressLabels[r]).join(', ')); Audio.sfx('err'); } }
     this.tweens.add({targets:img,x:img.homeX,y:img.homeY,duration:160,ease:'Quad.out',onComplete:()=>img.setDepth(D+6)});
   }
   closeModal(){ if(this._dragMove){ this.input.off('drag',this._dragMove); this.input.off('dragend',this._dragEnd); this._dragMove=this._dragEnd=null; }
@@ -986,9 +1078,9 @@ class Setup extends Phaser.Scene{
     const add=o=>{ this.modalObjs.push(o); return o; };
     add(this.add.rectangle(GW/2,GH/2,GW,GH,0x05050d,0.84).setScrollFactor(0).setDepth(D).setInteractive());
     add(this.add.rectangle(GW/2,GH/2,900,520,0x141022,0.98).setScrollFactor(0).setStrokeStyle(3,C.gold).setDepth(D+1));
-    add(this.add.text(GW/2,GH/2-234,'MENAGER SALI — KOLEJNOŚĆ WESELA',{fontFamily:'Segoe UI',fontSize:'26px',color:'#ffe487',fontStyle:'bold'}).setOrigin(0.5).setScrollFactor(0).setDepth(D+2));
-    add(this.add.text(GW/2,GH/2-204,'Przeciągnij bloki do miejsc 1–6 we właściwej kolejności',{fontFamily:'Segoe UI',fontSize:'16px',color:'#c9c9e0'}).setOrigin(0.5).setScrollFactor(0).setDepth(D+2));
-    const correct=['Przywitanie chlebem i solą','Posiłek','Polonez','Pierwszy taniec','Animacje taneczne','Oczepiny'];
+    add(this.add.text(GW/2,GH/2-234,t('mgrTitle'),{fontFamily:'Segoe UI',fontSize:'26px',color:'#ffe487',fontStyle:'bold'}).setOrigin(0.5).setScrollFactor(0).setDepth(D+2));
+    add(this.add.text(GW/2,GH/2-204,t('mgrSub'),{fontFamily:'Segoe UI',fontSize:'16px',color:'#c9c9e0'}).setOrigin(0.5).setScrollFactor(0).setDepth(D+2));
+    const correct=t('blk');
     const sx=GW/2-175, sy=GH/2-150, sh=60, bw=340, bh=52;
     this.mgrSlots=[];
     for(let i=0;i<6;i++){ const y=sy+i*sh;
@@ -1016,13 +1108,13 @@ class Setup extends Phaser.Scene{
   checkMgr(D){ const full=this.mgrSlots.every(s=>s.tile);
     if(!full){ this.mgrHint.setText(''); this.mgrSlots.forEach(s=>s.box.setStrokeStyle(2,0x3a3a4a)); return; }
     const ok=this.mgrSlots.every(s=>s.tile.correctPos===s.idx);
-    if(ok){ this.mgrHint.setColor('#46d67a').setText('Idealna kolejność! 🎉'); this.mgrSlots.forEach(s=>s.box.setStrokeStyle(2,C.green));
+    if(ok){ this.mgrHint.setColor('#46d67a').setText(t('mgrPerfect')); this.mgrSlots.forEach(s=>s.box.setStrokeStyle(2,C.green));
       this.time.delayedCall(800,()=>{ this.closeModal(); this.resolveNpc(); }); }
-    else { this.mgrHint.setColor('#ff6b6b').setText('Zła kolejność — popraw bloki'); Audio.sfx('err');
+    else { this.mgrHint.setColor('#ff6b6b').setText(t('mgrWrong')); Audio.sfx('err');
       this.mgrSlots.forEach(s=>s.box.setStrokeStyle(2, s.tile.correctPos===s.idx?C.green:0xff6b6b)); }
   }
   phaseDoneCheck(){ // dzwonek przy zakończeniu fazy
-    const ph=this.phaseIndex(); if(this._lastPhase!=null && ph!==this._lastPhase){ Audio.sfx('phase'); this.flashTip('Etap zaliczony!'); this.refreshMarkers(); this.renderPorts(); } this._lastPhase=ph; }
+    const ph=this.phaseIndex(); if(this._lastPhase!=null && ph!==this._lastPhase){ Audio.sfx('phase'); this.flashTip(t('stageDone')); this.refreshMarkers(); this.renderPorts(); } this._lastPhase=ph; }
 
   /* ---------- NPC ---------- */
   spawnNpc(){ if(!this.npcDefs.length){ return; } const def=this.npcDefs.shift();
@@ -1031,7 +1123,7 @@ class Setup extends Phaser.Scene{
     this.npcActive={def,sprite:spr,gx:5.5,gy:-2.5,tgx:standGx,tgy:standGy,state:'enter',atTarget:false,bubble:null,timer:0};
   }
   resolveNpc(){ const n=this.npcActive; n.atTarget=true; n.state='leave'; if(n.bubble){n.bubble.destroy();n.bubble=null;} this.npcDone++; this.addScore(50);
-    Audio.sfx('ding'); this.flashTip(Phaser.Utils.Array.GetRandom(['Świetna logistyka!','Koordynacja ekipy!','Wszystko dograne przed gośćmi!','Profesjonalizm!'])); this.refreshHUD();
+    Audio.sfx('ding'); this.flashTip(Phaser.Utils.Array.GetRandom(t('npcTips'))); this.refreshHUD();
     // reakcja ekipy: emoji + podskok/puls
     const e=Phaser.Utils.Array.GetRandom(['👍','❤️','🎉','✨','😍','🙌']); const ep=iso(n.gx,n.gy,48);
     const et=this.add.text(ep.x,ep.y,e,{fontSize:'24px'}).setOrigin(0.5).setDepth(96000);
@@ -1053,7 +1145,7 @@ class Setup extends Phaser.Scene{
       } }
     else if(n.state==='ask'){ n.timer+=dt; const p=iso(n.gx,n.gy,40); if(n.bubble) n.bubble.setPosition(p.x,p.y);
         if(n.timer>16000){ // zbyt długo — drobna kara, odchodzi
-          this.addScore(-10); this.flashTip('NPC odszedł nieobsłużony…'); if(n.bubble)n.bubble.destroy(); if(n.tmark)n.tmark.destroy(); n.state='leave'; }
+          this.addScore(-10); this.flashTip(t('npcLeft')); if(n.bubble)n.bubble.destroy(); if(n.tmark)n.tmark.destroy(); n.state='leave'; }
       }
     else if(n.state==='leave'){ if(n.tmark){n.tmark.destroy(); n.tmark=null;} if(move(5.5,-3,2.6)){ n.sprite.destroy(); this.npcActive=null; } }
     // pozycja sprite + głębia
@@ -1101,7 +1193,7 @@ class Setup extends Phaser.Scene{
 
     // kontekstowa akcja + prompt
     const ctx=this.getContext();
-    const keyHint=this.sys.game.device.input.touch?'[AKCJA] ':'[Spacja] ';
+    const keyHint=this.sys.game.device.input.touch?t('keyAction'):t('keySpace');
     if(ctx){ this.promptText.setText(keyHint+ctx.label).setPosition(pp.x,pp.y-52).setVisible(true); }
     else this.promptText.setVisible(false);
 
@@ -1145,8 +1237,8 @@ class Result extends Phaser.Scene{
       this.tweens.add({targets:c,y:GH+20,angle:360,duration:Phaser.Math.Between(2600,5200),repeat:-1,delay:Phaser.Math.Between(0,2200)}); }
     this.add.rectangle(GW/2,GH/2,720,476,0x05050d,0.92).setStrokeStyle(3,C.gold);
 
-    this.add.text(GW/2,110,'SPRZĘT GOTOWY!',{fontFamily:'Segoe UI',fontSize:'40px',color:'#d4af37',fontStyle:'bold'}).setOrigin(0.5).setShadow(0,0,'#d4af37',18);
-    this.add.text(GW/2,152, late?'Zdążyłeś tuż przed gośćmi — profesjonalista ratuje sytuację!':'Wszystko dograne z zapasem czasu. Klasa!',
+    this.add.text(GW/2,110,t('resReady'),{fontFamily:'Segoe UI',fontSize:'40px',color:'#d4af37',fontStyle:'bold'}).setOrigin(0.5).setShadow(0,0,'#d4af37',18);
+    this.add.text(GW/2,152, late?t('resLate'):t('resOnTime'),
       {fontFamily:'Segoe UI',fontSize:'16px',color:'#c9c9e0',align:'center',wordWrap:{width:560}}).setOrigin(0.5);
 
     const sx=GW/2-70;
@@ -1156,20 +1248,20 @@ class Result extends Phaser.Scene{
     const k=this.add.image(GW/2,300,'karolFrak').setScale(1.7).setOrigin(0.5,1); k.y=320;
     this.tweens.add({targets:k,angle:{from:-4,to:4},yoyo:true,repeat:-1,duration:700});
 
-    this.add.text(GW/2,344,'Wynik: '+score+' pkt  •  Ekipa: '+npc+'/5',{fontFamily:'Segoe UI',fontSize:'23px',color:'#00ffcc',fontStyle:'bold'}).setOrigin(0.5);
-    this.add.text(GW/2,372,'Najlepszy wynik: '+best,{fontFamily:'Segoe UI',fontSize:'15px',color:'#9aa'}).setOrigin(0.5);
-    this.add.text(GW/2,404,'Tyle pracy i logistyki kryje się ZANIM zabrzmi pierwszy kawałek.\nKarol i jego zespół ogarną to za Ciebie — bezbłędnie.',
+    this.add.text(GW/2,344,t('resScore')(score,npc),{fontFamily:'Segoe UI',fontSize:'23px',color:'#00ffcc',fontStyle:'bold'}).setOrigin(0.5);
+    this.add.text(GW/2,372,t('resBest')+best,{fontFamily:'Segoe UI',fontSize:'15px',color:'#9aa'}).setOrigin(0.5);
+    this.add.text(GW/2,404,t('resCopy'),
       {fontFamily:'Segoe UI',fontSize:'15px',color:'#c9c9e0',align:'center',lineSpacing:4}).setOrigin(0.5);
 
-    const cta=this.add.text(GW/2,452,'✦ SPRAWDŹ WOLNY TERMIN U KAROLA ✦',{fontFamily:'Segoe UI',fontSize:'19px',color:'#0a0a18',backgroundColor:'#d4af37',padding:{x:22,y:11},fontStyle:'bold'}).setOrigin(0.5).setInteractive().setShadow(0,0,'#d4af37',12);
+    const cta=this.add.text(GW/2,452,t('resCta'),{fontFamily:'Segoe UI',fontSize:'19px',color:'#0a0a18',backgroundColor:'#d4af37',padding:{x:22,y:11},fontStyle:'bold'}).setOrigin(0.5).setInteractive().setShadow(0,0,'#d4af37',12);
     this.tweens.add({targets:cta,scale:{from:1,to:1.05},yoyo:true,repeat:-1,duration:650});
     cta.on('pointerover',()=>cta.setBackgroundColor('#ffe487')); cta.on('pointerout',()=>cta.setBackgroundColor('#d4af37'));
     cta.on('pointerdown',()=>window.open(SITE_URL,'_blank','noopener'));
 
     const mkBtn=(x,txt,fn)=>{ const b=this.add.text(x,506,txt,{fontFamily:'Segoe UI',fontSize:'20px',color:'#fff',backgroundColor:'#2a2747',padding:{x:18,y:11},fontStyle:'bold'}).setOrigin(0.5).setInteractive();
       b.on('pointerover',()=>b.setBackgroundColor('#3a3760')); b.on('pointerout',()=>b.setBackgroundColor('#2a2747')); b.on('pointerdown',fn); return b; };
-    mkBtn(GW/2-140,'↻ Powtórz',()=>this.scene.start('Setup'));
-    mkBtn(GW/2+140,'≡ Menu',()=>window.location.reload());
+    mkBtn(GW/2-140,t('resReplay'),()=>this.scene.start('Setup'));
+    mkBtn(GW/2+140,t('resMenu'),()=>window.location.reload());
   }
 }
 

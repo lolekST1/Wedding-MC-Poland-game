@@ -194,7 +194,7 @@ const I18N={
   stageDone:'Etap zaliczony!', cablesTidy:'Kable uprzątnięte i oklejone taśmą!', guestsEnter:'Goście wchodzą — zaczynamy wesele! 🎉', npcLeft:'NPC odszedł nieobsłużony…',
   staging:'ZNIEŚ TORBY TUTAJ', carPickup:'🚐 ODBIERZ SPRZĘT', carReturn:'🚐 ZWRÓĆ TORBY', dropped:'Odłożono',
   pPutBag:'Połóż torbę', pDropBag:'Odłóż torbę', pBagToCar:'Włóż torbę do auta', pPlace:'Postaw: ', pDropHere:'Odłóż tutaj', pTakeBag:'Weź torbę', pTakeBagCar:'Weź torbę z auta', pUnpack:'Rozpakuj (przytrzymaj)', pPickup:'Podnieś: ', pGrabPlug:'Chwyć wtyk', pConnect:'Podłącz kabel', pDropPlug:'Odłóż wtyk', pTidy:'Uprzątnij kabel', pTakeEmpty:'Weź pustą torbę', pChange:'Przebierz się we frak', pSchedule:'Ułóż harmonogram', pShow:'Pokaż / załatw',
-  keySpace:'[Spacja] ', keyAction:'[AKCJA] ', btnAction:'AKCJA',
+  keySpace:'[Spacja] ', keyAction:'[AKCJA] ', btnAction:'AKCJA', brandSign:'WODZIREJ KAROL',
   slot_djtable:'Stół DJ', slot_console:'Konsola', slot_laptop:'Laptop', slot_dmx:'DMX', slot_sstL:'Statyw L', slot_sstR:'Statyw P', slot_spkL:'Głośnik L', slot_spkR:'Głośnik P', slot_lstL:'Statyw św. L', slot_lstR:'Statyw św. P', slot_liL:'Lampa L', slot_liR:'Lampa P',
   npc_manager:'Menager sali', npc_photo:'Fotograf', npc_camera:'Kamerzysta', npc_booth:'Fotobudka', npc_barman:'Barman',
   req_manager:'Ułóż kolejność wesela!', req_photo:'Gdzie gniazdko na ładowarki?', req_camera:'Gdzie kamera, by nie zasłaniać?', req_booth:'Róg z prądem na fotobudkę?', req_barman:'Przedłużacz do baru?',
@@ -224,7 +224,7 @@ const I18N={
   stageDone:'Stage complete!', cablesTidy:'Cables tidied and taped down!', guestsEnter:'Guests are entering — let the wedding begin! 🎉', npcLeft:'The guest left unattended…',
   staging:'DROP BAGS HERE', carPickup:'🚐 PICK UP GEAR', carReturn:'🚐 RETURN BAGS', dropped:'Dropped',
   pPutBag:'Put bag down', pDropBag:'Drop bag', pBagToCar:'Put bag in van', pPlace:'Place: ', pDropHere:'Drop here', pTakeBag:'Take bag', pTakeBagCar:'Take bag from van', pUnpack:'Unpack (hold)', pPickup:'Pick up: ', pGrabPlug:'Grab plug', pConnect:'Connect cable', pDropPlug:'Drop plug', pTidy:'Tidy cable', pTakeEmpty:'Take empty bag', pChange:'Change into tailcoat', pSchedule:'Arrange schedule', pShow:'Show / handle',
-  keySpace:'[Space] ', keyAction:'[ACTION] ', btnAction:'ACTION',
+  keySpace:'[Space] ', keyAction:'[ACTION] ', btnAction:'ACTION', brandSign:'WEDDING MC POLAND',
   slot_djtable:'DJ Booth', slot_console:'Console', slot_laptop:'Laptop', slot_dmx:'DMX', slot_sstL:'Stand L', slot_sstR:'Stand R', slot_spkL:'Speaker L', slot_spkR:'Speaker R', slot_lstL:'Light stand L', slot_lstR:'Light stand R', slot_liL:'Lamp L', slot_liR:'Lamp R',
   npc_manager:'Venue manager', npc_photo:'Photographer', npc_camera:'Cameraman', npc_booth:'Photo booth', npc_barman:'Bartender',
   req_manager:'Arrange the wedding schedule!', req_photo:'Where\'s the outlet for chargers?', req_camera:'Where to put the camera so it won\'t block?', req_booth:'A corner with power for the photo booth?', req_barman:'An extension cord for the bar?',
@@ -760,8 +760,8 @@ class Setup extends Phaser.Scene{
     [[OX-20,OY-54],[OX+150,OY-18]].forEach(([cx,cy])=>{ const gl=this.add.image(cx,cy,'soft').setTint(0xffe9a0).setScale(1.7).setAlpha(0.16).setDepth(-79000);
       this.tweens.add({targets:gl,alpha:0.30,scale:1.85,yoyo:true,repeat:-1,ease:'Sine.inOut',duration:Phaser.Math.Between(700,1300)}); });
 
-    // neon z marką na ścianie
-    const np=iso(2,0,0); this.add.text(np.x,np.y-78,'WEDDING MC POLAND',{fontFamily:'Segoe UI',fontSize:'13px',color:'#00ffcc'}).setOrigin(0,1).setDepth(-78000).setShadow(0,0,'#00ffcc',8).setAngle(26);
+    // neon z marką — w lewym górnym rogu, z dala od żyrandoli (czytelny)
+    const np=iso(0,0,0); this.add.text(np.x-205,np.y-44,t('brandSign'),{fontFamily:'Segoe UI',fontSize:'14px',color:'#00ffcc',fontStyle:'bold'}).setOrigin(0,1).setDepth(-78000).setShadow(0,0,'#00ffcc',10).setAngle(18);
   }
 
   /* ---------- MARKERY ---------- */

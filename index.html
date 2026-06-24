@@ -194,7 +194,7 @@ const I18N={
   stageDone:'Etap zaliczony!', cablesTidy:'Kable uprzątnięte i oklejone taśmą!', guestsEnter:'Goście wchodzą — zaczynamy wesele! 🎉', npcLeft:'NPC odszedł nieobsłużony…',
   staging:'ZNIEŚ TORBY TUTAJ', carPickup:'🚐 ODBIERZ SPRZĘT', carReturn:'🚐 ZWRÓĆ TORBY', dropped:'Odłożono',
   pPutBag:'Połóż torbę', pDropBag:'Odłóż torbę', pBagToCar:'Włóż torbę do auta', pPlace:'Postaw: ', pDropHere:'Odłóż tutaj', pTakeBag:'Weź torbę', pTakeBagCar:'Weź torbę z auta', pUnpack:'Rozpakuj (przytrzymaj)', pPickup:'Podnieś: ', pGrabPlug:'Chwyć wtyk', pConnect:'Podłącz kabel', pDropPlug:'Odłóż wtyk', pTidy:'Uprzątnij kabel', pTakeEmpty:'Weź pustą torbę', pChange:'Przebierz się we frak', pSchedule:'Ułóż harmonogram', pShow:'Pokaż / załatw',
-  keySpace:'[Spacja] ', keyAction:'[AKCJA] ',
+  keySpace:'[Spacja] ', keyAction:'[AKCJA] ', btnAction:'AKCJA',
   slot_djtable:'Stół DJ', slot_console:'Konsola', slot_laptop:'Laptop', slot_dmx:'DMX', slot_sstL:'Statyw L', slot_sstR:'Statyw P', slot_spkL:'Głośnik L', slot_spkR:'Głośnik P', slot_lstL:'Statyw św. L', slot_lstR:'Statyw św. P', slot_liL:'Lampa L', slot_liR:'Lampa P',
   npc_manager:'Menager sali', npc_photo:'Fotograf', npc_camera:'Kamerzysta', npc_booth:'Fotobudka', npc_barman:'Barman',
   req_manager:'Ułóż kolejność wesela!', req_photo:'Gdzie gniazdko na ładowarki?', req_camera:'Gdzie kamera, by nie zasłaniać?', req_booth:'Róg z prądem na fotobudkę?', req_barman:'Przedłużacz do baru?',
@@ -224,7 +224,7 @@ const I18N={
   stageDone:'Stage complete!', cablesTidy:'Cables tidied and taped down!', guestsEnter:'Guests are entering — let the wedding begin! 🎉', npcLeft:'The guest left unattended…',
   staging:'DROP BAGS HERE', carPickup:'🚐 PICK UP GEAR', carReturn:'🚐 RETURN BAGS', dropped:'Dropped',
   pPutBag:'Put bag down', pDropBag:'Drop bag', pBagToCar:'Put bag in van', pPlace:'Place: ', pDropHere:'Drop here', pTakeBag:'Take bag', pTakeBagCar:'Take bag from van', pUnpack:'Unpack (hold)', pPickup:'Pick up: ', pGrabPlug:'Grab plug', pConnect:'Connect cable', pDropPlug:'Drop plug', pTidy:'Tidy cable', pTakeEmpty:'Take empty bag', pChange:'Change into tailcoat', pSchedule:'Arrange schedule', pShow:'Show / handle',
-  keySpace:'[Space] ', keyAction:'[ACTION] ',
+  keySpace:'[Space] ', keyAction:'[ACTION] ', btnAction:'ACTION',
   slot_djtable:'DJ Booth', slot_console:'Console', slot_laptop:'Laptop', slot_dmx:'DMX', slot_sstL:'Stand L', slot_sstR:'Stand R', slot_spkL:'Speaker L', slot_spkR:'Speaker R', slot_lstL:'Light stand L', slot_lstR:'Light stand R', slot_liL:'Lamp L', slot_liR:'Lamp R',
   npc_manager:'Venue manager', npc_photo:'Photographer', npc_camera:'Cameraman', npc_booth:'Photo booth', npc_barman:'Bartender',
   req_manager:'Arrange the wedding schedule!', req_photo:'Where\'s the outlet for chargers?', req_camera:'Where to put the camera so it won\'t block?', req_booth:'A corner with power for the photo booth?', req_barman:'An extension cord for the bar?',
@@ -673,6 +673,7 @@ class Setup extends Phaser.Scene{
 
     // sprzątanie przy wyjściu ze sceny (replay/menu) — zatrzymaj timery i listenery
     this.events.once('shutdown',()=>{ if(this._disco){ this._disco.remove(); this._disco=null; }
+      if(this.noteFX){ Object.values(this.noteFX).forEach(ev=>ev&&ev.remove&&ev.remove()); this.noteFX=null; }
       if(this._dragMove){ this.input.off('drag',this._dragMove); this.input.off('dragend',this._dragEnd); this._dragMove=this._dragEnd=null; } });
 
     // ambient — drobinki światła w powietrzu
@@ -867,6 +868,21 @@ class Setup extends Phaser.Scene{
     this.ensureDisco(); }
   ensureDisco(){ if(this._disco) return; const pal=[0x33e0ff,0xff2e8b,0xffe487,0x46d67a,0x9b5cff]; let k=0;
     this._disco=this.time.addEvent({delay:360,loop:true,callback:()=>{ k++; (this.lightFX||[]).filter(f=>f.on).forEach((f,j)=>{ const c=pal[(k+j)%pal.length]; f.glow.setTint(c); f.pool.setFillStyle(c, f.pool.fillAlpha); }); }}); }
+  // konsola pod prądem = stół DJ podłączony do gniazdka
+  powered(){ return this.cables.includes('djtable'); }
+  // światła świecą tylko gdy podłączone do konsoli (DMX) ORAZ konsola do prądu;
+  // głośniki grają nutki tylko gdy podłączone do konsoli ORAZ konsola do prądu
+  updatePowerFX(){ const pw=this.powered();
+    ['liL','liR'].forEach(id=>{ if(pw && this.cables.includes(id)) this.lightOn(id); });
+    ['spkL','spkR'].forEach(id=>{ if(pw && this.cables.includes(id)) this.notesOn(id); }); }
+  notesOn(id){ this.noteFX=this.noteFX||{}; if(this.noteFX[id]) return;
+    const s=this.slots.find(x=>x.id===id); if(!s) return;
+    this.noteFX[id]=this.time.addEvent({delay:640,loop:true,callback:()=>this.spawnNote(s)}); this.spawnNote(s); }
+  spawnNote(s){ const top=iso(s.gx,s.gy,s.z+18);
+    const glyph=Phaser.Utils.Array.GetRandom(['♪','♫','🎵','🎶']);
+    const col=Phaser.Utils.Array.GetRandom(['#33e0ff','#ff2e8b','#ffe487','#46d67a','#9b5cff']);
+    const n=this.add.text(top.x+Phaser.Math.Between(-8,8),top.y,glyph,{fontFamily:'Segoe UI',fontSize:Phaser.Math.Between(16,24)+'px',color:col,fontStyle:'bold'}).setOrigin(0.5).setDepth(95500);
+    this.tweens.add({targets:n,y:n.y-Phaser.Math.Between(60,90),x:n.x+Phaser.Math.Between(-18,18),alpha:0,duration:1300,ease:'Sine.out',onComplete:()=>n.destroy()}); }
   buildControls(){
     this.cursors=this.input.keyboard.createCursorKeys();
     this.keys=this.input.keyboard.addKeys('W,A,S,D,SPACE');
@@ -885,7 +901,7 @@ class Setup extends Phaser.Scene{
   }
   buildActBtn(){
     const b=this.add.circle(GW-78,GH-88,56,C.gold,0.34).setStrokeStyle(3,C.gold).setScrollFactor(0).setDepth(95000).setInteractive();
-    const lbl=this.add.text(GW-78,GH-88,'AKCJA',{fontFamily:'Segoe UI',fontSize:'15px',color:'#fff',fontStyle:'bold'}).setOrigin(0.5).setScrollFactor(0).setDepth(95001);
+    const lbl=this.add.text(GW-78,GH-88,t('btnAction'),{fontFamily:'Segoe UI',fontSize:'15px',color:'#fff',fontStyle:'bold'}).setOrigin(0.5).setScrollFactor(0).setDepth(95001);
     const press=()=>{ b.setFillStyle(C.gold,0.75).setScale(0.9); lbl.setScale(0.9); };
     const release=()=>{ b.setFillStyle(C.gold,0.32).setScale(1); lbl.setScale(1); };
     b.on('pointerdown',()=>{ this.actionQueued=true; this.holding=true; press(); });
@@ -984,7 +1000,7 @@ class Setup extends Phaser.Scene{
     this.cableObjs.push({conn,g,f,t}); this.cables.push(conn.id); this.cabled++; this.plug=null;
     Audio.sfx('connect'); this.addScore(15); this.floatText(t.gx,t.gy,'⚡','#ffd23f'); this.phaseDoneCheck(); this.refreshHUD(); this.renderPorts();
     this.burstAt(bw.x,bw.y,conn.col,10); this.shake(170,0.006);              // juice: iskra + wstrząs przy podłączeniu prądu
-    if(conn.id==='liL'||conn.id==='liR') this.lightOn(conn.id);              // zasilona lampa = świeci (disco)
+    this.updatePowerFX();                                                    // światła i nutki zależą od zasilania konsoli
     if(this.cabled>=this.conns.length) this.spawnTidy();
   }
   drawTangledCable(aw,bw,col,mgx,mgy){ const g=this.add.graphics().setDepth(tdepth(mgx,mgy,1));

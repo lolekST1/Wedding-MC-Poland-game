@@ -157,7 +157,10 @@
             <span class="tc-txt"><span class="tc-title" data-i18n="task1title">1. Load-in: Rozstawienie sprzętu</span><span class="tc-desc" data-i18n="task1desc">Rozpakuj i ustaw sprzęt, ogarnij ekipę i zdąż przed gośćmi.</span></span>
             <span class="tc-go" data-i18n="play">▶ GRAJ</span>
           </button>
-          <div class="task-card locked"><span class="tc-txt"><span class="tc-title" data-i18n="task2title">2. Parkiet z gośćmi</span><span class="tc-desc" data-i18n="task2desc">Rozgrzej parkiet i czytaj salę. (Wkrótce)</span></span><span class="tc-lock">🔒</span></div>
+          <button class="task-card active" id="task2" type="button">
+            <span class="tc-txt"><span class="tc-title" data-i18n="task2title">2. Parkiet z gośćmi</span><span class="tc-desc" data-i18n="task2desc">Czytaj salę, graj to, czego chcą goście, i utrzymaj energię parkietu.</span></span>
+            <span class="tc-go" data-i18n="play">▶ GRAJ</span>
+          </button>
           <div class="task-card locked"><span class="tc-txt"><span class="tc-title" data-i18n="task3title">3. Wesele międzynarodowe PL/EN</span><span class="tc-desc" data-i18n="task3desc">Płynne dwujęzyczne prowadzenie. (Wkrótce)</span></span><span class="tc-lock">🔒</span></div>
         </div>
         <p class="ctrls" data-i18n-html="controls"><b>Sterowanie:</b> Strzałki / WASD&nbsp;•&nbsp;Akcja: Spacja<br>📱 na telefonie: joystick + przycisk AKCJA</p>
@@ -188,7 +191,7 @@ const I18N={
   docTitle:'Wodzirej Karol: Master of the Dancefloor – gra | Wedding MC Poland',
   menuSub:'Profesjonalna logistyka wesela w izometrycznej grze — wybierz zadanie:',
   task1title:'1. Load-in: Rozstawienie sprzętu', task1desc:'Rozpakuj i ustaw sprzęt, ogarnij ekipę i zdąż przed gośćmi.',
-  task2title:'2. Parkiet z gośćmi', task2desc:'Rozgrzej parkiet i czytaj salę. (Wkrótce)',
+  task2title:'2. Parkiet z gośćmi', task2desc:'Czytaj salę, graj to, czego chcą goście, i utrzymaj energię parkietu.',
   task3title:'3. Wesele międzynarodowe PL/EN', task3desc:'Płynne dwujęzyczne prowadzenie. (Wkrótce)',
   play:'▶ GRAJ', loading:'Ładowanie sali…', loadErr:'Błąd ładowania. Sprawdź połączenie i spróbuj ponownie.',
   controls:'<b>Sterowanie:</b> Strzałki / WASD&nbsp;•&nbsp;Akcja: Spacja<br>📱 na telefonie: joystick + przycisk AKCJA',
@@ -212,13 +215,30 @@ const I18N={
   resReady:'SPRZĘT GOTOWY!', resLate:'Zdążyłeś tuż przed gośćmi — profesjonalista ratuje sytuację!', resOnTime:'Wszystko dograne z zapasem czasu. Klasa!',
   resScore:(s,n)=>'Wynik: '+s+' pkt  •  Ekipa: '+n+'/5', resBest:'Najlepszy wynik: ',
   resCopy:'Tyle pracy i logistyki kryje się ZANIM zabrzmi pierwszy kawałek.\nKarol i jego zespół ogarną to za Ciebie — bezbłędnie.',
-  resCta:'✦ SPRAWDŹ WOLNY TERMIN U KAROLA ✦', resReplay:'↻ Powtórz', resMenu:'≡ Menu'
+  resCta:'✦ SPRAWDŹ WOLNY TERMIN U KAROLA ✦', resReplay:'↻ Powtórz', resMenu:'≡ Menu',
+  /* ---- Minigra 2: Parkiet z gośćmi ---- */
+  mus_disco:'Disco', mus_rom:'Romantycznie', mus_hype:'Mocne bity', mus_chill:'Spokojne tło',
+  d_energy:'ENERGIA PARKIETU', d_now:'♪ Teraz gra: ', d_events:'Akcje: ',
+  dph0:'Powitanie gości', dph1:'Integracja', dph2:'Pierwszy taniec', dph3:'Toasty', dph4:'Oczepiny', dph5:'Impreza', dph6:'Ostatni taniec',
+  dh0:'Rozgrzewka — sprawdź chmurki nad grupami i ustaw muzykę przy konsoli DJ', dh1:'Krąż po sali i dopasowuj muzykę do grup gości',
+  dh2:'Wszyscy czekają na wolny kawałek dla pary młodej', dh3:'Przycisz — spokojne tło do toastów i życzeń',
+  dh4:'Pełna moc! Cała sala chce mocnych bitów', dh5:'Utrzymaj energię — gusta zmieniają się szybko', dh6:'Wygaszamy wieczór — romantycznie na koniec',
+  pDJ:'Zmień muzykę', pCheer:'Zagrzej grupę', pUncle:'Odprowadź wujka', pRequest:'Przyjmij prośbę', pPhoto:'Ustaw się do zdjęcia',
+  evUncle:'Wujek chce przejąć mikrofon! Zatrzymaj go!', evUncleFail:'Wujek dorwał mikrofon… parkiet stygnie', evUncleOk:'Wujek odprowadzony do stolika!',
+  evRequest:'Prośba o kawałek! Podejdź do grupy', evReqPlay:'Zagraj teraz: ', evReqOk:'Prośba spełniona! Sala szaleje!', evReqFail:'Prośba przepadła…',
+  evPhoto:'Fotograf prosi o ustawkę przy parze młodej!', evPhotoOk:'Pstryk! Pamiątkowe zdjęcie!', evPhotoFail:'Fotograf poszedł dalej…',
+  mixTitle:'KONSOLA DJ — ZMIEŃ MUZYKĘ', mixSub:'Wybierz styl dla parkietu (kliknij albo 1–4)', mixGo:'Trafiaj nuty w rytm!  A S D F / strzałki / tapnij tor',
+  mixPerfect:'Idealnie!', mixGood:'Dobrze', mixMiss:'Pudło', mixBoost:(n)=>'Mix gotowy! +'+n+' energii',
+  dLow:'Parkiet gaśnie! Zmień muzykę przy konsoli!', dMatchAll:'Cała sala tańczy! 🔥',
+  resDance:'PARKIET ROZGRZANY!', resDanceHi:'Sala szalała do końca — mistrzowskie czytanie parkietu!', resDanceMid:'Dobra impreza! Następnym razem rozkręcisz salę jeszcze mocniej.',
+  resDanceScore:(s,n)=>'Wynik: '+s+' pkt  •  Akcje na sali: '+n+'/5', resDanceAvg:(e)=>'Średnia energia parkietu: '+e+'%',
+  resDanceCopy:'Dobry wodzirej cały wieczór czyta salę i wie, co zagrać.\nKarol robi to na każdym weselu — sprawdź go w akcji.'
  },
  en:{
   docTitle:'Wodzirej Karol: Master of the Dancefloor – game | Wedding MC Poland',
   menuSub:'Professional wedding logistics in an isometric game — pick a task:',
   task1title:'1. Load-in: Set up the gear', task1desc:'Unpack and set up the gear, wrangle the crew and beat the guests.',
-  task2title:'2. Dancefloor with guests', task2desc:'Warm up the floor and read the room. (Soon)',
+  task2title:'2. Dancefloor with guests', task2desc:'Read the room, play what the guests want and keep the dancefloor energy up.',
   task3title:'3. International wedding PL/EN', task3desc:'Smooth bilingual hosting. (Soon)',
   play:'▶ PLAY', loading:'Loading the venue…', loadErr:'Loading error. Check your connection and try again.',
   controls:'<b>Controls:</b> Arrows / WASD&nbsp;•&nbsp;Action: Space<br>📱 on phone: joystick + ACTION button',
@@ -242,7 +262,24 @@ const I18N={
   resReady:'GEAR READY!', resLate:'You made it just before the guests — a pro saves the day!', resOnTime:'All set with time to spare. Class!',
   resScore:(s,n)=>'Score: '+s+' pts  •  Crew: '+n+'/5', resBest:'Best score: ',
   resCopy:'That\'s how much work and logistics happen BEFORE the first track plays.\nKarol and his team handle it for you — flawlessly.',
-  resCta:'✦ CHECK KAROL\'S AVAILABILITY ✦', resReplay:'↻ Replay', resMenu:'≡ Menu'
+  resCta:'✦ CHECK KAROL\'S AVAILABILITY ✦', resReplay:'↻ Replay', resMenu:'≡ Menu',
+  /* ---- Minigame 2: Dancefloor with guests ---- */
+  mus_disco:'Disco', mus_rom:'Slow dance', mus_hype:'Big beats', mus_chill:'Chill background',
+  d_energy:'DANCEFLOOR ENERGY', d_now:'♪ Now playing: ', d_events:'Actions: ',
+  dph0:'Welcoming the guests', dph1:'Mingling', dph2:'First dance', dph3:'Toasts', dph4:'Oczepiny games', dph5:'Party time', dph6:'Last dance',
+  dh0:'Warm-up — check the bubbles above the groups and set the music at the DJ console', dh1:'Walk the room and match the music to the guest groups',
+  dh2:'Everyone is waiting for the newlyweds\' slow dance', dh3:'Turn it down — calm background for the toasts',
+  dh4:'Full power! The whole room wants big beats', dh5:'Keep the energy up — tastes change fast', dh6:'Wind the night down — end on a romantic note',
+  pDJ:'Change the music', pCheer:'Hype the group', pUncle:'Walk uncle back', pRequest:'Take the request', pPhoto:'Pose for the photo',
+  evUncle:'Uncle wants to grab the mic! Stop him!', evUncleFail:'Uncle got the mic… the floor cools down', evUncleOk:'Uncle walked back to his table!',
+  evRequest:'Song request! Go to the group', evReqPlay:'Play now: ', evReqOk:'Request delivered! The room goes wild!', evReqFail:'The request slipped away…',
+  evPhoto:'The photographer wants a shot with the newlyweds!', evPhotoOk:'Snap! A photo to remember!', evPhotoFail:'The photographer moved on…',
+  mixTitle:'DJ CONSOLE — CHANGE THE MUSIC', mixSub:'Pick a style for the floor (click or 1–4)', mixGo:'Hit the notes on beat!  A S D F / arrows / tap a lane',
+  mixPerfect:'Perfect!', mixGood:'Good', mixMiss:'Miss', mixBoost:(n)=>'Mix done! +'+n+' energy',
+  dLow:'The floor is dying down! Change the music at the console!', dMatchAll:'The whole room is dancing! 🔥',
+  resDance:'DANCEFLOOR ON FIRE!', resDanceHi:'The room partied to the very end — masterful floor reading!', resDanceMid:'Good party! Next time you\'ll heat the room up even more.',
+  resDanceScore:(s,n)=>'Score: '+s+' pts  •  Floor actions: '+n+'/5', resDanceAvg:(e)=>'Average dancefloor energy: '+e+'%',
+  resDanceCopy:'A good MC reads the room all night and knows what to play.\nKarol does it at every wedding — see him in action.'
  }
 };
 function detectLang(){ try{ const u=new URLSearchParams(location.search).get('lang'); if(u==='en'||u==='pl') return u;
@@ -273,9 +310,11 @@ function setLang(l){ if(l!==LANG){ LANG=l; try{localStorage.setItem('wk_lang',l)
   const lp=document.getElementById('langPL'), le=document.getElementById('langEN');
   if(lp) lp.addEventListener('click',()=>setLang('pl'));
   if(le) le.addEventListener('click',()=>setLang('en'));
+  const card2=document.getElementById('task2');
   let loading=false;
-  function loadGame(){
+  function loadGame(startScene){
     if(loading) return; loading=true;
+    window.WK_START=startScene||'Setup';
     loadTxt.textContent=t('loading');
     const s=document.createElement('script');
     s.src='https://cdn.jsdelivr.net/npm/phaser@3.80.1/dist/phaser.min.js';
@@ -283,8 +322,10 @@ function setLang(l){ if(l!==LANG){ LANG=l; try{localStorage.setItem('wk_lang',l)
     s.onerror=()=>{ loadTxt.textContent=t('loadErr'); loading=false; };
     document.head.appendChild(s);
   }
-  card1.addEventListener('click',loadGame);
-  card1.addEventListener('keydown',e=>{ if(e.key==='Enter'||e.key===' '){e.preventDefault();loadGame();}});
+  card1.addEventListener('click',()=>loadGame('Setup'));
+  card1.addEventListener('keydown',e=>{ if(e.key==='Enter'||e.key===' '){e.preventDefault();loadGame('Setup');}});
+  if(card2){ card2.addEventListener('click',()=>loadGame('Dance'));
+    card2.addEventListener('keydown',e=>{ if(e.key==='Enter'||e.key===' '){e.preventDefault();loadGame('Dance');}}); }
 })();
 
 /* =========================================================================
@@ -310,7 +351,14 @@ const CHARS={
   photo:   {shirt:0x2f7a52,pants:0x223026,hair:0x20140c,prop:'camera'},
   camera:  {shirt:0x335a8a,pants:0x223040,hair:0x20140c,prop:'cam'},
   booth:   {shirt:0x8a3c7a,pants:0x402838,hair:0x301020,prop:'booth'},
-  barman:  {shirt:0xdedede,pants:0x222,hair:0x20140c,prop:'tray'}
+  barman:  {shirt:0xdedede,pants:0x222,hair:0x20140c,prop:'tray'},
+  // goście weselni (minigra 2: Parkiet)
+  guestA:  {shirt:0xd4547a,dress:0xd4547a,skin:0xf1c9a5,hair:0x6a4218},
+  guestB:  {shirt:0x4a8ad4,pants:0x26334a,skin:0xe8b88f,hair:0x181818},
+  guestC:  {shirt:0x54b87a,dress:0x54b87a,skin:0xf1c9a5,hair:0x8a5a2a,curly:true},
+  guestD:  {shirt:0x8a68c8,pants:0x38304a,skin:0xd9a97f,hair:0x101010},
+  guestE:  {shirt:0xd4b23f,dress:0xd4b23f,skin:0xf1c9a5,hair:0x2a1a10,curly:true},
+  uncle:   {shirt:0x9a4a3a,pants:0x4a3a2a,skin:0xf1c9a5,hair:0x9a9aa2}
 };
 
 function iso(gx,gy,z){ return { x: OX+(gx-gy)*(TW/2), y: OY+(gx+gy)*(TH/2) - (z||0) }; }
@@ -320,36 +368,66 @@ function tdepth(gx,gy,bonus){ return (gx+gy)*100 + (bonus||0); }
    AUDIO — łagodny, melodyjny "load-in groove" + mute + SFX
 --------------------------------------------------------------------------- */
 const Audio=(function(){
-  let ctx=null,master,musicG,sfxG,seq=null,bar=0,playing=false,muted=false;
-  const BPM=96, beat=60/BPM;
+  let ctx=null,master,musicG,sfxG,seq=null,bar=0,playing=false,muted=false,noiseBuf=null;
+  // nastroje muzyczne (minigra 2 przełącza je w locie; 'loadin' = oryginalny groove minigry 1)
+  const MOODS={
+    loadin:  {bpm:96, gain:0.16, padType:'triangle', pluckType:'sine', kicks:[0,2], hats:[],
+      chords:[[196,247,294],[174,220,261],[220,277,330],[164,207,247]],
+      mel:[392,440,523,440, 349,392,440,392, 523,494,440,392, 330,392,440,494]},
+    disco:   {bpm:122, gain:0.17, padType:'sawtooth', pluckType:'square', kicks:[0,1,2,3], hats:[0.5,1.5,2.5,3.5],
+      chords:[[220,277,330],[196,247,294],[174,220,261],[196,247,294]],
+      mel:[440,523,587,523, 440,587,659,587, 523,587,659,784, 659,587,523,440]},
+    romantic:{bpm:72, gain:0.15, padType:'triangle', pluckType:'sine', kicks:[0], hats:[],
+      chords:[[174,220,261],[164,207,247],[146,185,220],[196,247,294]],
+      mel:[349,440,523,659, 587,523,440,349, 330,415,494,659, 587,523,494,440]},
+    hype:    {bpm:134, gain:0.18, padType:'square', pluckType:'sawtooth', kicks:[0,1,1.5,2,3,3.5], hats:[0.5,1.5,2.5,3.5],
+      chords:[[164,207,247],[174,220,261],[196,247,294],[220,277,330]],
+      mel:[659,659,784,659, 587,587,659,587, 523,523,587,523, 659,784,880,784]},
+    chill:   {bpm:80, gain:0.11, padType:'sine', pluckType:'sine', kicks:[], hats:[],
+      chords:[[146,185,220],[164,207,247],[174,220,261],[164,207,247]],
+      mel:[293,330,370,330, 294,330,392,330, 261,330,392,440, 392,370,330,294]}
+  };
+  let mood=MOODS.loadin, moodName='loadin', beat=60/mood.bpm;
   function init(){ if(ctx) return;
     const AC=window.AudioContext||window.webkitAudioContext; ctx=new AC();
     master=ctx.createGain(); master.gain.value=0.8; master.connect(ctx.destination);
-    musicG=ctx.createGain(); musicG.gain.value=0.16; musicG.connect(master);   // delikatnie
+    musicG=ctx.createGain(); musicG.gain.value=mood.gain; musicG.connect(master);   // delikatnie
     sfxG=ctx.createGain(); sfxG.gain.value=0.5; sfxG.connect(master);
+    noiseBuf=ctx.createBuffer(1,ctx.sampleRate*0.2,ctx.sampleRate);
+    const nd=noiseBuf.getChannelData(0); for(let i=0;i<nd.length;i++) nd[i]=Math.random()*2-1;
   }
   function resume(){ if(ctx&&ctx.state==='suspended') ctx.resume(); }
   // miękki pad-akord
-  function pad(t,freqs){ freqs.forEach(f=>{ const o=ctx.createOscillator(),g=ctx.createGain();
-    o.type='triangle'; o.frequency.value=f;
+  function pad(t,freqs){ const pg=mood.padType==='sawtooth'||mood.padType==='square'?0.09:0.18;
+    freqs.forEach(f=>{ const o=ctx.createOscillator(),g=ctx.createGain();
+    o.type=mood.padType; o.frequency.value=f;
     const lp=ctx.createBiquadFilter(); lp.type='lowpass'; lp.frequency.value=1200;
-    g.gain.setValueAtTime(0,t); g.gain.linearRampToValueAtTime(0.18,t+0.4); g.gain.linearRampToValueAtTime(0.0,t+beat*2);
+    g.gain.setValueAtTime(0,t); g.gain.linearRampToValueAtTime(pg,t+0.4); g.gain.linearRampToValueAtTime(0.0,t+beat*2);
     o.connect(lp); lp.connect(g); g.connect(musicG); o.start(t); o.stop(t+beat*2+0.1); }); }
   function softKick(t){ const o=ctx.createOscillator(),g=ctx.createGain();
     o.type='sine'; o.frequency.setValueAtTime(110,t); o.frequency.exponentialRampToValueAtTime(50,t+0.1);
     g.gain.setValueAtTime(0.5,t); g.gain.exponentialRampToValueAtTime(0.001,t+0.16);
     o.connect(g); g.connect(musicG); o.start(t); o.stop(t+0.18); }
+  function hat(t){ const src=ctx.createBufferSource(); src.buffer=noiseBuf;
+    const hp=ctx.createBiquadFilter(); hp.type='highpass'; hp.frequency.value=6500;
+    const g=ctx.createGain(); g.gain.setValueAtTime(0.10,t); g.gain.exponentialRampToValueAtTime(0.001,t+0.05);
+    src.connect(hp); hp.connect(g); g.connect(musicG); src.start(t); src.stop(t+0.07); }
   function pluck(t,f){ const o=ctx.createOscillator(),g=ctx.createGain();
-    o.type='sine'; o.frequency.value=f; g.gain.setValueAtTime(0.0,t); g.gain.linearRampToValueAtTime(0.1,t+0.01);
+    o.type=mood.pluckType; const pg=mood.pluckType==='sawtooth'||mood.pluckType==='square'?0.06:0.1;
+    o.frequency.value=f; g.gain.setValueAtTime(0.0,t); g.gain.linearRampToValueAtTime(pg,t+0.01);
     g.gain.exponentialRampToValueAtTime(0.001,t+0.4); o.connect(g); g.connect(musicG); o.start(t); o.stop(t+0.42); }
-  const chords=[[196,247,294],[174,220,261],[220,277,330],[164,207,247]];
-  const mel=[392,440,523,440, 349,392,440,392, 523,494,440,392, 330,392,440,494];
   function tickBar(){ if(!playing) return; const t=ctx.currentTime+0.04;
-    const ch=chords[bar%chords.length]; pad(t,ch);
-    for(let i=0;i<4;i++){ if(i===0||i===2) softKick(t+i*beat); pluck(t+i*beat, mel[(bar*4+i)%mel.length]); }
+    const ch=mood.chords[bar%mood.chords.length]; pad(t,ch);
+    mood.kicks.forEach(k=>softKick(t+k*beat)); mood.hats.forEach(h=>hat(t+h*beat));
+    for(let i=0;i<4;i++){ pluck(t+i*beat, mood.mel[(bar*4+i)%mood.mel.length]); }
     bar++; }
   function startMusic(){ init(); resume(); if(playing) return; playing=true; bar=0; seq=setInterval(tickBar, beat*4*1000); tickBar(); }
   function stopMusic(){ playing=false; if(seq){clearInterval(seq); seq=null;} }
+  function setMood(name){ if(!MOODS[name]||name===moodName) return; mood=MOODS[name]; moodName=name; beat=60/mood.bpm;
+    if(musicG) musicG.gain.value=mood.gain;
+    if(playing){ clearInterval(seq); bar=0; seq=setInterval(tickBar, beat*4*1000); tickBar(); } }
+  function getMood(){ return moodName; }
+  function beatDur(){ return beat; }
   function toggleMute(){ muted=!muted; if(master) master.gain.value=muted?0:0.8; return muted; }
   function isMuted(){ return muted; }
   function sfx(type){ init(); resume(); const t=ctx.currentTime;
@@ -361,7 +439,7 @@ const Audio=(function(){
     else if(type==='phase'){ [523,659,784].forEach((f,i)=>{ const oo=ctx.createOscillator(),gg=ctx.createGain(); oo.type='triangle'; oo.frequency.value=f; const s=t+i*0.08; gg.gain.setValueAtTime(0,s); gg.gain.linearRampToValueAtTime(0.22,s+0.02); gg.gain.exponentialRampToValueAtTime(0.001,s+0.4); oo.connect(gg); gg.connect(sfxG); oo.start(s); oo.stop(s+0.42);}); o.disconnect(); }
     else if(type==='err'){ o.type='square'; o.frequency.value=160; g.gain.setValueAtTime(0.15,t); g.gain.exponentialRampToValueAtTime(0.001,t+0.12); o.start(t); o.stop(t+0.13); }
   }
-  return { startMusic, stopMusic, toggleMute, isMuted, sfx, resume, init };
+  return { startMusic, stopMusic, setMood, getMood, beatDur, toggleMute, isMuted, sfx, resume, init };
 })();
 
 /* ---------------------------------------------------------------------------
@@ -391,7 +469,9 @@ function outlinePass(d,W,H){ const T=128, OR=0x12,OG=0x10,OB=0x18, src=new Uint8
 function drawChar(P,o,back){
   // siatka 22x34 (źródło ×2 w pipeline), stopy przy y=32, origin (0.5,1)
   const skin=o.skin||0xf1c9a5, hair=o.hair||0x2a1a10;
-  P(7,26,3,6,o.pants); P(12,26,3,6,o.pants);
+  if(o.dress){ P(7,26,3,4,skin); P(12,26,3,4,skin); P(7,30,3,2,0x1a1a20); P(12,30,3,2,0x1a1a20);   // nogi + pantofle
+    P(6,22,10,3,o.dress); P(5,25,12,3,o.dress); P(4,28,14,2,o.dress); }                             // rozkloszowana sukienka
+  else { P(7,26,3,6,o.pants); P(12,26,3,6,o.pants); }
   if(o.shoes){ P(6,31,4,1,0x000000); P(12,31,4,1,0x000000); P(7,31,1,1,0x555); } // lakierki
   P(6,15,10,12,o.shirt);
   if(o.vest && !back){ P(8,15,6,12,0xffffff); P(10,16,2,10,0xeaeaf0); } // biała kamizelka/koszula
@@ -545,6 +625,70 @@ function genAssets(scene){
 }
 
 /* ===========================================================================
+   RENDER SALI (pałac) — współdzielony przez minigry 1 i 2
+=========================================================================== */
+function drawPalaceRoom(scene){
+    const g=scene.add.graphics().setDepth(-99000);
+    // podłoga — kafle parkietu (jodełka: floorWood/floorWoodB = przeciwne kierunki desek)
+    for(let gx=0;gx<RW;gx++) for(let gy=-3;gy<RH;gy++){
+      const inside = gy>=0, outDoor = gy<0 && gx>=4 && gx<=7;
+      if(gy<0 && !outDoor) continue;
+      const p=iso(gx,gy,0);
+      const key = inside ? ((gx+gy)%2===0?'floorWood':'floorWoodB') : 'floorOut';
+      scene.add.image(p.x,p.y,key).setOrigin(0.5,0.5).setDepth(-100000);
+    }
+    // czerwony chodnik od drzwi w głąb sali
+    const carpet=scene.add.graphics().setDepth(-99500);
+    const poly=(gg,pts,col,a)=>{ gg.fillStyle(col,a==null?1:a); gg.beginPath(); gg.moveTo(pts[0].x,pts[0].y); pts.slice(1).forEach(p=>gg.lineTo(p.x,p.y)); gg.closePath(); gg.fillPath(); };
+    poly(carpet,[iso(4.5,0,0),iso(6.5,0,0),iso(6.5,7.6,0),iso(4.5,7.6,0)],0x7c1124,0.92);
+    poly(carpet,[iso(4.85,0,0),iso(6.15,0,0),iso(6.15,7.6,0),iso(4.85,7.6,0)],0xab2740,0.5);
+    carpet.lineStyle(2,C.gold,0.5); carpet.beginPath(); [iso(4.5,0,0),iso(6.5,0,0),iso(6.5,7.6,0),iso(4.5,7.6,0)].forEach((p,i)=>i?carpet.lineTo(p.x,p.y):carpet.moveTo(p.x,p.y)); carpet.closePath(); carpet.strokePath();
+
+    // ===== ŚCIANY pałacowe =====
+    const WH=58;
+    const band=(x1,y1,x2,y2,yoff,h,col,a)=>{ g.fillStyle(col,a==null?1:a); g.beginPath(); g.moveTo(x1,y1-yoff); g.lineTo(x2,y2-yoff); g.lineTo(x2,y2-yoff-h); g.lineTo(x1,y1-yoff-h); g.closePath(); g.fillPath(); };
+    const deco=(x1,y1,x2,y2,t0,t1,y0,h,col,a)=>{ const ax=x1+(x2-x1)*t0,ay=y1+(y2-y1)*t0,bx=x1+(x2-x1)*t1,by=y1+(y2-y1)*t1;
+      g.fillStyle(col,a==null?1:a); g.beginPath(); g.moveTo(ax,ay-y0); g.lineTo(bx,by-y0); g.lineTo(bx,by-y0-h); g.lineTo(ax,ay-y0-h); g.closePath(); g.fillPath(); };
+    const wall=(x1,y1,x2,y2,top)=>{
+      const upper=top?0x3a3056:0x342a4c, lower=top?0x2a2342:0x241d38;
+      band(x1,y1,x2,y2,0,WH,upper);                 // tło ściany
+      band(x1,y1,x2,y2,WH/2,WH/2,0xffffff,0.04);    // światło u góry
+      band(x1,y1,x2,y2,0,20,lower);                 // boazeria (wainscot)
+      band(x1,y1,x2,y2,19,2,C.gold,0.5);            // listwa (chair rail)
+      band(x1,y1,x2,y2,0,3,0x14111f);               // cokół
+      band(x1,y1,x2,y2,WH-6,6,C.gold,0.5);          // gzyms (cornice)
+      band(x1,y1,x2,y2,WH-9,2,0x000000,0.22);
+    };
+    const painting=(x1,y1,x2,y2)=>{ deco(x1,y1,x2,y2,0.28,0.72,WH*0.40,WH*0.40,C.gold,0.95);
+      deco(x1,y1,x2,y2,0.34,0.66,WH*0.44,WH*0.32,0x2a3a5a,1); deco(x1,y1,x2,y2,0.37,0.63,WH*0.58,WH*0.13,0x6a8ab0,0.7); deco(x1,y1,x2,y2,0.37,0.63,WH*0.45,WH*0.13,0x9a6a3a,0.7); };
+    const drape=(x1,y1,x2,y2)=>{ deco(x1,y1,x2,y2,0.18,0.82,0,WH,0x6e0f1e,0.95);
+      deco(x1,y1,x2,y2,0.18,0.30,0,WH,0x4a0a16,0.6); deco(x1,y1,x2,y2,0.46,0.56,0,WH,0x4a0a16,0.55); deco(x1,y1,x2,y2,0.70,0.82,0,WH,0x4a0a16,0.6); deco(x1,y1,x2,y2,0.18,0.82,WH-5,5,C.gold,0.6); };
+    const sconce=(x1,y1,x2,y2)=>{ deco(x1,y1,x2,y2,0.46,0.54,WH*0.48,WH*0.20,C.gold,0.95); deco(x1,y1,x2,y2,0.43,0.57,WH*0.70,4,0xffe9a0,0.95); };
+    const decorate=(x1,y1,x2,y2,ty)=>{ if(ty==='painting')painting(x1,y1,x2,y2); else if(ty==='drape')drape(x1,y1,x2,y2); else if(ty==='sconce')sconce(x1,y1,x2,y2); };
+    // NW (gx=0, wzdłuż gy)
+    for(let gy=0;gy<RH;gy++){ const a=iso(0,gy,0), b=iso(0,gy+1,0); wall(a.x,a.y,b.x,b.y,false);
+      decorate(a.x,a.y,b.x,b.y,{1:'sconce',2:'painting',4:'sconce',5:'painting',7:'drape'}[gy]); }
+    // NE (gy=0, wzdłuż gx) — drzwi gx4..6
+    for(let gx=0;gx<RW;gx++){ if(gx>=4&&gx<=6) continue; const a=iso(gx,0,0), b=iso(gx+1,0,0); wall(a.x,a.y,b.x,b.y,true);
+      decorate(a.x,a.y,b.x,b.y,{1:'painting',2:'sconce',7:'sconce',8:'drape',9:'painting',10:'drape'}[gx]); }
+
+    // ===== ŻYRANDOLE =====
+    const ch=scene.add.graphics().setDepth(-80000);
+    const chandelier=(cx,cy)=>{ ch.fillStyle(0xb9952f,1); ch.fillRect(cx-1,cy-48,2,48);
+      ch.fillStyle(0xffe9a0,0.10); ch.fillCircle(cx,cy,30); ch.fillStyle(C.gold,1); ch.fillCircle(cx,cy,6);
+      for(let i=0;i<6;i++){ const a=i/6*Math.PI*2, ax=cx+Math.cos(a)*19, ay=cy+Math.sin(a)*8;
+        ch.lineStyle(2,C.gold,1); ch.lineBetween(cx,cy,ax,ay); ch.fillStyle(C.gold,1); ch.fillCircle(ax,ay,2);
+        ch.fillStyle(0xfff2bf,1); ch.fillCircle(ax,ay-4,2.4); ch.fillStyle(0xffe9a0,0.16); ch.fillCircle(ax,ay-4,7); } };
+    chandelier(OX-20,OY-54); chandelier(OX+150,OY-18);
+    // migoczące poświaty żyrandoli
+    [[OX-20,OY-54],[OX+150,OY-18]].forEach(([cx,cy])=>{ const gl=scene.add.image(cx,cy,'soft').setTint(0xffe9a0).setScale(1.7).setAlpha(0.16).setDepth(-79000);
+      scene.tweens.add({targets:gl,alpha:0.30,scale:1.85,yoyo:true,repeat:-1,ease:'Sine.inOut',duration:Phaser.Math.Between(700,1300)}); });
+
+    // neon z marką — wzdłuż lewej ściany (NW), z dala od żyrandoli (czytelny)
+    const np=iso(0,0,0); scene.add.text(np.x-176,np.y+44,t('brandSign'),{fontFamily:'Segoe UI',fontSize:'14px',color:'#00ffcc',fontStyle:'bold'}).setOrigin(0,1).setDepth(-78000).setShadow(0,0,'#00ffcc',10).setAngle(-23);
+}
+
+/* ===========================================================================
    BOOT
 =========================================================================== */
 class Boot extends Phaser.Scene{
@@ -555,7 +699,8 @@ class Boot extends Phaser.Scene{
       this.add.text(GW/2,GH/2,t('genErr'),
         {fontFamily:'Segoe UI',fontSize:'22px',color:'#ffe487',align:'center',fontStyle:'bold'}).setOrigin(0.5);
       return; }
-    this.registry.set('best',this.registry.get('best')||0); this.scene.start('Setup'); }
+    this.registry.set('best',this.registry.get('best')||0);
+    this.scene.start(window.WK_START==='Dance'?'Dance':'Setup'); }
 }
 
 /* ===========================================================================
@@ -572,9 +717,9 @@ class Hub extends Phaser.Scene{
     this.tweens.add({targets:k,y:200,yoyo:true,repeat:-1,duration:700,ease:'Sine.inOut'});
 
     const cards=[
-      {t:'1. Load-in: Rozstawienie sprzętu', d:'Rozpakuj i ustaw sprzęt, ogarnij ekipę i zdąż przed gośćmi.', on:true, scene:'Setup'},
-      {t:'2. Parkiet z gośćmi', d:'Rozgrzej parkiet i czytaj salę. (Wkrótce)', on:false},
-      {t:'3. Wesele międzynarodowe PL/EN', d:'Płynne dwujęzyczne prowadzenie. (Wkrótce)', on:false}
+      {t:t('task1title'), d:t('task1desc'), on:true, scene:'Setup'},
+      {t:t('task2title'), d:t('task2desc'), on:true, scene:'Dance'},
+      {t:t('task3title'), d:t('task3desc'), on:false}
     ];
     cards.forEach((c,i)=>{
       const y=290+i*86;
@@ -600,9 +745,9 @@ class Setup extends Phaser.Scene{
 
   create(){
     this.cameras.main.setBackgroundColor('#08070f');
-    Audio.startMusic();                         // muzyka od razu (gest = klik karty w menu)
+    Audio.setMood('loadin'); Audio.startMusic();  // muzyka od razu (gest = klik karty w menu)
     this.input.once('pointerdown',()=>Audio.resume()); this.input.keyboard.once('keydown',()=>Audio.resume());
-    this.drawRoom();
+    drawPalaceRoom(this);
 
     // definicje slotów (przedmioty do rozstawienia)
     this.slots=[
@@ -708,68 +853,6 @@ class Setup extends Phaser.Scene{
   timeLeft(){ this.secs--; if(this.secs<=0 && !this.late){ this.late=true; Audio.sfx('err'); this.flashTip(t('guestsSoon')); }
     this.clockText.setText(t('guestsIn')+this.fmt(Math.max(0,this.secs))); this.clockText.setColor(this.secs<30?'#ff6b6b':this.secs<60?'#ffd23f':'#00ffcc'); }
   fmt(s){ const m=Math.floor(s/60); const ss=s%60; return m+':'+(ss<10?'0':'')+ss; }
-
-  /* ---------- RENDER SALI (pałac) ---------- */
-  drawRoom(){
-    const g=this.add.graphics().setDepth(-99000);
-    // podłoga — kafle parkietu (jodełka: floorWood/floorWoodB = przeciwne kierunki desek)
-    for(let gx=0;gx<RW;gx++) for(let gy=-3;gy<RH;gy++){
-      const inside = gy>=0, outDoor = gy<0 && gx>=4 && gx<=7;
-      if(gy<0 && !outDoor) continue;
-      const p=iso(gx,gy,0);
-      const key = inside ? ((gx+gy)%2===0?'floorWood':'floorWoodB') : 'floorOut';
-      this.add.image(p.x,p.y,key).setOrigin(0.5,0.5).setDepth(-100000);
-    }
-    // czerwony chodnik od drzwi w głąb sali
-    const carpet=this.add.graphics().setDepth(-99500);
-    const poly=(gg,pts,col,a)=>{ gg.fillStyle(col,a==null?1:a); gg.beginPath(); gg.moveTo(pts[0].x,pts[0].y); pts.slice(1).forEach(p=>gg.lineTo(p.x,p.y)); gg.closePath(); gg.fillPath(); };
-    poly(carpet,[iso(4.5,0,0),iso(6.5,0,0),iso(6.5,7.6,0),iso(4.5,7.6,0)],0x7c1124,0.92);
-    poly(carpet,[iso(4.85,0,0),iso(6.15,0,0),iso(6.15,7.6,0),iso(4.85,7.6,0)],0xab2740,0.5);
-    carpet.lineStyle(2,C.gold,0.5); carpet.beginPath(); [iso(4.5,0,0),iso(6.5,0,0),iso(6.5,7.6,0),iso(4.5,7.6,0)].forEach((p,i)=>i?carpet.lineTo(p.x,p.y):carpet.moveTo(p.x,p.y)); carpet.closePath(); carpet.strokePath();
-
-    // ===== ŚCIANY pałacowe =====
-    const WH=58;
-    const band=(x1,y1,x2,y2,yoff,h,col,a)=>{ g.fillStyle(col,a==null?1:a); g.beginPath(); g.moveTo(x1,y1-yoff); g.lineTo(x2,y2-yoff); g.lineTo(x2,y2-yoff-h); g.lineTo(x1,y1-yoff-h); g.closePath(); g.fillPath(); };
-    const deco=(x1,y1,x2,y2,t0,t1,y0,h,col,a)=>{ const ax=x1+(x2-x1)*t0,ay=y1+(y2-y1)*t0,bx=x1+(x2-x1)*t1,by=y1+(y2-y1)*t1;
-      g.fillStyle(col,a==null?1:a); g.beginPath(); g.moveTo(ax,ay-y0); g.lineTo(bx,by-y0); g.lineTo(bx,by-y0-h); g.lineTo(ax,ay-y0-h); g.closePath(); g.fillPath(); };
-    const wall=(x1,y1,x2,y2,top)=>{
-      const upper=top?0x3a3056:0x342a4c, lower=top?0x2a2342:0x241d38;
-      band(x1,y1,x2,y2,0,WH,upper);                 // tło ściany
-      band(x1,y1,x2,y2,WH/2,WH/2,0xffffff,0.04);    // światło u góry
-      band(x1,y1,x2,y2,0,20,lower);                 // boazeria (wainscot)
-      band(x1,y1,x2,y2,19,2,C.gold,0.5);            // listwa (chair rail)
-      band(x1,y1,x2,y2,0,3,0x14111f);               // cokół
-      band(x1,y1,x2,y2,WH-6,6,C.gold,0.5);          // gzyms (cornice)
-      band(x1,y1,x2,y2,WH-9,2,0x000000,0.22);
-    };
-    const painting=(x1,y1,x2,y2)=>{ deco(x1,y1,x2,y2,0.28,0.72,WH*0.40,WH*0.40,C.gold,0.95);
-      deco(x1,y1,x2,y2,0.34,0.66,WH*0.44,WH*0.32,0x2a3a5a,1); deco(x1,y1,x2,y2,0.37,0.63,WH*0.58,WH*0.13,0x6a8ab0,0.7); deco(x1,y1,x2,y2,0.37,0.63,WH*0.45,WH*0.13,0x9a6a3a,0.7); };
-    const drape=(x1,y1,x2,y2)=>{ deco(x1,y1,x2,y2,0.18,0.82,0,WH,0x6e0f1e,0.95);
-      deco(x1,y1,x2,y2,0.18,0.30,0,WH,0x4a0a16,0.6); deco(x1,y1,x2,y2,0.46,0.56,0,WH,0x4a0a16,0.55); deco(x1,y1,x2,y2,0.70,0.82,0,WH,0x4a0a16,0.6); deco(x1,y1,x2,y2,0.18,0.82,WH-5,5,C.gold,0.6); };
-    const sconce=(x1,y1,x2,y2)=>{ deco(x1,y1,x2,y2,0.46,0.54,WH*0.48,WH*0.20,C.gold,0.95); deco(x1,y1,x2,y2,0.43,0.57,WH*0.70,4,0xffe9a0,0.95); };
-    const decorate=(x1,y1,x2,y2,ty)=>{ if(ty==='painting')painting(x1,y1,x2,y2); else if(ty==='drape')drape(x1,y1,x2,y2); else if(ty==='sconce')sconce(x1,y1,x2,y2); };
-    // NW (gx=0, wzdłuż gy)
-    for(let gy=0;gy<RH;gy++){ const a=iso(0,gy,0), b=iso(0,gy+1,0); wall(a.x,a.y,b.x,b.y,false);
-      decorate(a.x,a.y,b.x,b.y,{1:'sconce',2:'painting',4:'sconce',5:'painting',7:'drape'}[gy]); }
-    // NE (gy=0, wzdłuż gx) — drzwi gx4..6
-    for(let gx=0;gx<RW;gx++){ if(gx>=4&&gx<=6) continue; const a=iso(gx,0,0), b=iso(gx+1,0,0); wall(a.x,a.y,b.x,b.y,true);
-      decorate(a.x,a.y,b.x,b.y,{1:'painting',2:'sconce',7:'sconce',8:'drape',9:'painting',10:'drape'}[gx]); }
-
-    // ===== ŻYRANDOLE =====
-    const ch=this.add.graphics().setDepth(-80000);
-    const chandelier=(cx,cy)=>{ ch.fillStyle(0xb9952f,1); ch.fillRect(cx-1,cy-48,2,48);
-      ch.fillStyle(0xffe9a0,0.10); ch.fillCircle(cx,cy,30); ch.fillStyle(C.gold,1); ch.fillCircle(cx,cy,6);
-      for(let i=0;i<6;i++){ const a=i/6*Math.PI*2, ax=cx+Math.cos(a)*19, ay=cy+Math.sin(a)*8;
-        ch.lineStyle(2,C.gold,1); ch.lineBetween(cx,cy,ax,ay); ch.fillStyle(C.gold,1); ch.fillCircle(ax,ay,2);
-        ch.fillStyle(0xfff2bf,1); ch.fillCircle(ax,ay-4,2.4); ch.fillStyle(0xffe9a0,0.16); ch.fillCircle(ax,ay-4,7); } };
-    chandelier(OX-20,OY-54); chandelier(OX+150,OY-18);
-    // migoczące poświaty żyrandoli
-    [[OX-20,OY-54],[OX+150,OY-18]].forEach(([cx,cy])=>{ const gl=this.add.image(cx,cy,'soft').setTint(0xffe9a0).setScale(1.7).setAlpha(0.16).setDepth(-79000);
-      this.tweens.add({targets:gl,alpha:0.30,scale:1.85,yoyo:true,repeat:-1,ease:'Sine.inOut',duration:Phaser.Math.Between(700,1300)}); });
-
-    // neon z marką — wzdłuż lewej ściany (NW), z dala od żyrandoli (czytelny)
-    const np=iso(0,0,0); this.add.text(np.x-176,np.y+44,t('brandSign'),{fontFamily:'Segoe UI',fontSize:'14px',color:'#00ffcc',fontStyle:'bold'}).setOrigin(0,1).setDepth(-78000).setShadow(0,0,'#00ffcc',10).setAngle(-23);
-  }
 
   /* ---------- MARKERY ---------- */
   refreshMarkers(){
@@ -1183,6 +1266,7 @@ class Setup extends Phaser.Scene{
     const best=Math.max(this.registry.get('best')||0,this.score); this.registry.set('best',best);
     this.registry.set('stars',stars); this.registry.set('finalScore',this.score);
     this.registry.set('late',this.late); this.registry.set('npcDone',this.npcDone);
+    this.registry.set('mode','setup'); this.registry.set('lastScene','Setup');
     this.cameras.main.fade(500,5,5,12); this.time.delayedCall(520,()=>this.scene.start('Result'));
   }
 
@@ -1248,6 +1332,459 @@ class Setup extends Phaser.Scene{
 }
 
 /* ===========================================================================
+   DANCE — minigra 2 "Parkiet z gośćmi"
+   Zupełnie inna mechanika: zarządzanie energią parkietu w czasie rzeczywistym
+   + krótkie rytmiczne wstawki przy konsoli DJ (zmiana stylu muzyki).
+=========================================================================== */
+class Dance extends Phaser.Scene{
+  constructor(){ super('Dance'); }
+
+  create(){
+    this.cameras.main.setBackgroundColor('#08070f');
+    Audio.setMood('disco'); Audio.startMusic();
+    this.input.once('pointerdown',()=>Audio.resume()); this.input.keyboard.once('keydown',()=>Audio.resume());
+    drawPalaceRoom(this);
+
+    // style muzyczne
+    this.genres=[
+      {id:'disco',    col:0xff2e8b, hex:'#ff2e8b', label:t('mus_disco')},
+      {id:'romantic', col:0x9b5cff, hex:'#9b5cff', label:t('mus_rom')},
+      {id:'hype',     col:0xff9f45, hex:'#ff9f45', label:t('mus_hype')},
+      {id:'chill',    col:0x33e0ff, hex:'#33e0ff', label:t('mus_chill')}
+    ];
+    this.curGenre=this.genres[0];
+
+    // harmonogram wieczoru (fazy)
+    this.DPH=[
+      {name:t('dph0'),hint:t('dh0'),dur:20,mode:'free', change:0,  decay:0.8},
+      {name:t('dph1'),hint:t('dh1'),dur:25,mode:'free', change:18, decay:1.2},
+      {name:t('dph2'),hint:t('dh2'),dur:22,mode:'force',genre:'romantic',decay:1.5},
+      {name:t('dph3'),hint:t('dh3'),dur:20,mode:'force',genre:'chill',   decay:1.4},
+      {name:t('dph4'),hint:t('dh4'),dur:22,mode:'force',genre:'hype',    decay:1.8},
+      {name:t('dph5'),hint:t('dh5'),dur:32,mode:'free', change:12, decay:1.8},
+      {name:t('dph6'),hint:t('dh6'),dur:15,mode:'force',genre:'romantic',decay:1.0}
+    ];
+    this.totalTime=this.DPH.reduce((a,p)=>a+p.dur,0);
+    this.elapsed=0; this.phaseIdx=-1;
+
+    // stan
+    this.energy=55; this.energySum=0; this.energyTicks=0;
+    this.score=0; this.eventsDone=0; this.done=false; this.modalOpen=false;
+    this.pendingReq=null; this.uncle=null; this.photoEv=null; this._lowWarnT=0;
+
+    // sprzęt stoi już rozstawiony (finał minigry 1) — pełna ciągłość świata
+    const gear=[
+      {key:'djtable', gx:6,gy:1.5,z:0},{key:'console',gx:6.05,gy:1.65,z:50},{key:'laptop',gx:5.45,gy:1.35,z:54},{key:'dmx',gx:6.65,gy:1.5,z:50},
+      {key:'spkstand',gx:1.8,gy:2.5,z:0},{key:'spkstand',gx:10.2,gy:2.5,z:0},{key:'speaker',gx:1.8,gy:2.5,z:24},{key:'speaker',gx:10.2,gy:2.5,z:24},
+      {key:'lightstand',gx:3,gy:6.5,z:0},{key:'lightstand',gx:9,gy:6.5,z:0},{key:'light',gx:3,gy:6.5,z:26},{key:'light',gx:9,gy:6.5,z:26}
+    ];
+    gear.forEach(s=>{ const p=iso(s.gx,s.gy,s.z); this.add.image(p.x,p.y,s.key).setOrigin(0.5,1).setDepth(tdepth(s.gx,s.gy,s.z*0.1+3)); });
+    this.djSpot={gx:6,gy:2.5};
+    // van ekipy zaparkowany przed wejściem (jak w minigrze 1)
+    const cp=iso(6,-2.2,0); this.add.image(cp.x,cp.y,'car').setOrigin(0.5,1).setDepth(tdepth(6,-2.2,5));
+
+    // dyskotekowe światła (lampy pracują cały wieczór)
+    this.lightFX=[];
+    [{gx:3,gy:6.5,z:26},{gx:9,gy:6.5,z:26}].forEach(s=>{
+      const p=iso(s.gx,s.gy,s.z); const glow=this.add.image(p.x,p.y,'soft').setTint(0x33e0ff).setAlpha(0.4).setScale(1.6).setDepth(tdepth(s.gx,s.gy,2));
+      const fp=iso(s.gx,s.gy,0); const pool=this.add.ellipse(fp.x,fp.y+18,110,54,0x33e0ff,0.2).setDepth(tdepth(s.gx,s.gy,-3));
+      this.lightFX.push({glow,pool}); });
+    const pal=[0x33e0ff,0xff2e8b,0xffe487,0x46d67a,0x9b5cff]; let dk=0;
+    this._disco=this.time.addEvent({delay:360,loop:true,callback:()=>{ dk++; this.lightFX.forEach((f,j)=>{ const c=pal[(dk+j)%pal.length]; f.glow.setTint(c); f.pool.setFillStyle(c,f.pool.fillAlpha); }); }});
+    // nutki z głośników w kolorze aktualnego stylu
+    this._notes=this.time.addEvent({delay:700,loop:true,callback:()=>{ if(this.modalOpen||this.done) return;
+      [{gx:1.8,gy:2.5},{gx:10.2,gy:2.5}].forEach(s=>{ if(Math.random()<0.6) return; const top=iso(s.gx,s.gy,44);
+        const n=this.add.text(top.x+Phaser.Math.Between(-8,8),top.y,Phaser.Utils.Array.GetRandom(['♪','♫','🎵']),{fontFamily:'Segoe UI',fontSize:Phaser.Math.Between(15,22)+'px',color:this.curGenre.hex,fontStyle:'bold'}).setOrigin(0.5).setDepth(95500);
+        this.tweens.add({targets:n,y:n.y-Phaser.Math.Between(55,85),x:n.x+Phaser.Math.Between(-16,16),alpha:0,duration:1300,ease:'Sine.out',onComplete:()=>n.destroy()}); }); }});
+
+    // grupy gości (klastry) — każda ma chmurkę z preferencją muzyczną
+    const guestPool=['guestA','guestB','guestC','guestD','guestE','manager','photo','barman'];
+    const spots=[{gx:3.2,gy:3.4},{gx:8.2,gy:3.2},{gx:5.3,gy:5.9}];
+    this.clusters=spots.map((sp,ci)=>{
+      const offs=[[-0.55,0.15],[0.45,-0.05],[-0.05,0.6]];
+      const sprites=offs.map((o,i)=>{ const gx=sp.gx+o[0],gy=sp.gy+o[1]; const p=iso(gx,gy,0);
+        const key=guestPool[(ci*3+i)%guestPool.length];
+        const s=this.add.image(p.x,p.y,key).setOrigin(0.5,1).setScale(1.05).setDepth(tdepth(gx,gy,4)).setFlipX(i%2===1);
+        const tw=this.tweens.add({targets:s,scaleY:1.13,yoyo:true,repeat:-1,duration:260,delay:i*90});
+        return {s,tw}; });
+      const bp=iso(sp.gx,sp.gy,86);
+      const bub=this.add.container(bp.x,bp.y).setDepth(96000);
+      const rect=this.add.rectangle(0,0,112,30,0xffffff,0.95).setStrokeStyle(2,0x333333);
+      const note=this.add.text(-42,0,'♪',{fontFamily:'Segoe UI',fontSize:'19px',color:'#000',fontStyle:'bold'}).setOrigin(0.5);
+      const lab=this.add.text(6,0,'',{fontFamily:'Segoe UI',fontSize:'12px',color:'#222',fontStyle:'bold'}).setOrigin(0.5);
+      bub.add([rect,note,lab]);
+      return {gx:sp.gx,gy:sp.gy,pref:'disco',sprites,bub,rect,note,lab,cheerT:0,changeT:0,request:false};
+    });
+    // start łagodny: dwie grupy chcą disco (gra już disco), jedna romantycznie
+    this.clusters[0].pref='disco'; this.clusters[1].pref='disco'; this.clusters[2].pref='romantic';
+    this.clusters.forEach(c=>this.refreshBubble(c));
+
+    // gracz — Karol już we fraku (prowadzi wesele)
+    this.px=5.5; this.py=4.2; this.facingBack=false; this.flip=false; this.bob=0;
+    this.player=this.add.image(0,0,'karolFrak').setOrigin(0.5,1).setScale(1.2);
+    this.playerShadow=this.add.image(0,0,'soft').setTint(0).setAlpha(0.3).setOrigin(0.5,0.5);
+
+    // ambient — drobinki światła
+    for(let i=0;i<(IS_MOBILE?7:16);i++){ const sx=Phaser.Math.Between(150,1050), sy=Phaser.Math.Between(130,540);
+      const d=this.add.image(sx,sy,'soft').setTint(0xffe9a0).setAlpha(Phaser.Math.FloatBetween(0.05,0.13)).setScale(Phaser.Math.FloatBetween(0.12,0.34)).setDepth(-70000);
+      this.tweens.add({targets:d, y:sy-Phaser.Math.Between(36,70), alpha:0.02, yoyo:true, repeat:-1, ease:'Sine.inOut', duration:Phaser.Math.Between(4200,8000), delay:Phaser.Math.Between(0,4000)}); }
+
+    // plan wydarzeń na sali
+    this.evPlan=[ {at:26,type:'request'},{at:50,type:'uncle'},{at:76,type:'photo'},{at:100,type:'request'},{at:128,type:'uncle'} ];
+
+    this.buildHUD();
+    this.buildControls();
+    this.enterPhase(0);
+
+    // tik sekundowy: energia, fazy, wydarzenia (pauzuje podczas modala)
+    this.time.addEvent({delay:1000,loop:true,callback:()=>this.tickSecond()});
+
+    this.events.once('shutdown',()=>{ if(this._disco){this._disco.remove(); this._disco=null;}
+      if(this._notes){this._notes.remove(); this._notes=null;}
+      if(this._mixKey){ this.input.keyboard.off('keydown',this._mixKey); this._mixKey=null; } });
+  }
+
+  fmt(s){ const m=Math.floor(s/60); const ss=s%60; return m+':'+(ss<10?'0':'')+ss; }
+  genreById(id){ return this.genres.find(g=>g.id===id); }
+
+  /* ---------- FAZY ---------- */
+  enterPhase(i){ this.phaseIdx=i; const ph=this.DPH[i];
+    if(ph.mode==='force'){ this.clusters.forEach(c=>{ if(!c.request){ c.pref=ph.genre; this.refreshBubble(c,true); } }); }
+    else { this.clusters.forEach(c=>{ c.changeT=ph.change>0?ph.change+Phaser.Math.Between(-3,3):0; }); }
+    if(i>0){ Audio.sfx('phase'); }
+    this.flashTip(ph.name+' — '+ph.hint); this.refreshHUD(); }
+  curPhase(){ return this.DPH[this.phaseIdx]; }
+
+  /* ---------- TIK SEKUNDOWY ---------- */
+  tickSecond(){ if(this.done||this.modalOpen) return;
+    this.elapsed++;
+    // przejście fazy
+    let acc=0, idx=0; for(let i=0;i<this.DPH.length;i++){ acc+=this.DPH[i].dur; if(this.elapsed<acc){ idx=i; break; } idx=i; }
+    if(this.elapsed>=this.totalTime){ this.finale(); return; }
+    if(idx!==this.phaseIdx) this.enterPhase(idx);
+    const ph=this.curPhase();
+    // zmiany gustów w fazach swobodnych
+    if(ph.mode==='free' && ph.change>0){ this.clusters.forEach(c=>{ if(c.request) return; c.changeT--;
+      if(c.changeT<=0){ c.changeT=ph.change+Phaser.Math.Between(-3,3);
+        const others=this.genres.filter(g=>g.id!==c.pref); c.pref=Phaser.Utils.Array.GetRandom(others).id; this.refreshBubble(c,true); } }); }
+    // energia
+    let matched=0; this.clusters.forEach(c=>{ if(c.pref===this.curGenre.id) matched++; });
+    const delta = matched*1.3 - (this.clusters.length-matched)*0.5 - ph.decay;
+    this.energy=Phaser.Math.Clamp(this.energy+delta,0,100);
+    this.energySum+=this.energy; this.energyTicks++;
+    // punkty za utrzymanie parkietu
+    let pts = this.energy>=70?8 : this.energy>=45?5 : this.energy>=25?2 : 0;
+    if(matched===this.clusters.length){ pts+=2; if(this.elapsed%9===0){ this.flashTip(t('dMatchAll')); } }
+    this.score+=pts;
+    // ostrzeżenie o gasnącym parkiecie
+    this._lowWarnT--; if(this.energy<25 && this._lowWarnT<=0){ this._lowWarnT=8; Audio.sfx('err'); this.flashTip(t('dLow')); }
+    // radość dopasowanych grup
+    this.clusters.forEach(c=>{ const on=c.pref===this.curGenre.id;
+      c.sprites.forEach(sp=>{ sp.tw.timeScale=on?1.6:0.7; });
+      if(on && Math.random()<0.25){ const p=iso(c.gx,c.gy,70);
+        const e=this.add.text(p.x+Phaser.Math.Between(-20,20),p.y,Phaser.Utils.Array.GetRandom(['🎉','😍','👏','🔥','💃','🕺']),{fontSize:'18px'}).setOrigin(0.5).setDepth(95900);
+        this.tweens.add({targets:e,y:e.y-30,alpha:0,duration:1000,onComplete:()=>e.destroy()}); } });
+    this.clusters.forEach(c=>{ if(c.cheerT>0) c.cheerT--; });
+    // prośba o kawałek — terminy
+    if(this.pendingReq){ if(this.pendingReq.accepted){ if(this.elapsed>this.pendingReq.deadline){ this.failRequest(); } }
+      else if(this.elapsed>this.pendingReq.acceptBy){ this.failRequest(); } }
+    // wydarzenia wg planu
+    const busy=this.uncle||this.photoEv||this.pendingReq;
+    for(const e of this.evPlan){ if(!e.fired && this.elapsed>=e.at && !busy){ e.fired=true; this.fireEvent(e.type); break; } }
+    this.refreshHUD();
+  }
+
+  /* ---------- CHMURKI PREFERENCJI ---------- */
+  refreshBubble(c,pop){ const g=this.genreById(c.pref);
+    if(c.request && !c.reqAccepted){ c.rect.setStrokeStyle(3,C.gold); c.note.setText('🎵').setColor('#d4af37'); c.lab.setText('?!').setColor('#a36'); }
+    else { c.rect.setStrokeStyle(c.request?3:2, c.request?C.gold:0x333333); c.note.setText('♪').setColor(g.hex); c.lab.setText(g.label).setColor('#222'); }
+    if(pop){ c.bub.setScale(0.4); this.tweens.add({targets:c.bub,scale:1,duration:260,ease:'Back.out'}); } }
+
+  /* ---------- WYDARZENIA ---------- */
+  fireEvent(type){
+    if(type==='request'){ const c=Phaser.Utils.Array.GetRandom(this.clusters);
+      this.pendingReq={cluster:c,accepted:false,acceptBy:this.elapsed+14,deadline:0,genre:null};
+      c.request=true; c.reqAccepted=false; this.refreshBubble(c,true); Audio.sfx('ding'); this.flashTip(t('evRequest')); }
+    else if(type==='uncle'){ const st=iso(5.5,-2.5,0);
+      const spr=this.add.image(st.x,st.y,'uncle').setOrigin(0.5,1).setScale(1.1);
+      this.uncle={sprite:spr,gx:5.5,gy:-2.5,state:'enter'};
+      Audio.sfx('err'); this.flashTip(t('evUncle'));
+      const bp=iso(5.5,-2.5,44); this.uncle.bubble=this.add.text(bp.x,bp.y,'🎤!',{fontSize:'20px'}).setOrigin(0.5).setDepth(96000); }
+    else if(type==='photo'){ const st=iso(5.5,-2.5,0);
+      const spr=this.add.image(st.x,st.y,'photo').setOrigin(0.5,1).setScale(1.1);
+      this.photoEv={sprite:spr,gx:5.5,gy:-2.5,state:'enter',timer:0,spot:{gx:8.4,gy:6.2}};
+      Audio.sfx('ding'); this.flashTip(t('evPhoto'));
+      const mp=iso(this.photoEv.spot.gx,this.photoEv.spot.gy,2);
+      this.photoEv.mark=this.add.image(mp.x,mp.y,'marker').setScale(0.5).setTint(C.pink).setAlpha(0.7).setDepth(tdepth(this.photoEv.spot.gx,this.photoEv.spot.gy,-6));
+      this.tweens.add({targets:this.photoEv.mark,alpha:0.25,yoyo:true,repeat:-1,duration:500}); }
+  }
+  acceptRequest(){ const r=this.pendingReq; if(!r||r.accepted) return; r.accepted=true; r.cluster.reqAccepted=true;
+    const others=this.genres.filter(g=>g.id!==this.curGenre.id); const want=Phaser.Utils.Array.GetRandom(others);
+    r.genre=want.id; r.deadline=this.elapsed+22; r.cluster.pref=want.id; this.refreshBubble(r.cluster,true);
+    Audio.sfx('pick'); this.flashTip(t('evReqPlay')+want.label); }
+  failRequest(){ const r=this.pendingReq; if(!r) return;
+    r.cluster.request=false; r.cluster.reqAccepted=false; this.refreshBubble(r.cluster);
+    this.pendingReq=null; this.energy=Math.max(0,this.energy-8); Audio.sfx('err'); this.flashTip(t('evReqFail')); }
+  fulfillRequest(){ const r=this.pendingReq; if(!r) return;
+    r.cluster.request=false; r.cluster.reqAccepted=false; this.refreshBubble(r.cluster,true);
+    this.pendingReq=null; this.eventsDone++; this.score+=60; this.energy=Math.min(100,this.energy+8);
+    Audio.sfx('ding'); this.flashTip(t('evReqOk'));
+    const p=iso(r.cluster.gx,r.cluster.gy,40); this.burstAt(p.x,p.y,C.gold,12); }
+  resolveUncle(){ const u=this.uncle; if(!u||u.state!=='enter') return; u.state='leave';
+    this.eventsDone++; this.score+=50; Audio.sfx('ding'); this.flashTip(t('evUncleOk'));
+    const p=iso(u.gx,u.gy,40); this.burstAt(p.x,p.y,C.green,10); this.refreshHUD(); }
+  resolvePhoto(){ const ev=this.photoEv; if(!ev||ev.state!=='ask') return; ev.state='leave';
+    if(ev.mark){ev.mark.destroy(); ev.mark=null;}
+    this.eventsDone++; this.score+=40; Audio.sfx('ding'); this.flashTip(t('evPhotoOk'));
+    const fl=this.add.rectangle(GW/2,GH/2,GW,GH,0xffffff,0.85).setDepth(97500);   // flesz aparatu
+    this.tweens.add({targets:fl,alpha:0,duration:420,onComplete:()=>fl.destroy()}); this.refreshHUD(); }
+
+  updateEvents(dt){
+    const mv=(o,tx,ty,sp)=>{ const d=Math.hypot(tx-o.gx,ty-o.gy); if(d<0.08) return true; const s=Math.min(sp*dt/1000,d); o.gx+=(tx-o.gx)/d*s; o.gy+=(ty-o.gy)/d*s; return false; };
+    if(this.uncle){ const u=this.uncle; let gone=false;
+      if(u.state==='enter'){ if(mv(u,6.1,2.2,0.34)){ u.state='leave'; this.energy=Math.max(0,this.energy-15); Audio.sfx('err'); this.flashTip(t('evUncleFail'));
+        if(u.bubble){u.bubble.destroy(); u.bubble=null;} } }
+      else if(u.state==='leave'){ if(mv(u,5.5,-3,1.8)){ u.sprite.destroy(); if(u.bubble)u.bubble.destroy(); this.uncle=null; gone=true; } }
+      if(!gone){ const p=iso(u.gx,u.gy,0); u.sprite.setPosition(p.x,p.y).setDepth(tdepth(u.gx,u.gy,4)).setFlipX(u.state!=='leave');
+        if(u.bubble){ const bp=iso(u.gx,u.gy,44); u.bubble.setPosition(bp.x,bp.y); } } }
+    if(this.photoEv){ const ev=this.photoEv; let gone=false;
+      if(ev.state==='enter'){ if(mv(ev,9.3,6.0,2.2)){ ev.state='ask'; } }
+      else if(ev.state==='ask'){ ev.timer+=dt; if(ev.timer>18000){ ev.state='leave'; if(ev.mark){ev.mark.destroy(); ev.mark=null;} this.flashTip(t('evPhotoFail')); } }
+      else if(ev.state==='leave'){ if(mv(ev,5.5,-3,2.4)){ ev.sprite.destroy(); this.photoEv=null; gone=true; } }
+      if(!gone){ const p=iso(ev.gx,ev.gy,0); ev.sprite.setPosition(p.x,p.y).setDepth(tdepth(ev.gx,ev.gy,4)); } }
+  }
+
+  /* ---------- HUD ---------- */
+  buildHUD(){
+    this.add.rectangle(0,0,GW,38,0x000000,0.5).setOrigin(0,0).setDepth(90000);
+    this.scoreText=this.add.text(14,9,'★ 0',{fontFamily:'Segoe UI',fontSize:'22px',color:'#ffe487',fontStyle:'bold'}).setDepth(90001);
+    this.evText=this.add.text(140,13,'',{fontFamily:'Segoe UI',fontSize:'16px',color:'#c9c9e0',fontStyle:'bold'}).setDepth(90001);
+    this.clockText=this.add.text(GW/2,9,'',{fontFamily:'Segoe UI',fontSize:'20px',color:'#00ffcc',fontStyle:'bold'}).setOrigin(0.5,0).setDepth(90001);
+    this.muteBtn=this.add.text(GW-14,9,'🔊',{fontSize:'22px'}).setOrigin(1,0).setDepth(90001).setInteractive();
+    this.muteBtn.on('pointerdown',()=>{ const m=Audio.toggleMute(); this.muteBtn.setText(m?'🔇':'🔊'); });
+    // pasek energii parkietu
+    this.add.text(GW/2-210,46,t('d_energy'),{fontFamily:'Segoe UI',fontSize:'12px',color:'#9aa',fontStyle:'bold'}).setOrigin(0,0.5).setDepth(90001);
+    this.add.rectangle(GW/2,64,424,16,0x000000,0.55).setDepth(90000).setStrokeStyle(1,0x555566);
+    this.energyFill=this.add.rectangle(GW/2-210,64,420,10,0xffd23f,1).setOrigin(0,0.5).setDepth(90001);
+    // wskaźnik aktualnego stylu
+    this.nowText=this.add.text(GW/2+224,64,'',{fontFamily:'Segoe UI',fontSize:'14px',color:'#fff',fontStyle:'bold'}).setOrigin(0,0.5).setDepth(90001);
+    // hint
+    this.hintBar=this.add.rectangle(GW/2,GH-28,GW-40,34,0x000000,0.55).setDepth(90000);
+    this.hintText=this.add.text(GW/2,GH-28,'',{fontFamily:'Segoe UI',fontSize:'17px',color:'#ffe487',fontStyle:'bold'}).setOrigin(0.5).setDepth(90001);
+    this.promptText=this.add.text(0,0,'',{fontFamily:'Segoe UI',fontSize:'16px',color:'#fff',backgroundColor:'#000a',padding:{x:8,y:4}}).setOrigin(0.5,1).setDepth(95000).setVisible(false);
+    this.tipText=this.add.text(GW/2,92,'',{fontFamily:'Segoe UI',fontSize:'18px',color:'#00ffcc',fontStyle:'bold'}).setOrigin(0.5).setDepth(95001).setAlpha(0).setShadow(0,0,'#00ffcc',8);
+    this.refreshHUD();
+  }
+  refreshHUD(){
+    this.scoreText.setText('★ '+this.score);
+    this.evText.setText(t('d_events')+this.eventsDone+'/5');
+    const ph=this.curPhase(); if(ph){ this.clockText.setText(ph.name+' • '+this.fmt(Math.max(0,this.totalTime-this.elapsed)));
+      this.hintText.setText('🎯 '+ph.hint); }
+    const e=this.energy;
+    this.energyFill.setScale(Math.max(0.005,e/100),1);
+    this.energyFill.setFillStyle(e<30?0xff5252 : e<70?0xffd23f : 0x00ffcc);
+    this.nowText.setText(t('d_now')+this.curGenre.label).setColor(this.curGenre.hex);
+  }
+  flashTip(txt){ this.tipText.setText(txt).setAlpha(1); this.tweens.killTweensOf(this.tipText); this.tweens.add({targets:this.tipText,alpha:0,delay:1600,duration:600}); }
+  burstAt(x,y,col,n){ n=n||12;
+    for(let i=0;i<n;i++){ const a=Math.random()*Math.PI*2, sp=Phaser.Math.Between(18,60);
+      const c=this.add.circle(x,y,Phaser.Math.Between(2,4),col,1).setDepth(96500);
+      this.tweens.add({targets:c,x:x+Math.cos(a)*sp,y:y+Math.sin(a)*sp-12,alpha:0,scale:0.2,duration:Phaser.Math.Between(340,640),ease:'Quad.out',onComplete:()=>c.destroy()}); }
+    const f=this.add.circle(x,y,9,0xffffff,0.7).setDepth(96400); this.tweens.add({targets:f,scale:2.6,alpha:0,duration:240,onComplete:()=>f.destroy()}); }
+
+  /* ---------- STEROWANIE (jak w minigrze 1) ---------- */
+  buildControls(){
+    this.cursors=this.input.keyboard.createCursorKeys();
+    this.keys=this.input.keyboard.addKeys('W,A,S,D,SPACE');
+    this.input.keyboard.addCapture('SPACE,UP,DOWN,LEFT,RIGHT');
+    this.joy={x:0,y:0}; this.actionQueued=false;
+    if(this.sys.game.device.input.touch){ this.input.addPointer(2); this.buildJoy(); this.buildActBtn(); }
+  }
+  buildJoy(){
+    this.joyBase=this.add.circle(0,0,58,0xffffff,0.10).setStrokeStyle(2,0xffffff,0.3).setScrollFactor(0).setDepth(95000).setVisible(false);
+    this.joyKnob=this.add.circle(0,0,30,C.neon,0.5).setScrollFactor(0).setDepth(95001).setVisible(false);
+    this.joyId=null;
+    this.input.on('pointerdown',p=>{ if(this.modalOpen) return; if(p.x<GW*0.45&&this.joyId===null){ this.joyId=p.id; this.joyO={x:p.x,y:p.y}; this.joyBase.setPosition(p.x,p.y).setVisible(true); this.joyKnob.setPosition(p.x,p.y).setVisible(true);} });
+    this.input.on('pointermove',p=>{ if(p.id!==this.joyId) return; let dx=p.x-this.joyO.x,dy=p.y-this.joyO.y; const l=Math.hypot(dx,dy),m=58; if(l>m){dx=dx/l*m;dy=dy/l*m;} this.joyKnob.setPosition(this.joyO.x+dx,this.joyO.y+dy); this.joy={x:dx/m,y:dy/m}; });
+    const end=p=>{ if(p.id===this.joyId){ this.joyId=null; this.joy={x:0,y:0}; this.joyBase.setVisible(false); this.joyKnob.setVisible(false);} };
+    this.input.on('pointerup',end); this.input.on('pointerupoutside',end);
+  }
+  buildActBtn(){
+    const b=this.add.circle(GW-78,GH-88,56,C.gold,0.34).setStrokeStyle(3,C.gold).setScrollFactor(0).setDepth(95000).setInteractive();
+    const lbl=this.add.text(GW-78,GH-88,t('btnAction'),{fontFamily:'Segoe UI',fontSize:'15px',color:'#fff',fontStyle:'bold'}).setOrigin(0.5).setScrollFactor(0).setDepth(95001);
+    const press=()=>{ b.setFillStyle(C.gold,0.75).setScale(0.9); lbl.setScale(0.9); };
+    const release=()=>{ b.setFillStyle(C.gold,0.32).setScale(1); lbl.setScale(1); };
+    b.on('pointerdown',()=>{ this.actionQueued=true; press(); });
+    b.on('pointerup',release); b.on('pointerout',release);
+  }
+  flashPrompt(){ if(!this.promptText.visible) return; this.tweens.killTweensOf(this.promptText); this.promptText.setScale(1);
+    this.tweens.add({targets:this.promptText,scale:1.25,yoyo:true,duration:110,ease:'Quad.out',onComplete:()=>this.promptText.setScale(1)}); }
+
+  /* ---------- KONTEKSTOWA AKCJA ---------- */
+  getContext(){
+    const near=(gx,gy,r)=>Math.hypot(this.px-gx,this.py-gy)<(r||1.2);
+    // wujek przy mikrofonie — najwyższy priorytet
+    if(this.uncle && this.uncle.state==='enter' && near(this.uncle.gx,this.uncle.gy,1.4)) return {label:t('pUncle'),fn:()=>this.resolveUncle()};
+    // zdjęcie z parą młodą
+    if(this.photoEv && this.photoEv.state==='ask' && near(this.photoEv.spot.gx,this.photoEv.spot.gy,1.3)) return {label:t('pPhoto'),fn:()=>this.resolvePhoto()};
+    // prośba o kawałek
+    if(this.pendingReq && !this.pendingReq.accepted){ const c=this.pendingReq.cluster; if(near(c.gx,c.gy,1.6)) return {label:t('pRequest'),fn:()=>this.acceptRequest()}; }
+    // konsola DJ
+    if(near(this.djSpot.gx,this.djSpot.gy,1.6)) return {label:t('pDJ'),fn:()=>this.openMixModal()};
+    // zagrzewanie grup
+    const c=this.clusters.find(cl=>cl.cheerT<=0 && near(cl.gx,cl.gy,1.5));
+    if(c) return {label:t('pCheer'),fn:()=>this.cheer(c)};
+    return null;
+  }
+  cheer(c){ c.cheerT=12; this.energy=Math.min(100,this.energy+3); this.score+=5;
+    Audio.sfx('ding'); const p=iso(c.gx,c.gy,50); this.burstAt(p.x,p.y,C.neon,8);
+    c.sprites.forEach((sp,i)=>{ this.tweens.add({targets:sp.s,y:sp.s.y-14,yoyo:true,duration:150,delay:i*60,ease:'Quad.out'}); });
+    const e=this.add.text(p.x,p.y,Phaser.Utils.Array.GetRandom(['🙌','🎉','🔥']),{fontSize:'24px'}).setOrigin(0.5).setDepth(96000);
+    this.tweens.add({targets:e,y:p.y-34,alpha:0,duration:900,onComplete:()=>e.destroy()}); this.refreshHUD(); }
+
+  /* ---------- KONSOLA DJ: wybór stylu + rytmiczna wstawka ---------- */
+  openMixModal(){ if(this.modalOpen) return; this.modalOpen=true; const D=97000; this.modalObjs=[];
+    const add=o=>{ this.modalObjs.push(o); return o; };
+    add(this.add.rectangle(GW/2,GH/2,GW,GH,0x05050d,0.86).setScrollFactor(0).setDepth(D).setInteractive());
+    add(this.add.rectangle(GW/2,GH/2,880,520,0x141022,0.98).setScrollFactor(0).setStrokeStyle(3,C.gold).setDepth(D+1));
+    add(this.add.text(GW/2,GH/2-226,t('mixTitle'),{fontFamily:'Segoe UI',fontSize:'27px',color:'#ffe487',fontStyle:'bold'}).setOrigin(0.5).setScrollFactor(0).setDepth(D+2));
+    this.mixSubTxt=add(this.add.text(GW/2,GH/2-192,t('mixSub'),{fontFamily:'Segoe UI',fontSize:'16px',color:'#c9c9e0'}).setOrigin(0.5).setScrollFactor(0).setDepth(D+2));
+    this.mixStep=1; this.mixBtns=[]; this.mixStep1=[];
+    const add1=o=>{ this.modalObjs.push(o); this.mixStep1.push(o); return o; };
+    this.genres.forEach((g,i)=>{ const col=i%2, row=(i/2)|0;
+      const x=GW/2-160+col*320, y=GH/2-90+row*130;
+      const isCur=g.id===this.curGenre.id;
+      const box=add1(this.add.rectangle(x,y,280,96,isCur?0x1a1826:0x232040,1).setStrokeStyle(3,isCur?0x444455:g.col).setScrollFactor(0).setDepth(D+3));
+      add1(this.add.text(x-104,y,'♪',{fontFamily:'Segoe UI',fontSize:'40px',color:isCur?'#555':g.hex,fontStyle:'bold'}).setOrigin(0.5).setScrollFactor(0).setDepth(D+4));
+      add1(this.add.text(x-70,y-12,(i+1)+'. '+g.label,{fontFamily:'Segoe UI',fontSize:'21px',color:isCur?'#666':'#fff',fontStyle:'bold'}).setOrigin(0,0.5).setScrollFactor(0).setDepth(D+4));
+      if(isCur) add1(this.add.text(x-70,y+16,t('d_now').replace('♪ ','').replace(': ',''),{fontFamily:'Segoe UI',fontSize:'13px',color:'#666'}).setOrigin(0,0.5).setScrollFactor(0).setDepth(D+4));
+      if(!isCur){ box.setInteractive(); box.on('pointerdown',()=>this.startInsert(g,D));
+        this.tweens.add({targets:box,scaleX:1.02,scaleY:1.02,yoyo:true,repeat:-1,duration:900,delay:i*150}); }
+      this.mixBtns.push({g,box,isCur}); });
+    // zamknięcie (rezygnacja) — tylko w kroku wyboru
+    const mixClose=add1(this.add.text(GW/2+412,GH/2-232,'✕',{fontFamily:'Segoe UI',fontSize:'26px',color:'#9aa',fontStyle:'bold'}).setOrigin(0.5).setScrollFactor(0).setDepth(D+4).setInteractive());
+    mixClose.on('pointerdown',()=>this.closeMix());
+    this._mixKey=(ev)=>{ const k=(ev.key||'').toLowerCase();
+      if(this.mixStep===1){ const n=parseInt(k,10); if(n>=1&&n<=4){ const b=this.mixBtns[n-1]; if(b&&!b.isCur) this.startInsert(b.g,D); } if(k==='escape') this.closeMix(); }
+      else if(this.mixStep===2){ const map={'a':0,'arrowleft':0,'s':1,'arrowdown':1,'d':2,'arrowup':2,'f':3,'arrowright':3}; if(map[k]!=null) this.judgeLane(map[k]); } };
+    this.input.keyboard.on('keydown',this._mixKey);
+  }
+  startInsert(g,D){ if(this.mixStep!==1) return; this.mixStep=2;
+    // muzyka zmienia się od razu — słychać nowy styl podczas miksowania
+    Audio.setMood(g.id); this.nextGenre=g;
+    this.mixStep1.forEach(o=>{ if(o&&o.active) o.destroy(); }); this.mixStep1=[]; this.mixBtns=[];
+    this.modalObjs=this.modalObjs.filter(o=>o&&o.active);
+    this.mixSubTxt.setText(t('mixGo'));
+    const add=o=>{ this.modalObjs.push(o); return o; };
+    const laneW=100, hitY=GH/2+176, topY=GH/2-160;
+    this.lanes=[]; this.mixNotes=[]; this.mixPts=0; this.mixResolved=0; this.mixTotal=10;
+    const laneKeys=['A','S','D','F'];
+    for(let i=0;i<4;i++){ const x=GW/2-180+i*120;
+      add(this.add.rectangle(x,(topY+hitY)/2,laneW,hitY-topY+60,0xffffff,0.045).setScrollFactor(0).setDepth(D+3));
+      add(this.add.rectangle(x,hitY,laneW,34,this.genres[i].col,0.16).setScrollFactor(0).setDepth(D+4).setStrokeStyle(2,this.genres[i].col,0.8));
+      add(this.add.text(x,hitY+40,laneKeys[i],{fontFamily:'Segoe UI',fontSize:'17px',color:'#9aa',fontStyle:'bold'}).setOrigin(0.5).setScrollFactor(0).setDepth(D+4));
+      const zone=add(this.add.rectangle(x,(topY+hitY)/2+30,laneW+16,hitY-topY+120,0xffffff,0.001).setScrollFactor(0).setDepth(D+30).setInteractive());
+      zone.on('pointerdown',()=>this.judgeLane(i));
+      this.lanes.push({x,hitY,topY}); }
+    // nuty spadają w rytm nowego stylu
+    const beatMs=Audio.beatDur()*1000, travel=1250;
+    let spawned=0, lastLane=-1;
+    this.mixSpawner=this.time.addEvent({delay:beatMs,loop:true,callback:()=>{ if(spawned>=this.mixTotal){ this.mixSpawner.remove(); return; }
+      spawned++;
+      let ln=Phaser.Math.Between(0,3); if(ln===lastLane&&Math.random()<0.6) ln=(ln+1+Phaser.Math.Between(0,2))%4; lastLane=ln;
+      const lane=this.lanes[ln];
+      const n=this.add.rectangle(lane.x,lane.topY-20,25,25,this.genres[ln].col,1).setAngle(45).setScrollFactor(0).setDepth(D+6).setStrokeStyle(2,0xffffff,0.85);
+      this.modalObjs.push(n);
+      const note={lane:ln,spr:n,hit:false,missed:false};
+      this.mixNotes.push(note);
+      this.tweens.add({targets:n,y:lane.hitY+90,duration:travel*(lane.hitY+90-(lane.topY-20))/(lane.hitY-(lane.topY-20)),ease:'Linear',
+        onUpdate:()=>{ if(!note.hit&&!note.missed&&n.y>lane.hitY+62){ note.missed=true; n.setFillStyle(0x555566,0.5); this.noteJudged(); } },
+        onComplete:()=>{ if(n.active){ this.tweens.add({targets:n,alpha:0,duration:150,onComplete:()=>{ if(n.active)n.destroy(); }}); } }});
+    }});
+  }
+  judgeLane(ln){ if(this.mixStep!==2) return; const lane=this.lanes[ln];
+    let best=null,bd=1e9;
+    this.mixNotes.forEach(nt=>{ if(nt.lane!==ln||nt.hit||nt.missed) return; const d=Math.abs(nt.spr.y-lane.hitY); if(d<bd){bd=d;best=nt;} });
+    if(!best||bd>110) return;
+    best.hit=true;
+    const D=97000;
+    if(bd<=32){ this.mixPts+=2; Audio.sfx('ding'); this.laneFx(lane,t('mixPerfect'),'#46d67a',D); }
+    else if(bd<=64){ this.mixPts+=1; Audio.sfx('pick'); this.laneFx(lane,t('mixGood'),'#ffd23f',D); }
+    else { Audio.sfx('err'); best.missed=true; best.hit=false; this.laneFx(lane,t('mixMiss'),'#ff6b6b',D); }
+    if(best.hit){ this.burstAt(best.spr.x,best.spr.y,this.genres[ln].col,7); best.spr.destroy(); }
+    this.noteJudged(); }
+  laneFx(lane,txt,col,D){ const o=this.add.text(lane.x,lane.hitY-34,txt,{fontFamily:'Segoe UI',fontSize:'16px',color:col,fontStyle:'bold'}).setOrigin(0.5).setScrollFactor(0).setDepth(D+8);
+    this.modalObjs.push(o); this.tweens.add({targets:o,y:o.y-26,alpha:0,duration:520,onComplete:()=>{ if(o.active)o.destroy(); }}); }
+  noteJudged(){ this.mixResolved++;
+    if(this.mixResolved>=this.mixTotal){ this.mixStep=3;
+      const boost=4+this.mixPts;
+      this.time.delayedCall(420,()=>{ if(!this.modalOpen) return;
+        this.mixSubTxt.setText(t('mixBoost')(boost)).setColor('#46d67a');
+        Audio.sfx('phase');
+        this.time.delayedCall(950,()=>{ if(!this.modalOpen) return; this.applyMix(boost); }); }); } }
+  applyMix(boost){ const g=this.nextGenre;
+    this.curGenre=g; this.energy=Math.min(100,this.energy+boost); this.score+=this.mixPts*3;
+    this.closeMix();
+    const p=iso(this.djSpot.gx,this.djSpot.gy,40); this.burstAt(p.x,p.y,g.col,14);
+    // spełnienie prośby o kawałek?
+    if(this.pendingReq && this.pendingReq.accepted && this.pendingReq.genre===g.id) this.fulfillRequest();
+    this.refreshHUD(); }
+  closeMix(){ if(this._mixKey){ this.input.keyboard.off('keydown',this._mixKey); this._mixKey=null; }
+    if(this.mixSpawner){ this.mixSpawner.remove(); this.mixSpawner=null; }
+    (this.modalObjs||[]).forEach(o=>{ if(o&&o.destroy&&o.active) o.destroy(); }); this.modalObjs=[];
+    this.mixNotes=[]; this.modalOpen=false; this.mixStep=0; }
+
+  /* ---------- FINAŁ ---------- */
+  finale(){ if(this.done) return; this.done=true;
+    this.promptText.setVisible(false);
+    // ostatni taniec — serca nad parkietem
+    this.clusters.forEach((c,ci)=>{ for(let i=0;i<4;i++){ const p=iso(c.gx,c.gy,60);
+      this.time.delayedCall(ci*220+i*260,()=>{ const e=this.add.text(p.x+Phaser.Math.Between(-30,30),p.y,Phaser.Utils.Array.GetRandom(['❤️','✨','🎉','💛']),{fontSize:'22px'}).setOrigin(0.5).setDepth(96000);
+        this.tweens.add({targets:e,y:e.y-50,alpha:0,duration:1400,onComplete:()=>e.destroy()}); }); } });
+    Audio.sfx('phase');
+    this.time.delayedCall(2200,()=>this.finish()); }
+  finish(){
+    const avgE=this.energyTicks?Math.round(this.energySum/this.energyTicks):0;
+    let stars = (avgE>=62 && this.eventsDone>=4)?3 : ((avgE>=42 || this.eventsDone>=3)?2:1);
+    this.registry.set('stars',stars); this.registry.set('finalScore',this.score);
+    this.registry.set('late',false); this.registry.set('npcDone',this.eventsDone);
+    this.registry.set('mode','dance'); this.registry.set('lastScene','Dance'); this.registry.set('avgEnergy',avgE);
+    this.cameras.main.fade(500,5,5,12); this.time.delayedCall(520,()=>this.scene.start('Result'));
+  }
+
+  /* ---------- UPDATE ---------- */
+  update(time,delta){
+    if(this.done||this.modalOpen){ return; }
+    const dt=delta;
+    let ix=0,iy=0;
+    if(this.cursors.left.isDown||this.keys.A.isDown) ix=-1; else if(this.cursors.right.isDown||this.keys.D.isDown) ix=1;
+    if(this.cursors.up.isDown||this.keys.W.isDown) iy=-1; else if(this.cursors.down.isDown||this.keys.S.isDown) iy=1;
+    if(Math.abs(this.joy.x)>0.2) ix=this.joy.x; if(Math.abs(this.joy.y)>0.2) iy=this.joy.y;
+    const moving=Math.hypot(ix,iy)>0.1;
+    if(moving){ this.facingBack=iy<0; this.flip=ix<0;
+      let dgx=ix/TW + iy/TH, dgy=-ix/TW + iy/TH; const l=Math.hypot(dgx,dgy)||1; dgx/=l; dgy/=l;
+      const spd=3.4*(dt/1000);
+      this.px+=dgx*spd; this.py+=dgy*spd;
+      this.px=Phaser.Math.Clamp(this.px,0.4,RW-1.4); this.py=Phaser.Math.Clamp(this.py,0.4,RH-1.4);
+    }
+    this.bob = moving ? this.bob+dt*0.012 : 0;
+    this.player.setTexture(this.facingBack?'karolFrak_b':'karolFrak').setFlipX(this.flip);
+    const pp=iso(this.px,this.py, moving?Math.abs(Math.sin(this.bob))*3:0);
+    this.player.setPosition(pp.x,pp.y).setDepth(tdepth(this.px,this.py,5));
+    const sh=iso(this.px,this.py,0); this.playerShadow.setPosition(sh.x,sh.y).setScale(1.1,0.5).setDepth(tdepth(this.px,this.py,-1));
+
+    const ctx=this.getContext();
+    const keyHint=this.sys.game.device.input.touch?t('keyAction'):t('keySpace');
+    if(ctx){ this.promptText.setText(keyHint+ctx.label).setPosition(pp.x,pp.y-52).setVisible(true); }
+    else this.promptText.setVisible(false);
+    let pressed=Phaser.Input.Keyboard.JustDown(this.keys.SPACE)||this.actionQueued; this.actionQueued=false;
+    if(pressed && ctx){ this.flashPrompt(); ctx.fn(); }
+
+    this.updateEvents(dt);
+  }
+}
+
+/* ===========================================================================
    RESULT
 =========================================================================== */
 class Result extends Phaser.Scene{
@@ -1256,12 +1793,13 @@ class Result extends Phaser.Scene{
     this.cameras.main.setBackgroundColor('#0c0a16');
     const score=this.registry.get('finalScore')||0, stars=this.registry.get('stars')||1;
     const best=this.registry.get('best')||0, late=this.registry.get('late'), npc=this.registry.get('npcDone')||0;
+    const dance=this.registry.get('mode')==='dance', avgE=this.registry.get('avgEnergy')||0;
     for(let i=0;i<(IS_MOBILE?30:60);i++){ const c=this.add.rectangle(Phaser.Math.Between(0,GW),Phaser.Math.Between(-300,0),6,11,Phaser.Utils.Array.GetRandom([C.gold,C.neon,C.pink,C.green]));
       this.tweens.add({targets:c,y:GH+20,angle:360,duration:Phaser.Math.Between(2600,5200),repeat:-1,delay:Phaser.Math.Between(0,2200)}); }
     this.add.rectangle(GW/2,GH/2,720,476,0x05050d,0.92).setStrokeStyle(3,C.gold);
 
-    this.add.text(GW/2,110,t('resReady'),{fontFamily:'Segoe UI',fontSize:'40px',color:'#d4af37',fontStyle:'bold'}).setOrigin(0.5).setShadow(0,0,'#d4af37',18);
-    this.add.text(GW/2,152, late?t('resLate'):t('resOnTime'),
+    this.add.text(GW/2,110,t(dance?'resDance':'resReady'),{fontFamily:'Segoe UI',fontSize:'40px',color:'#d4af37',fontStyle:'bold'}).setOrigin(0.5).setShadow(0,0,'#d4af37',18);
+    this.add.text(GW/2,152, dance?(stars>=3?t('resDanceHi'):t('resDanceMid')):(late?t('resLate'):t('resOnTime')),
       {fontFamily:'Segoe UI',fontSize:'16px',color:'#c9c9e0',align:'center',wordWrap:{width:560}}).setOrigin(0.5);
 
     const sx=GW/2-70;
@@ -1271,9 +1809,9 @@ class Result extends Phaser.Scene{
     const k=this.add.image(GW/2,300,'karolFrak').setScale(1.7).setOrigin(0.5,1); k.y=320;
     this.tweens.add({targets:k,angle:{from:-4,to:4},yoyo:true,repeat:-1,duration:700});
 
-    this.add.text(GW/2,344,t('resScore')(score,npc),{fontFamily:'Segoe UI',fontSize:'23px',color:'#00ffcc',fontStyle:'bold'}).setOrigin(0.5);
-    this.add.text(GW/2,372,t('resBest')+best,{fontFamily:'Segoe UI',fontSize:'15px',color:'#9aa'}).setOrigin(0.5);
-    this.add.text(GW/2,404,t('resCopy'),
+    this.add.text(GW/2,344,t(dance?'resDanceScore':'resScore')(score,npc),{fontFamily:'Segoe UI',fontSize:'23px',color:'#00ffcc',fontStyle:'bold'}).setOrigin(0.5);
+    this.add.text(GW/2,372, dance?t('resDanceAvg')(avgE):(t('resBest')+best),{fontFamily:'Segoe UI',fontSize:'15px',color:'#9aa'}).setOrigin(0.5);
+    this.add.text(GW/2,404,t(dance?'resDanceCopy':'resCopy'),
       {fontFamily:'Segoe UI',fontSize:'15px',color:'#c9c9e0',align:'center',lineSpacing:4}).setOrigin(0.5);
 
     const cta=this.add.text(GW/2,452,t('resCta'),{fontFamily:'Segoe UI',fontSize:'19px',color:'#0a0a18',backgroundColor:'#d4af37',padding:{x:22,y:11},fontStyle:'bold'}).setOrigin(0.5).setInteractive().setShadow(0,0,'#d4af37',12);
@@ -1283,7 +1821,7 @@ class Result extends Phaser.Scene{
 
     const mkBtn=(x,txt,fn)=>{ const b=this.add.text(x,506,txt,{fontFamily:'Segoe UI',fontSize:'20px',color:'#fff',backgroundColor:'#2a2747',padding:{x:18,y:11},fontStyle:'bold'}).setOrigin(0.5).setInteractive();
       b.on('pointerover',()=>b.setBackgroundColor('#3a3760')); b.on('pointerout',()=>b.setBackgroundColor('#2a2747')); b.on('pointerdown',fn); return b; };
-    mkBtn(GW/2-140,t('resReplay'),()=>this.scene.start('Setup'));
+    mkBtn(GW/2-140,t('resReplay'),()=>this.scene.start(this.registry.get('lastScene')||'Setup'));
     mkBtn(GW/2+140,t('resMenu'),()=>window.location.reload());
   }
 }
@@ -1295,9 +1833,9 @@ const config={
   type:Phaser.AUTO, width:GW, height:GH, parent:'game-container', backgroundColor:'#08070f',
   pixelArt:true, roundPixels:true,
   scale:{ mode:Phaser.Scale.FIT, autoCenter:Phaser.Scale.CENTER_BOTH },
-  scene:[Boot,Hub,Setup,Result]
+  scene:[Boot,Hub,Setup,Dance,Result]
 };
-new Phaser.Game(config);
+window.WK_GAME=new Phaser.Game(config);
 
 } // startGame
 </script>

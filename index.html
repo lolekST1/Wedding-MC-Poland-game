@@ -225,6 +225,7 @@ const I18N={
   dh4:'Pełna moc! Cała sala chce mocnych bitów', dh5:'Utrzymaj energię — gusta zmieniają się szybko', dh6:'Wygaszamy wieczór — romantycznie na koniec',
   dNext:'Za chwilę: ',
   pDJ:'Zmień muzykę', pCheer:'Zagrzej grupę', pUncle:'Odprowadź wujka', pRequest:'Przyjmij prośbę', pPhoto:'Ustaw się do zdjęcia', pFix:'Napraw głośnik (przytrzymaj)',
+  pConga:'Poprowadź wężyka!', d_conga:'🚂 WĘŻYK', congaReadyTip:'Wężyk naładowany — poprowadź pociąg po parkiecie!', congaStart:'WĘŻYK! Prowadź gości po całej sali!', congaDone:'Wężyk rozgrzał całą salę! 🔥',
   evUncle:'Wujek chce przejąć mikrofon! Zatrzymaj go!', evUncleFail:'Wujek dorwał mikrofon… parkiet stygnie', evUncleOk:'Wujek odprowadzony do stolika!',
   evRequest:'Prośba o kawałek! Podejdź do grupy', evReqPlay:'Zagraj teraz: ', evReqOk:'Prośba spełniona! Sala szaleje!', evReqFail:'Prośba przepadła…',
   evPhoto:'Fotograf prosi o ustawkę przy parze młodej!', evPhotoOk:'Pstryk! Pamiątkowe zdjęcie!', evPhotoFail:'Fotograf poszedł dalej…',
@@ -274,6 +275,7 @@ const I18N={
   dh4:'Full power! The whole room wants big beats', dh5:'Keep the energy up — tastes change fast', dh6:'Wind the night down — end on a romantic note',
   dNext:'Coming up: ',
   pDJ:'Change the music', pCheer:'Hype the group', pUncle:'Walk uncle back', pRequest:'Take the request', pPhoto:'Pose for the photo', pFix:'Fix the speaker (hold)',
+  pConga:'Lead the conga line!', d_conga:'🚂 CONGA', congaReadyTip:'Conga charged — lead the train around the floor!', congaStart:'CONGA! Lead the guests around the room!', congaDone:'The conga heated up the whole room! 🔥',
   evUncle:'Uncle wants to grab the mic! Stop him!', evUncleFail:'Uncle got the mic… the floor cools down', evUncleOk:'Uncle walked back to his table!',
   evRequest:'Song request! Go to the group', evReqPlay:'Play now: ', evReqOk:'Request delivered! The room goes wild!', evReqFail:'The request slipped away…',
   evPhoto:'The photographer wants a shot with the newlyweds!', evPhotoOk:'Snap! A photo to remember!', evPhotoFail:'The photographer moved on…',
@@ -1375,6 +1377,7 @@ class Dance extends Phaser.Scene{
     this.energy=55; this.energySum=0; this.energyTicks=0;
     this.score=0; this.eventsDone=0; this.done=false; this.modalOpen=false;
     this.pendingReq=null; this.uncle=null; this.photoEv=null; this.spkBroken=null; this._lowWarnT=0; this.holding=false; this.holdT=0;
+    this.congaCharge=40; this.congaActive=false; this.congaT=0; this.congaTrail=[]; this._vigOn=false;
 
     // sprzęt stoi już rozstawiony (finał minigry 1) — pełna ciągłość świata
     const gear=[
@@ -1416,8 +1419,14 @@ class Dance extends Phaser.Scene{
       const rect=this.add.rectangle(0,0,112,30,0xffffff,0.95).setStrokeStyle(2,0x333333);
       const note=this.add.text(-42,0,'♪',{fontFamily:'Segoe UI',fontSize:'19px',color:'#000',fontStyle:'bold'}).setOrigin(0.5);
       const lab=this.add.text(6,0,'',{fontFamily:'Segoe UI',fontSize:'12px',color:'#222',fontStyle:'bold'}).setOrigin(0.5);
-      bub.add([rect,note,lab]);
-      return {gx:sp.gx,gy:sp.gy,pref:'disco',sprites,bub,rect,note,lab,cheerT:0,changeT:0,request:false};
+      // pasek zapału grupy (widać, kiedy potrzebują zachęty)
+      const zealBg=this.add.rectangle(0,21,52,6,0x000000,0.6).setStrokeStyle(1,0x555566);
+      const zealFill=this.add.rectangle(-25,21,50,4,0x46d67a,1).setOrigin(0,0.5);
+      const needy=this.add.text(0,42,'👏',{fontSize:'20px'}).setOrigin(0.5).setVisible(false);
+      bub.add([rect,note,lab,zealBg,zealFill,needy]);
+      const c={gx:sp.gx,gy:sp.gy,pref:'disco',sprites,bub,rect,note,lab,zealFill,needy,zeal:80,changeT:0,request:false};
+      c.needyTw=this.tweens.add({targets:needy,scale:{from:1,to:1.45},y:{from:42,to:34},yoyo:true,repeat:-1,duration:340,paused:true});
+      return c;
     });
     // start łagodny: dwie grupy chcą disco (gra już disco), jedna romantycznie
     this.clusters[0].pref='disco'; this.clusters[1].pref='disco'; this.clusters[2].pref='romantic';
@@ -1473,25 +1482,36 @@ class Dance extends Phaser.Scene{
     if(ph.mode==='free' && ph.change>0){ this.clusters.forEach(c=>{ if(c.request) return; c.changeT--;
       if(c.changeT<=0){ c.changeT=ph.change+Phaser.Math.Between(-3,3);
         const others=this.genres.filter(g=>g.id!==c.pref); c.pref=Phaser.Utils.Array.GetRandom(others).id; this.refreshBubble(c,true); } }); }
-    // energia
-    let matched=0; this.clusters.forEach(c=>{ if(c.pref===this.curGenre.id) matched++; });
-    let delta = matched*1.3 - (this.clusters.length-matched)*0.5 - ph.decay;
+    // zapał grup: dopasowana muzyka podtrzymuje, niedopasowana wyczerpuje
+    this.clusters.forEach(c=>{ const on=c.pref===this.curGenre.id;
+      c.zeal=Phaser.Math.Clamp(c.zeal+(on?0.9:-3.2)+(this.congaActive?2:0),0,100); });
+    // energia — wkład dopasowanej grupy zależy od jej zapału
+    let matched=0, gain=0; this.clusters.forEach(c=>{ if(c.pref===this.curGenre.id){ matched++; gain+=1.3*(0.45+0.55*c.zeal/100); } });
+    let delta = gain - (this.clusters.length-matched)*0.5 - ph.decay;
     if(this.spkBroken) delta-=1.5;                                  // zepsuty głośnik szybko studzi parkiet
+    if(this.congaActive) delta+=2.4;                                // wężyk rozgrzewa całą salę
     this.energy=Phaser.Math.Clamp(this.energy+delta,0,100);
     this.energySum+=this.energy; this.energyTicks++;
     // punkty za utrzymanie parkietu
     let pts = this.energy>=70?8 : this.energy>=45?5 : this.energy>=25?2 : 0;
     if(matched===this.clusters.length){ pts+=2; if(this.elapsed%9===0){ this.flashTip(t('dMatchAll')); } }
+    if(this.congaActive) pts+=6;
     this.score+=pts;
+    // wężyk: odliczanie
+    if(this.congaActive){ this.congaT--; if(this.congaT<=0) this.endConga(); }
     // ostrzeżenie o gasnącym parkiecie
     this._lowWarnT--; if(this.energy<25 && this._lowWarnT<=0){ this._lowWarnT=8; Audio.sfx('err'); this.flashTip(t('dLow')); }
-    // radość dopasowanych grup
+    // czerwona winieta przy gasnącym parkiecie
+    if(this.energy<25 && !this._vigOn){ this._vigOn=true; this.tweens.add({targets:this.dangerVig,alpha:0.14,yoyo:true,repeat:-1,duration:500}); }
+    else if(this.energy>=25 && this._vigOn){ this._vigOn=false; this.tweens.killTweensOf(this.dangerVig); this.dangerVig.setAlpha(0); }
+    // radość dopasowanych grup + sygnał "potrzebują zachęty"
     this.clusters.forEach(c=>{ const on=c.pref===this.curGenre.id;
-      c.sprites.forEach(sp=>{ sp.tw.timeScale=on?1.6:0.7; });
-      if(on && Math.random()<0.25){ const p=iso(c.gx,c.gy,70);
+      if(!this.congaActive) c.sprites.forEach(sp=>{ sp.tw.timeScale=(on?1.2:0.6)+0.8*c.zeal/100; });
+      const needy=c.zeal<35;
+      if(needy!==c.needy.visible){ c.needy.setVisible(needy); if(needy){ c.needyTw.resume(); Audio.sfx('err'); } else { c.needyTw.pause(); } }
+      if(on && !needy && Math.random()<0.25){ const p=iso(c.gx,c.gy,70);
         const e=this.add.text(p.x+Phaser.Math.Between(-20,20),p.y,Phaser.Utils.Array.GetRandom(['🎉','😍','👏','🔥','💃','🕺']),{fontSize:'18px'}).setOrigin(0.5).setDepth(95900);
         this.tweens.add({targets:e,y:e.y-30,alpha:0,duration:1000,onComplete:()=>e.destroy()}); } });
-    this.clusters.forEach(c=>{ if(c.cheerT>0) c.cheerT--; });
     // prośba o kawałek — terminy
     if(this.pendingReq){ if(this.pendingReq.accepted){ if(this.elapsed>this.pendingReq.deadline){ this.failRequest(); } }
       else if(this.elapsed>this.pendingReq.acceptBy){ this.failRequest(); } }
@@ -1546,23 +1566,23 @@ class Dance extends Phaser.Scene{
     this.pendingReq=null; this.energy=Math.max(0,this.energy-8); Audio.sfx('err'); this.flashTip(t('evReqFail')); }
   fulfillRequest(){ const r=this.pendingReq; if(!r) return;
     r.cluster.request=false; r.cluster.reqAccepted=false; this.refreshBubble(r.cluster,true); if(r.mark)r.mark.destroy();
-    this.pendingReq=null; this.eventsDone++; this.score+=60; this.energy=Math.min(100,this.energy+8);
+    this.pendingReq=null; this.eventsDone++; this.score+=60; this.energy=Math.min(100,this.energy+8); this.addCharge(20);
     Audio.sfx('ding'); this.flashTip(t('evReqOk'));
     const p=iso(r.cluster.gx,r.cluster.gy,40); this.burstAt(p.x,p.y,C.gold,12); }
   fixSpeaker(){ const b=this.spkBroken; if(!b) return;
     if(b.fx)b.fx.remove(); if(b.mark)b.mark.destroy(); this.spkBroken=null;
-    this.eventsDone++; this.score+=40; this.energy=Math.min(100,this.energy+5);
+    this.eventsDone++; this.score+=40; this.energy=Math.min(100,this.energy+5); this.addCharge(20);
     Audio.sfx('connect'); this.flashTip(t('evSpkOk'));
     const p=iso(b.gx,b.gy,30); this.burstAt(p.x,p.y,C.green,12); this.refreshHUD(); }
   failSpeaker(){ const b=this.spkBroken; if(!b) return;
     if(b.fx)b.fx.remove(); if(b.mark)b.mark.destroy(); this.spkBroken=null;
     Audio.sfx('err'); this.flashTip(t('evSpkFail')); }
   resolveUncle(){ const u=this.uncle; if(!u||u.state!=='enter') return; u.state='leave';
-    this.eventsDone++; this.score+=50; Audio.sfx('ding'); this.flashTip(t('evUncleOk'));
+    this.eventsDone++; this.score+=50; this.addCharge(20); Audio.sfx('ding'); this.flashTip(t('evUncleOk'));
     const p=iso(u.gx,u.gy,40); this.burstAt(p.x,p.y,C.green,10); this.refreshHUD(); }
   resolvePhoto(){ const ev=this.photoEv; if(!ev||ev.state!=='ask') return; ev.state='leave';
     if(ev.mark){ev.mark.destroy(); ev.mark=null;}
-    this.eventsDone++; this.score+=40; Audio.sfx('ding'); this.flashTip(t('evPhotoOk'));
+    this.eventsDone++; this.score+=40; this.addCharge(20); Audio.sfx('ding'); this.flashTip(t('evPhotoOk'));
     const fl=this.add.rectangle(GW/2,GH/2,GW,GH,0xffffff,0.85).setDepth(97500);   // flesz aparatu
     this.tweens.add({targets:fl,alpha:0,duration:420,onComplete:()=>fl.destroy()}); this.refreshHUD(); }
 
@@ -1608,6 +1628,12 @@ class Dance extends Phaser.Scene{
     this.energyFill=this.add.rectangle(GW/2-210,106,420,10,0xffd23f,1).setOrigin(0,0.5).setDepth(90001);
     // wskaźnik aktualnego stylu
     this.nowText=this.add.text(GW/2+224,106,'',{fontFamily:'Segoe UI',fontSize:'14px',color:'#fff',fontStyle:'bold'}).setOrigin(0,0.5).setDepth(90001);
+    // miernik wężyka (akcja specjalna)
+    this.congaLbl=this.add.text(14,48,t('d_conga'),{fontFamily:'Segoe UI',fontSize:'12px',color:'#9aa',fontStyle:'bold'}).setDepth(90001);
+    this.add.rectangle(14,70,104,10,0x000000,0.55).setOrigin(0,0.5).setDepth(90000).setStrokeStyle(1,0x555566);
+    this.congaFill=this.add.rectangle(16,70,100,6,0xd4af37,1).setOrigin(0,0.5).setDepth(90001);
+    // czerwona winieta ostrzegawcza (energia < 25)
+    this.dangerVig=this.add.rectangle(GW/2,GH/2,GW,GH,0xff2222,1).setAlpha(0).setDepth(89000);
     // hint
     this.hintBar=this.add.rectangle(GW/2,GH-28,GW-40,34,0x000000,0.55).setDepth(90000);
     this.hintText=this.add.text(GW/2,GH-28,'',{fontFamily:'Segoe UI',fontSize:'17px',color:'#ffe487',fontStyle:'bold'}).setOrigin(0.5).setDepth(90001);
@@ -1637,6 +1663,16 @@ class Dance extends Phaser.Scene{
     this.energyFill.setScale(Math.max(0.005,e/100),1);
     this.energyFill.setFillStyle(e<30?0xff5252 : e<70?0xffd23f : 0x00ffcc);
     this.nowText.setText(t('d_now')+this.curGenre.label).setColor(this.curGenre.hex);
+    // miernik wężyka: złoty gdy pełny + puls etykiety
+    this.congaFill.setScale(Math.max(0.02,this.congaCharge/100),1);
+    const full=this.congaCharge>=100 && !this.congaActive;
+    this.congaFill.setFillStyle(this.congaActive?0x00ffcc:full?0xffe487:0xd4af37);
+    this.congaLbl.setColor(full?'#ffe487':'#9aa');
+    if(full && !this._congaPulse){ this._congaPulse=this.tweens.add({targets:this.congaLbl,scale:{from:1,to:1.18},yoyo:true,repeat:-1,duration:350}); }
+    else if(!full && this._congaPulse){ this._congaPulse.remove(); this._congaPulse=null; this.congaLbl.setScale(1); }
+    // paski zapału grup
+    this.clusters.forEach(c=>{ c.zealFill.setScale(Math.max(0.02,c.zeal/100),1);
+      c.zealFill.setFillStyle(c.zeal<35?0xff5252 : c.zeal<60?0xffd23f : 0x46d67a); });
   }
   flashTip(txt){ this.tipText.setText(txt).setAlpha(1); this.tweens.killTweensOf(this.tipText); this.tweens.add({targets:this.tipText,alpha:0,delay:1600,duration:600}); }
   burstAt(x,y,col,n){ n=n||12;
@@ -1675,6 +1711,7 @@ class Dance extends Phaser.Scene{
 
   /* ---------- KONTEKSTOWA AKCJA ---------- */
   getContext(){
+    if(this.congaActive) return null;   // podczas wężyka Karol tylko prowadzi
     const near=(gx,gy,r)=>Math.hypot(this.px-gx,this.py-gy)<(r||1.2);
     // wujek przy mikrofonie — najwyższy priorytet
     if(this.uncle && this.uncle.state==='enter' && near(this.uncle.gx,this.uncle.gy,1.4)) return {label:t('pUncle'),fn:()=>this.resolveUncle()};
@@ -1686,16 +1723,39 @@ class Dance extends Phaser.Scene{
     if(this.spkBroken && near(this.spkBroken.gx,this.spkBroken.gy,1.5)) return {label:t('pFix'),hold:true,fn:()=>this.fixSpeaker()};
     // konsola DJ
     if(near(this.djSpot.gx,this.djSpot.gy,1.6)) return {label:t('pDJ'),fn:()=>this.openMixModal()};
-    // zagrzewanie grup
-    const c=this.clusters.find(cl=>cl.cheerT<=0 && near(cl.gx,cl.gy,1.5));
+    // zagrzewanie grup — dostępne, gdy grupie spada zapał (widoczny pasek pod chmurką)
+    const c=this.clusters.find(cl=>cl.zeal<60 && near(cl.gx,cl.gy,1.5));
     if(c) return {label:t('pCheer'),fn:()=>this.cheer(c)};
+    // wężyk — akcja specjalna po naładowaniu
+    if(this.congaCharge>=100) return {label:t('pConga'),fn:()=>this.startConga()};
     return null;
   }
-  cheer(c){ c.cheerT=12; this.energy=Math.min(100,this.energy+3); this.score+=5;
+  cheer(c){ c.zeal=Math.min(100,c.zeal+45); c.needy.setVisible(false); c.needyTw.pause();
+    this.energy=Math.min(100,this.energy+3); this.score+=5; this.addCharge(8);
     Audio.sfx('ding'); const p=iso(c.gx,c.gy,50); this.burstAt(p.x,p.y,C.neon,8);
     c.sprites.forEach((sp,i)=>{ this.tweens.add({targets:sp.s,y:sp.s.y-14,yoyo:true,duration:150,delay:i*60,ease:'Quad.out'}); });
     const e=this.add.text(p.x,p.y,Phaser.Utils.Array.GetRandom(['🙌','🎉','🔥']),{fontSize:'24px'}).setOrigin(0.5).setDepth(96000);
     this.tweens.add({targets:e,y:p.y-34,alpha:0,duration:900,onComplete:()=>e.destroy()}); this.refreshHUD(); }
+
+  /* ---------- WĘŻYK (akcja specjalna) ---------- */
+  addCharge(n){ if(this.congaActive||this.congaCharge>=100) return;
+    this.congaCharge=Math.min(100,this.congaCharge+n);
+    if(this.congaCharge>=100){ Audio.sfx('ding'); this.flashTip(t('congaReadyTip')); } this.refreshHUD(); }
+  startConga(){ if(this.congaActive) return; this.congaActive=true; this.congaT=12; this.congaTrail=[];
+    Audio.sfx('phase'); this.flashTip(t('congaStart'));
+    const pp=iso(this.px,this.py,20); this.burstAt(pp.x,pp.y,C.gold,16);
+    this.congaGuests=[];
+    this.clusters.forEach(c=>{ c.bub.setVisible(false);
+      c.sprites.forEach(sp=>{ sp.tw.pause(); this.congaGuests.push({s:sp.s,homeX:sp.s.x,homeY:sp.s.y,homeD:sp.s.depth}); }); }); }
+  endConga(){ if(!this.congaActive) return; this.congaActive=false; this.congaCharge=0;
+    this.score+=30; this.energy=Math.min(100,this.energy+10);
+    Audio.sfx('phase'); this.flashTip(t('congaDone'));
+    const pp=iso(this.px,this.py,20); this.burstAt(pp.x,pp.y,C.pink,16);
+    this.clusters.forEach(c=>c.bub.setVisible(true));
+    (this.congaGuests||[]).forEach((g,i)=>{ this.tweens.add({targets:g.s,x:g.homeX,y:g.homeY,duration:600,delay:i*40,ease:'Quad.out',
+      onComplete:()=>{ g.s.setDepth(g.homeD); }}); });
+    this.clusters.forEach(c=>c.sprites.forEach(sp=>sp.tw.resume()));
+    this.congaGuests=[]; this.refreshHUD(); }
 
   /* ---------- KONSOLA DJ: wybór stylu + rytmiczna wstawka ---------- */
   openMixModal(){ if(this.modalOpen) return; this.modalOpen=true; const D=97000; this.modalObjs=[];
@@ -1732,7 +1792,8 @@ class Dance extends Phaser.Scene{
     this.mixSubTxt.setText(t('mixGo'));
     const add=o=>{ this.modalObjs.push(o); return o; };
     const laneW=100, hitY=GH/2+176, topY=GH/2-160;
-    this.lanes=[]; this.mixNotes=[]; this.mixPts=0; this.mixResolved=0; this.mixTotal=10;
+    // trudność rośnie z wieczorem: więcej nut, szybszy opad
+    this.lanes=[]; this.mixNotes=[]; this.mixPts=0; this.mixResolved=0; this.mixTotal=8+Math.min(4,Math.max(0,this.phaseIdx));
     const laneKeys=['A','S','D','F'];
     for(let i=0;i<4;i++){ const x=GW/2-180+i*120;
       add(this.add.rectangle(x,(topY+hitY)/2,laneW,hitY-topY+60,0xffffff,0.045).setScrollFactor(0).setDepth(D+3));
@@ -1742,7 +1803,7 @@ class Dance extends Phaser.Scene{
       zone.on('pointerdown',()=>this.judgeLane(i));
       this.lanes.push({x,hitY,topY}); }
     // nuty spadają w rytm nowego stylu
-    const beatMs=Audio.beatDur()*1000, travel=1250;
+    const beatMs=Audio.beatDur()*1000, travel=1250-Math.min(4,Math.max(0,this.phaseIdx))*70;
     let spawned=0, lastLane=-1;
     this.mixSpawner=this.time.addEvent({delay:beatMs,loop:true,callback:()=>{ if(spawned>=this.mixTotal){ this.mixSpawner.remove(); return; }
       spawned++;
@@ -1763,8 +1824,8 @@ class Dance extends Phaser.Scene{
     if(!best||bd>110) return;
     best.hit=true;
     const D=97000;
-    if(bd<=32){ this.mixPts+=2; Audio.sfx('ding'); this.laneFx(lane,t('mixPerfect'),'#46d67a',D); }
-    else if(bd<=64){ this.mixPts+=1; Audio.sfx('pick'); this.laneFx(lane,t('mixGood'),'#ffd23f',D); }
+    if(bd<=32){ this.mixPts+=2; this.addCharge(6); Audio.sfx('ding'); this.laneFx(lane,t('mixPerfect'),'#46d67a',D); }
+    else if(bd<=64){ this.mixPts+=1; this.addCharge(3); Audio.sfx('pick'); this.laneFx(lane,t('mixGood'),'#ffd23f',D); }
     else { Audio.sfx('err'); best.missed=true; best.hit=false; this.laneFx(lane,t('mixMiss'),'#ff6b6b',D); }
     if(best.hit){ this.burstAt(best.spr.x,best.spr.y,this.genres[ln].col,7); best.spr.destroy(); }
     this.noteJudged(); }
@@ -1790,7 +1851,9 @@ class Dance extends Phaser.Scene{
     this.mixNotes=[]; this.modalOpen=false; this.mixStep=0; }
 
   /* ---------- FINAŁ ---------- */
-  finale(){ if(this.done) return; this.done=true;
+  finale(){ if(this.done) return;
+    if(this.congaActive) this.endConga();
+    this.done=true;
     this.promptText.setVisible(false);
     // ostatni taniec — serca nad parkietem
     this.clusters.forEach((c,ci)=>{ for(let i=0;i<4;i++){ const p=iso(c.gx,c.gy,60);
@@ -1805,6 +1868,7 @@ class Dance extends Phaser.Scene{
     this.registry.set('late',false); this.registry.set('npcDone',this.eventsDone);
     this.registry.set('mode','dance'); this.registry.set('lastScene','Dance'); this.registry.set('avgEnergy',avgE);
     this.registry.set('evTotal',this.evPlan.length);
+    const bestD=Math.max(this.registry.get('bestDance')||0,this.score); this.registry.set('bestDance',bestD);
     this.cameras.main.fade(500,5,5,12); this.time.delayedCall(520,()=>this.scene.start('Result'));
   }
 
@@ -1840,6 +1904,19 @@ class Dance extends Phaser.Scene{
       else this.holdT=Math.max(0,this.holdT-dt*2);
     } else if(pressed && ctx){ this.flashPrompt(); ctx.fn(); }
 
+    // wężyk: goście podążają śladem Karola
+    if(this.congaActive){
+      const last=this.congaTrail[this.congaTrail.length-1];
+      if(!last || Math.hypot(this.px-last.gx,this.py-last.gy)>0.06){ this.congaTrail.push({gx:this.px,gy:this.py});
+        if(this.congaTrail.length>240) this.congaTrail.shift();
+        if(Math.random()<0.3){ const fp=iso(this.px,this.py,4);   // iskierki za pociągiem
+          const sp=this.add.circle(fp.x,fp.y,2,Phaser.Utils.Array.GetRandom([0xffe487,0xff2e8b,0x00ffcc]),0.9).setDepth(96300);
+          this.tweens.add({targets:sp,y:fp.y-14,alpha:0,duration:500,onComplete:()=>sp.destroy()}); } }
+      (this.congaGuests||[]).forEach((g,i)=>{ const idx=this.congaTrail.length-1-(i+1)*8;
+        if(idx>=0){ const tpt=this.congaTrail[idx]; const p=iso(tpt.gx,tpt.gy,Math.abs(Math.sin((this.bob||0)+i))*3);
+          g.s.setFlipX(p.x<g.s.x); g.s.setPosition(p.x,p.y).setDepth(tdepth(tpt.gx,tpt.gy,4)); } });
+    }
+
     this.updateEvents(dt);
   }
 }
@@ -1870,7 +1947,7 @@ class Result extends Phaser.Scene{
     this.tweens.add({targets:k,angle:{from:-4,to:4},yoyo:true,repeat:-1,duration:700});
 
     this.add.text(GW/2,344,t(dance?'resDanceScore':'resScore')(score,npc,this.registry.get('evTotal')||6),{fontFamily:'Segoe UI',fontSize:'23px',color:'#00ffcc',fontStyle:'bold'}).setOrigin(0.5);
-    this.add.text(GW/2,372, dance?t('resDanceAvg')(avgE):(t('resBest')+best),{fontFamily:'Segoe UI',fontSize:'15px',color:'#9aa'}).setOrigin(0.5);
+    this.add.text(GW/2,372, dance?(t('resDanceAvg')(avgE)+'  •  '+t('resBest')+(this.registry.get('bestDance')||score)):(t('resBest')+best),{fontFamily:'Segoe UI',fontSize:'15px',color:'#9aa'}).setOrigin(0.5);
     this.add.text(GW/2,404,t(dance?'resDanceCopy':'resCopy'),
       {fontFamily:'Segoe UI',fontSize:'15px',color:'#c9c9e0',align:'center',lineSpacing:4}).setOrigin(0.5);
 

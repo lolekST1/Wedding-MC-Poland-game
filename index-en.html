@@ -229,7 +229,7 @@ const I18N={
   evUncle:'Wujek chce przejąć mikrofon! Zatrzymaj go!', evUncleFail:'Wujek dorwał mikrofon… parkiet stygnie', evUncleOk:'Wujek odprowadzony do stolika!',
   evRequest:'Prośba o kawałek! Podejdź do grupy', evReqPlay:'Zagraj teraz: ', evReqOk:'Prośba spełniona! Sala szaleje!', evReqFail:'Prośba przepadła…',
   evPhoto:'Fotograf prosi o ustawkę przy parze młodej!', evPhotoOk:'Pstryk! Pamiątkowe zdjęcie!', evPhotoFail:'Fotograf poszedł dalej…',
-  evSpk:'Głośnik przestał grać! Napraw go szybko!', evSpkOk:'Głośnik naprawiony — gra dalej!', evSpkFail:'Technik naprawił głośnik… straciłeś sporo energii',
+  evSpk:'Głośnik przestał grać! Napraw go szybko!', evSpkOk:'Głośnik naprawiony — gra dalej!', evSpkTech:'Technik już biegnie do głośnika…', evSpkFail:'Technik naprawił głośnik… straciłeś sporo energii',
   mixTitle:'KONSOLA DJ — ZMIEŃ MUZYKĘ', mixSub:'Wybierz styl dla parkietu (kliknij albo 1–4)', mixGo:'Trafiaj nuty w rytm!  A S D F / strzałki / tapnij tor',
   mixPerfect:'Idealnie!', mixGood:'Dobrze', mixMiss:'Pudło', mixBoost:(n)=>'Mix gotowy! +'+n+' energii',
   dLow:'Parkiet gaśnie! Zmień muzykę przy konsoli!', dMatchAll:'Cała sala tańczy! 🔥',
@@ -279,7 +279,7 @@ const I18N={
   evUncle:'Uncle wants to grab the mic! Stop him!', evUncleFail:'Uncle got the mic… the floor cools down', evUncleOk:'Uncle walked back to his table!',
   evRequest:'Song request! Go to the group', evReqPlay:'Play now: ', evReqOk:'Request delivered! The room goes wild!', evReqFail:'The request slipped away…',
   evPhoto:'The photographer wants a shot with the newlyweds!', evPhotoOk:'Snap! A photo to remember!', evPhotoFail:'The photographer moved on…',
-  evSpk:'A speaker just died! Fix it fast!', evSpkOk:'Speaker fixed — back in business!', evSpkFail:'The technician fixed the speaker… you lost a lot of energy',
+  evSpk:'A speaker just died! Fix it fast!', evSpkOk:'Speaker fixed — back in business!', evSpkTech:'The technician is running to the speaker…', evSpkFail:'The technician fixed the speaker… you lost a lot of energy',
   mixTitle:'DJ CONSOLE — CHANGE THE MUSIC', mixSub:'Pick a style for the floor (click or 1–4)', mixGo:'Hit the notes on beat!  A S D F / arrows / tap a lane',
   mixPerfect:'Perfect!', mixGood:'Good', mixMiss:'Miss', mixBoost:(n)=>'Mix done! +'+n+' energy',
   dLow:'The floor is dying down! Change the music at the console!', dMatchAll:'The whole room is dancing! 🔥',
@@ -364,7 +364,8 @@ const CHARS={
   guestC:  {shirt:0x54b87a,dress:0x54b87a,skin:0xf1c9a5,hair:0x8a5a2a,curly:true},
   guestD:  {shirt:0x8a68c8,pants:0x38304a,skin:0xd9a97f,hair:0x101010},
   guestE:  {shirt:0xd4b23f,dress:0xd4b23f,skin:0xf1c9a5,hair:0x2a1a10,curly:true},
-  uncle:   {shirt:0x9a4a3a,pants:0x4a3a2a,skin:0xf1c9a5,hair:0x9a9aa2}
+  uncle:   {shirt:0x9a4a3a,pants:0x4a3a2a,skin:0xf1c9a5,hair:0x9a9aa2},
+  tech:    {shirt:0xd97a1a,pants:0x33343c,skin:0xf1c9a5,hair:0x2a1a10,hat:'cap',hatCol:0x555a64}
 };
 
 function iso(gx,gy,z){ return { x: OX+(gx-gy)*(TW/2), y: OY+(gx+gy)*(TH/2) - (z||0) }; }
@@ -1376,7 +1377,7 @@ class Dance extends Phaser.Scene{
     // stan
     this.energy=55; this.energySum=0; this.energyTicks=0;
     this.score=0; this.eventsDone=0; this.done=false; this.modalOpen=false;
-    this.pendingReq=null; this.uncle=null; this.photoEv=null; this.spkBroken=null; this._lowWarnT=0; this.holding=false; this.holdT=0;
+    this.pendingReq=null; this.uncle=null; this.photoEv=null; this.spkBroken=null; this.spkTech=null; this._lowWarnT=0; this.holding=false; this.holdT=0;
     this.congaCharge=40; this.congaActive=false; this.congaT=0; this.congaTrail=[]; this._vigOn=false;
 
     // sprzęt stoi już rozstawiony (finał minigry 1) — pełna ciągłość świata
@@ -1515,8 +1516,8 @@ class Dance extends Phaser.Scene{
     // prośba o kawałek — terminy
     if(this.pendingReq){ if(this.pendingReq.accepted){ if(this.elapsed>this.pendingReq.deadline){ this.failRequest(); } }
       else if(this.elapsed>this.pendingReq.acceptBy){ this.failRequest(); } }
-    // zepsuty głośnik — technik naprawia sam po czasie (bez nagrody)
-    if(this.spkBroken && this.elapsed>this.spkBroken.deadline) this.failSpeaker();
+    // zepsuty głośnik — po czasie przybiega technik i naprawia (bez nagrody)
+    if(this.spkBroken && this.elapsed>this.spkBroken.deadline && !this.spkTech) this.spawnSpkTech();
     // wydarzenia wg planu
     const busy=this.uncle||this.photoEv||this.pendingReq||this.spkBroken;
     for(const e of this.evPlan){ if(!e.fired && this.elapsed>=e.at && !busy){ e.fired=true; this.fireEvent(e.type); break; } }
@@ -1570,13 +1571,23 @@ class Dance extends Phaser.Scene{
     Audio.sfx('ding'); this.flashTip(t('evReqOk'));
     const p=iso(r.cluster.gx,r.cluster.gy,40); this.burstAt(p.x,p.y,C.gold,12); }
   fixSpeaker(){ const b=this.spkBroken; if(!b) return;
+    if(this.spkTech && this.spkTech.state==='fix') return;   // technik już przy głośniku
     if(b.fx)b.fx.remove(); if(b.mark)b.mark.destroy(); this.spkBroken=null;
+    if(this.spkTech && this.spkTech.state==='enter') this.spkTech.state='leave';   // zdążyłeś — technik zawraca
     this.eventsDone++; this.score+=40; this.energy=Math.min(100,this.energy+5); this.addCharge(20);
     Audio.sfx('connect'); this.flashTip(t('evSpkOk'));
     const p=iso(b.gx,b.gy,30); this.burstAt(p.x,p.y,C.green,12); this.refreshHUD(); }
-  failSpeaker(){ const b=this.spkBroken; if(!b) return;
-    if(b.fx)b.fx.remove(); if(b.mark)b.mark.destroy(); this.spkBroken=null;
-    Audio.sfx('err'); this.flashTip(t('evSpkFail')); }
+  // technik przybiega od drzwi, naprawia głośnik na miejscu i wychodzi (gracz bez nagrody)
+  spawnSpkTech(){ if(this.spkTech||!this.spkBroken) return;
+    const st=iso(5.5,-2.5,0); const spr=this.add.image(st.x,st.y,'tech').setOrigin(0.5,1).setScale(1.1);
+    const b=this.spkBroken; const tx=b.gx+(b.gx<6?0.8:-0.8), ty=b.gy+0.3;
+    this.spkTech={sprite:spr,gx:5.5,gy:-2.5,tx,ty,state:'enter',t:0};
+    Audio.sfx('err'); this.flashTip(t('evSpkTech')); }
+  techRepairDone(){ const b=this.spkBroken;
+    if(b){ if(b.fx)b.fx.remove(); if(b.mark)b.mark.destroy(); this.spkBroken=null;
+      Audio.sfx('connect'); this.flashTip(t('evSpkFail'));
+      const p=iso(b.gx,b.gy,30); this.burstAt(p.x,p.y,0x9aa0aa,10); }
+    this.spkTech.state='leave'; }
   resolveUncle(){ const u=this.uncle; if(!u||u.state!=='enter') return; u.state='leave';
     this.eventsDone++; this.score+=50; this.addCharge(20); Audio.sfx('ding'); this.flashTip(t('evUncleOk'));
     const p=iso(u.gx,u.gy,40); this.burstAt(p.x,p.y,C.green,10); this.refreshHUD(); }
@@ -1599,6 +1610,15 @@ class Dance extends Phaser.Scene{
       else if(ev.state==='ask'){ ev.timer+=dt; if(ev.timer>18000){ ev.state='leave'; if(ev.mark){ev.mark.destroy(); ev.mark=null;} this.flashTip(t('evPhotoFail')); } }
       else if(ev.state==='leave'){ if(mv(ev,5.5,-3,2.4)){ ev.sprite.destroy(); this.photoEv=null; gone=true; } }
       if(!gone){ const p=iso(ev.gx,ev.gy,0); ev.sprite.setPosition(p.x,p.y).setDepth(tdepth(ev.gx,ev.gy,4)); } }
+    if(this.spkTech){ const th=this.spkTech; let gone=false;
+      if(th.state==='enter'){ if(mv(th,th.tx,th.ty,2.3)){ th.state='fix'; th.t=0; } }
+      else if(th.state==='fix'){ th.t+=dt;
+        if(th.t%400<dt){ const p=iso(th.gx,th.gy,36);   // klucz w ruchu
+          const w=this.add.text(p.x+Phaser.Math.Between(-8,8),p.y,'🔧',{fontSize:'16px'}).setOrigin(0.5).setDepth(95900);
+          this.tweens.add({targets:w,y:w.y-20,alpha:0,duration:420,onComplete:()=>w.destroy()}); }
+        if(th.t>=1400) this.techRepairDone(); }
+      else if(th.state==='leave'){ if(mv(th,5.5,-3,2.6)){ th.sprite.destroy(); this.spkTech=null; gone=true; } }
+      if(!gone){ const p=iso(th.gx,th.gy,0); th.sprite.setPosition(p.x,p.y).setDepth(tdepth(th.gx,th.gy,4)).setFlipX(th.state!=='leave' && th.tx<th.gx); } }
   }
 
   /* ---------- HUD ---------- */
@@ -1720,7 +1740,7 @@ class Dance extends Phaser.Scene{
     // prośba o kawałek
     if(this.pendingReq && !this.pendingReq.accepted){ const c=this.pendingReq.cluster; if(near(c.gx,c.gy,1.6)) return {label:t('pRequest'),fn:()=>this.acceptRequest()}; }
     // zepsuty głośnik — naprawa przez przytrzymanie
-    if(this.spkBroken && near(this.spkBroken.gx,this.spkBroken.gy,1.5)) return {label:t('pFix'),hold:true,fn:()=>this.fixSpeaker()};
+    if(this.spkBroken && !(this.spkTech&&this.spkTech.state==='fix') && near(this.spkBroken.gx,this.spkBroken.gy,1.5)) return {label:t('pFix'),hold:true,fn:()=>this.fixSpeaker()};
     // konsola DJ
     if(near(this.djSpot.gx,this.djSpot.gy,1.6)) return {label:t('pDJ'),fn:()=>this.openMixModal()};
     // zagrzewanie grup — dostępne, gdy grupie spada zapał (widoczny pasek pod chmurką)
@@ -1853,6 +1873,8 @@ class Dance extends Phaser.Scene{
   /* ---------- FINAŁ ---------- */
   finale(){ if(this.done) return;
     if(this.congaActive) this.endConga();
+    if(this.spkTech){ this.spkTech.sprite.destroy(); this.spkTech=null; }
+    if(this.spkBroken){ if(this.spkBroken.fx)this.spkBroken.fx.remove(); if(this.spkBroken.mark)this.spkBroken.mark.destroy(); this.spkBroken=null; }
     this.done=true;
     this.promptText.setVisible(false);
     // ostatni taniec — serca nad parkietem

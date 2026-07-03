@@ -87,7 +87,7 @@ All user-facing strings live in the `I18N = {pl:{…}, en:{…}}` dictionary at 
 
 ## Deploy & ops notes
 
-- **Develop on branch `claude/laughing-brown-sdtwqg`.** Deploy = merge to `main` → Pages workflow runs. Only deploy on explicit user request.
+- Deploy = merge to `main` → Pages workflow runs. **Always merge finished changes to `main` once verified (syntax-checked, PR opened)** — the user tests live via GitHub Pages, so don't leave work stranded on a feature branch waiting for a deploy request.
 - **Post-squash divergence:** PRs are squash-merged, so after each merge the feature branch diverges and the next PR shows merge conflicts. Fix: `git fetch origin main && git reset --hard origin/main && git cherry-pick <new-commit> && git push --force-with-lease`.
 - **Deploy status: use `curl`, NOT the GitHub Actions MCP tool** — `actions_list`/`actions_get` return ~300k-char payloads (full repo metadata) that blow the token budget. Instead:
   `curl -s "https://api.github.com/repos/lolekST1/Wedding-MC-Poland-game/actions/workflows/pages.yml/runs?branch=main&per_page=1" | python3 -c "import sys,json;r=json.load(sys.stdin)['workflow_runs'][0];print(r['head_sha'][:7],r['status'],r['conclusion'])"`

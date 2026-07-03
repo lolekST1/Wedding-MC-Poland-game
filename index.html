@@ -1697,10 +1697,18 @@ class Dance extends Phaser.Scene{
     Audio.sfx('phase'); this.flashTip(t('evBouquetThrow'));
     const allSprites=[]; ev.gathered.forEach(c=>c.sprites.forEach(sp=>allSprites.push(sp)));
     const chosen=Phaser.Utils.Array.GetRandom(allSprites); ev.catcher=chosen;
-    const from=iso(ev.gx,ev.gy,42);
-    const bq=this.add.text(from.x,from.y,'💐',{fontSize:'22px'}).setOrigin(0.5).setDepth(97200).setAngle(-20);
-    this.tweens.add({targets:bq,x:chosen.s.x,y:chosen.s.y-26,angle:200,duration:700,ease:'Quad.out',
-      onComplete:()=>{ bq.destroy(); this.resolveBouquetCatch(); } }); }
+    const from=iso(ev.gx,ev.gy,46);
+    const tx=chosen.s.x, ty=chosen.s.y-26;
+    const bq=this.add.text(from.x,from.y,'💐',{fontSize:'32px'}).setOrigin(0.5).setDepth(97200).setShadow(0,0,'#ffe487',10);
+    // wysoki łuk paraboliczny — w górę i dopiero potem w dół na wybranego gościa
+    const dur=1700, arcH=180, prog={t:0};
+    const trail=this.time.addEvent({delay:40,loop:true,callback:()=>{ if(!bq.active) return;
+      const s=this.add.circle(bq.x,bq.y+8,3,0xffe487,0.7).setDepth(97100);
+      this.tweens.add({targets:s,alpha:0,scale:0.2,duration:360,onComplete:()=>s.destroy()}); }});
+    this.tweens.add({targets:prog,t:1,duration:dur,ease:'Sine.inOut',
+      onUpdate:()=>{ const p=prog.t;
+        bq.x=from.x+(tx-from.x)*p; bq.y=from.y+(ty-from.y)*p-Math.sin(p*Math.PI)*arcH; bq.rotation+=0.22; },
+      onComplete:()=>{ trail.remove(); bq.destroy(); this.resolveBouquetCatch(); } }); }
   resolveBouquetCatch(){ const ev=this.bouquetEv; if(!ev) return; ev.state='celebrate';
     this.eventsDone++; this.score+=70; this.energy=Math.min(100,this.energy+12); this.addCharge(25);
     this.clusters.forEach(c=>{ c.zeal=Math.min(100,c.zeal+10); });

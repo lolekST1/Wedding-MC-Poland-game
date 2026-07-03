@@ -224,15 +224,16 @@ const I18N={
   dh2:'Wszyscy czekają na wolny kawałek dla pary młodej', dh3:'Przycisz — spokojne tło do toastów i życzeń',
   dh4:'Pełna moc! Cała sala chce mocnych bitów', dh5:'Utrzymaj energię — gusta zmieniają się szybko', dh6:'Wygaszamy wieczór — romantycznie na koniec',
   dNext:'Za chwilę: ',
-  pDJ:'Zmień muzykę', pCheer:'Zagrzej grupę', pUncle:'Odprowadź wujka', pRequest:'Przyjmij prośbę', pPhoto:'Ustaw się do zdjęcia', pFix:'Napraw głośnik (przytrzymaj)',
+  pDJ:'Zmień muzykę', pCheer:'Zagrzej grupę', pUncle:'Odprowadź wujka', pRequest:'Przyjmij prośbę', pPhoto:'Ustaw się do zdjęcia', pFix:'Napraw głośnik (przytrzymaj)', pBouquet:'Złap bukiet!',
   pConga:'Poprowadź wężyka!', d_conga:'🚂 WĘŻYK', congaReadyTip:'Wężyk naładowany — poprowadź pociąg po parkiecie!', congaStart:'WĘŻYK! Prowadź gości po całej sali!', congaDone:'Wężyk rozgrzał całą salę! 🔥',
   evUncle:'Wujek chce przejąć mikrofon! Zatrzymaj go!', evUncleFail:'Wujek dorwał mikrofon… parkiet stygnie', evUncleOk:'Wujek odprowadzony do stolika!',
   evRequest:'Prośba o kawałek! Podejdź do grupy', evReqPlay:'Zagraj teraz: ', evReqOk:'Prośba spełniona! Sala szaleje!', evReqFail:'Prośba przepadła…',
   evPhoto:'Fotograf prosi o ustawkę przy parze młodej!', evPhotoOk:'Pstryk! Pamiątkowe zdjęcie!', evPhotoFail:'Fotograf poszedł dalej…',
   evSpk:'Głośnik przestał grać! Napraw go szybko!', evSpkOk:'Głośnik naprawiony — gra dalej!', evSpkTech:'Technik już biegnie do głośnika…', evSpkFail:'Technik naprawił głośnik… straciłeś sporo energii',
+  evBouquet:'Oczepiny! Panna młoda rzuca bukiet — zbierz go dla panien!', evBouquetOk:'Bukiet złapany! Panny szaleją z radości!', evBouquetFail:'Bukiet spadł na podłogę…',
   mixTitle:'KONSOLA DJ — ZMIEŃ MUZYKĘ', mixSub:'Wybierz styl dla parkietu (kliknij albo 1–4)', mixGo:'Trafiaj nuty w rytm!  A S D F / strzałki / tapnij tor',
   mixPerfect:'Idealnie!', mixGood:'Dobrze', mixMiss:'Pudło', mixBoost:(n)=>'Mix gotowy! +'+n+' energii',
-  dLow:'Parkiet gaśnie! Zmień muzykę przy konsoli!', dMatchAll:'Cała sala tańczy! 🔥',
+  dLow:'Parkiet gaśnie! Zmień muzykę przy konsoli!', dMatchAll:'Cała sala tańczy! 🔥', dBoo:'Goście zaczynają buczeć! Ratuj parkiet NATYCHMIAST!',
   resDance:'PARKIET ROZGRZANY!', resDanceHi:'Sala szalała do końca — mistrzowskie czytanie parkietu!', resDanceMid:'Dobra impreza! Następnym razem rozkręcisz salę jeszcze mocniej.',
   resDanceScore:(s,n,m)=>'Wynik: '+s+' pkt  •  Akcje na sali: '+n+'/'+(m||6), resDanceAvg:(e)=>'Średnia energia parkietu: '+e+'%',
   resDanceCopy:'Dobry wodzirej cały wieczór czyta salę i wie, co zagrać.\nKarol robi to na każdym weselu — sprawdź go w akcji.'
@@ -274,15 +275,16 @@ const I18N={
   dh2:'Everyone is waiting for the newlyweds\' slow dance', dh3:'Turn it down — calm background for the toasts',
   dh4:'Full power! The whole room wants big beats', dh5:'Keep the energy up — tastes change fast', dh6:'Wind the night down — end on a romantic note',
   dNext:'Coming up: ',
-  pDJ:'Change the music', pCheer:'Hype the group', pUncle:'Walk uncle back', pRequest:'Take the request', pPhoto:'Pose for the photo', pFix:'Fix the speaker (hold)',
+  pDJ:'Change the music', pCheer:'Hype the group', pUncle:'Walk uncle back', pRequest:'Take the request', pPhoto:'Pose for the photo', pFix:'Fix the speaker (hold)', pBouquet:'Catch the bouquet!',
   pConga:'Lead the conga line!', d_conga:'🚂 CONGA', congaReadyTip:'Conga charged — lead the train around the floor!', congaStart:'CONGA! Lead the guests around the room!', congaDone:'The conga heated up the whole room! 🔥',
   evUncle:'Uncle wants to grab the mic! Stop him!', evUncleFail:'Uncle got the mic… the floor cools down', evUncleOk:'Uncle walked back to his table!',
   evRequest:'Song request! Go to the group', evReqPlay:'Play now: ', evReqOk:'Request delivered! The room goes wild!', evReqFail:'The request slipped away…',
   evPhoto:'The photographer wants a shot with the newlyweds!', evPhotoOk:'Snap! A photo to remember!', evPhotoFail:'The photographer moved on…',
   evSpk:'A speaker just died! Fix it fast!', evSpkOk:'Speaker fixed — back in business!', evSpkTech:'The technician is running to the speaker…', evSpkFail:'The technician fixed the speaker… you lost a lot of energy',
+  evBouquet:'Bouquet toss! The bride is throwing it — grab it for the single guests!', evBouquetOk:'Bouquet caught! The guests are thrilled!', evBouquetFail:'The bouquet hit the floor…',
   mixTitle:'DJ CONSOLE — CHANGE THE MUSIC', mixSub:'Pick a style for the floor (click or 1–4)', mixGo:'Hit the notes on beat!  A S D F / arrows / tap a lane',
   mixPerfect:'Perfect!', mixGood:'Good', mixMiss:'Miss', mixBoost:(n)=>'Mix done! +'+n+' energy',
-  dLow:'The floor is dying down! Change the music at the console!', dMatchAll:'The whole room is dancing! 🔥',
+  dLow:'The floor is dying down! Change the music at the console!', dMatchAll:'The whole room is dancing! 🔥', dBoo:'The crowd starts booing! Save the floor NOW!',
   resDance:'DANCEFLOOR ON FIRE!', resDanceHi:'The room partied to the very end — masterful floor reading!', resDanceMid:'Good party! Next time you\'ll heat the room up even more.',
   resDanceScore:(s,n,m)=>'Score: '+s+' pts  •  Floor actions: '+n+'/'+(m||6), resDanceAvg:(e)=>'Average dancefloor energy: '+e+'%',
   resDanceCopy:'A good MC reads the room all night and knows what to play.\nKarol does it at every wedding — see him in action.'
@@ -365,7 +367,8 @@ const CHARS={
   guestD:  {shirt:0x8a68c8,pants:0x38304a,skin:0xd9a97f,hair:0x101010},
   guestE:  {shirt:0xd4b23f,dress:0xd4b23f,skin:0xf1c9a5,hair:0x2a1a10,curly:true},
   uncle:   {shirt:0x9a4a3a,pants:0x4a3a2a,skin:0xf1c9a5,hair:0x9a9aa2},
-  tech:    {shirt:0xd97a1a,pants:0x33343c,skin:0xf1c9a5,hair:0x2a1a10,hat:'cap',hatCol:0x555a64}
+  tech:    {shirt:0xd97a1a,pants:0x33343c,skin:0xf1c9a5,hair:0x2a1a10,hat:'cap',hatCol:0x555a64},
+  bride:   {shirt:0xf5f0ea,dress:0xf5f0ea,skin:0xf1c9a5,hair:0xd9a24a,curly:true}
 };
 
 function iso(gx,gy,z){ return { x: OX+(gx-gy)*(TW/2), y: OY+(gx+gy)*(TH/2) - (z||0) }; }
@@ -504,6 +507,9 @@ const Audio=(function(){
     else if(type==='ding'){ [880,1320].forEach((f,i)=>{ const oo=ctx.createOscillator(),gg=ctx.createGain(); oo.type='triangle'; oo.frequency.value=f; const s=t+i*0.07; gg.gain.setValueAtTime(0,s); gg.gain.linearRampToValueAtTime(0.2,s+0.02); gg.gain.exponentialRampToValueAtTime(0.001,s+0.3); oo.connect(gg); gg.connect(sfxG); oo.start(s); oo.stop(s+0.32);}); o.disconnect(); }
     else if(type==='phase'){ [523,659,784].forEach((f,i)=>{ const oo=ctx.createOscillator(),gg=ctx.createGain(); oo.type='triangle'; oo.frequency.value=f; const s=t+i*0.08; gg.gain.setValueAtTime(0,s); gg.gain.linearRampToValueAtTime(0.22,s+0.02); gg.gain.exponentialRampToValueAtTime(0.001,s+0.4); oo.connect(gg); gg.connect(sfxG); oo.start(s); oo.stop(s+0.42);}); o.disconnect(); }
     else if(type==='err'){ o.type='square'; o.frequency.value=160; g.gain.setValueAtTime(0.15,t); g.gain.exponentialRampToValueAtTime(0.001,t+0.12); o.start(t); o.stop(t+0.13); }
+    else if(type==='boo'){ [0,0.09,0.18].forEach(delay=>{ const oo=ctx.createOscillator(),gg=ctx.createGain(); oo.type='sawtooth'; const s=t+delay;
+        oo.frequency.setValueAtTime(180,s); oo.frequency.exponentialRampToValueAtTime(90,s+0.32); gg.gain.setValueAtTime(0,s);
+        gg.gain.linearRampToValueAtTime(0.16,s+0.04); gg.gain.exponentialRampToValueAtTime(0.001,s+0.36); oo.connect(gg); gg.connect(sfxG); oo.start(s); oo.stop(s+0.38); }); o.disconnect(); }
   }
   return { startMusic, stopMusic, setMood, getMood, beatDur, toggleMute, isMuted, sfx, resume, init };
 })();
@@ -1436,7 +1442,8 @@ class Dance extends Phaser.Scene{
     // stan
     this.energy=55; this.energySum=0; this.energyTicks=0;
     this.score=0; this.eventsDone=0; this.done=false; this.modalOpen=false;
-    this.pendingReq=null; this.uncle=null; this.photoEv=null; this.spkBroken=null; this.spkTech=null; this._lowWarnT=0; this.holding=false; this.holdT=0;
+    this.pendingReq=null; this.uncle=null; this.photoEv=null; this.spkBroken=null; this.spkTech=null; this._lowWarnT=0; this._booWarnT=0; this.holding=false; this.holdT=0;
+    this.bouquetEv=null; this.bouquetPending=false; this.bouquetFired=false;
     this.congaCharge=40; this.congaActive=false; this.congaT=0; this.congaTrail=[]; this._vigOn=false;
 
     // sprzęt stoi już rozstawiony (finał minigry 1) — pełna ciągłość świata
@@ -1527,6 +1534,7 @@ class Dance extends Phaser.Scene{
     if(ph.mode==='force'){ this.clusters.forEach(c=>{ if(!c.request){ c.pref=ph.genre; this.refreshBubble(c,true); } }); }
     else { this.clusters.forEach(c=>{ c.changeT=ph.change>0?ph.change+Phaser.Math.Between(-3,3):0; }); }
     if(i>0){ Audio.sfx('phase'); }
+    if(i===4 && !this.bouquetFired) this.bouquetPending=true;   // oczepiny — rzut bukietem
     this.flashTip(ph.name+' — '+ph.hint); this.refreshHUD(); }
   curPhase(){ return this.DPH[this.phaseIdx]; }
 
@@ -1561,6 +1569,11 @@ class Dance extends Phaser.Scene{
     if(this.congaActive){ this.congaT--; if(this.congaT<=0) this.endConga(); }
     // ostrzeżenie o gasnącym parkiecie
     this._lowWarnT--; if(this.energy<25 && this._lowWarnT<=0){ this._lowWarnT=8; Audio.sfx('err'); this.flashTip(t('dLow')); }
+    // buczenie tłumu przy krytycznym spadku energii
+    this._booWarnT--; if(this.energy<12 && this._booWarnT<=0){ this._booWarnT=10; Audio.sfx('boo'); this.flashTip(t('dBoo'));
+      this.clusters.forEach(c=>{ const p=iso(c.gx,c.gy,60);
+        const e=this.add.text(p.x+Phaser.Math.Between(-16,16),p.y,'👎',{fontSize:'18px'}).setOrigin(0.5).setDepth(95900);
+        this.tweens.add({targets:e,y:e.y-26,alpha:0,duration:900,onComplete:()=>e.destroy()}); }); }
     // czerwona winieta przy gasnącym parkiecie
     if(this.energy<25 && !this._vigOn){ this._vigOn=true; this.tweens.add({targets:this.dangerVig,alpha:0.14,yoyo:true,repeat:-1,duration:500}); }
     else if(this.energy>=25 && this._vigOn){ this._vigOn=false; this.tweens.killTweensOf(this.dangerVig); this.dangerVig.setAlpha(0); }
@@ -1578,8 +1591,9 @@ class Dance extends Phaser.Scene{
     // zepsuty głośnik — po czasie przybiega technik i naprawia (bez nagrody)
     if(this.spkBroken && this.elapsed>this.spkBroken.deadline && !this.spkTech) this.spawnSpkTech();
     // wydarzenia wg planu
-    const busy=this.uncle||this.photoEv||this.pendingReq||this.spkBroken;
-    for(const e of this.evPlan){ if(!e.fired && this.elapsed>=e.at && !busy){ e.fired=true; this.fireEvent(e.type); break; } }
+    const busy=this.uncle||this.photoEv||this.pendingReq||this.spkBroken||this.bouquetEv;
+    if(this.bouquetPending && !busy){ this.bouquetPending=false; this.bouquetFired=true; this.fireEvent('bouquet'); }
+    else for(const e of this.evPlan){ if(!e.fired && this.elapsed>=e.at && !busy){ e.fired=true; this.fireEvent(e.type); break; } }
     this.refreshHUD();
   }
 
@@ -1615,6 +1629,13 @@ class Dance extends Phaser.Scene{
       const mp=iso(this.photoEv.spot.gx,this.photoEv.spot.gy,2);
       this.photoEv.mark=this.add.image(mp.x,mp.y,'marker').setScale(0.5).setTint(C.pink).setAlpha(0.7).setDepth(tdepth(this.photoEv.spot.gx,this.photoEv.spot.gy,-6));
       this.tweens.add({targets:this.photoEv.mark,alpha:0.25,yoyo:true,repeat:-1,duration:500}); }
+    else if(type==='bouquet'){ const st=iso(5.5,-2.5,0);
+      const spr=this.add.image(st.x,st.y,'bride').setOrigin(0.5,1).setScale(1.1);
+      this.bouquetEv={sprite:spr,gx:5.5,gy:-2.5,state:'enter',timer:0,spot:{gx:6.5,gy:5}};
+      Audio.sfx('ding'); this.flashTip(t('evBouquet'));
+      const mp=iso(this.bouquetEv.spot.gx,this.bouquetEv.spot.gy,2);
+      this.bouquetEv.mark=this.add.image(mp.x,mp.y,'marker').setScale(0.55).setTint(C.pink).setAlpha(0.75).setDepth(tdepth(this.bouquetEv.spot.gx,this.bouquetEv.spot.gy,-6));
+      this.tweens.add({targets:this.bouquetEv.mark,alpha:0.25,yoyo:true,repeat:-1,duration:500}); }
   }
   acceptRequest(){ const r=this.pendingReq; if(!r||r.accepted) return; r.accepted=true; r.cluster.reqAccepted=true;
     const others=this.genres.filter(g=>g.id!==this.curGenre.id); const want=Phaser.Utils.Array.GetRandom(others);
@@ -1655,6 +1676,12 @@ class Dance extends Phaser.Scene{
     this.eventsDone++; this.score+=40; this.addCharge(20); Audio.sfx('ding'); this.flashTip(t('evPhotoOk'));
     const fl=this.add.rectangle(GW/2,GH/2,GW,GH,0xffffff,0.85).setDepth(97500);   // flesz aparatu
     this.tweens.add({targets:fl,alpha:0,duration:420,onComplete:()=>fl.destroy()}); this.refreshHUD(); }
+  resolveBouquet(){ const ev=this.bouquetEv; if(!ev||ev.state!=='ask') return; ev.state='leave';
+    if(ev.mark){ev.mark.destroy(); ev.mark=null;}
+    this.eventsDone++; this.score+=70; this.energy=Math.min(100,this.energy+12); this.addCharge(25);
+    this.clusters.forEach(c=>{ c.zeal=Math.min(100,c.zeal+10); });
+    Audio.sfx('ding'); this.flashTip(t('evBouquetOk'));
+    const p=iso(ev.spot.gx,ev.spot.gy,40); this.burstAt(p.x,p.y,C.pink,16); this.refreshHUD(); }
 
   updateEvents(dt){
     const mv=(o,tx,ty,sp)=>{ const d=Math.hypot(tx-o.gx,ty-o.gy); if(d<0.08) return true; const s=Math.min(sp*dt/1000,d); o.gx+=(tx-o.gx)/d*s; o.gy+=(ty-o.gy)/d*s; return false; };
@@ -1668,6 +1695,12 @@ class Dance extends Phaser.Scene{
       if(ev.state==='enter'){ if(mv(ev,9.3,6.0,2.2)){ ev.state='ask'; } }
       else if(ev.state==='ask'){ ev.timer+=dt; if(ev.timer>18000){ ev.state='leave'; if(ev.mark){ev.mark.destroy(); ev.mark=null;} this.flashTip(t('evPhotoFail')); } }
       else if(ev.state==='leave'){ if(mv(ev,5.5,-3,2.4)){ ev.sprite.destroy(); this.photoEv=null; gone=true; } }
+      if(!gone){ const p=iso(ev.gx,ev.gy,0); ev.sprite.setPosition(p.x,p.y).setDepth(tdepth(ev.gx,ev.gy,4)); } }
+    if(this.bouquetEv){ const ev=this.bouquetEv; let gone=false;
+      if(ev.state==='enter'){ if(mv(ev,6,3,2.0)){ ev.state='ask'; } }
+      else if(ev.state==='ask'){ ev.timer+=dt; if(ev.timer>16000){ ev.state='leave'; if(ev.mark){ev.mark.destroy(); ev.mark=null;}
+        this.energy=Math.max(0,this.energy-5); Audio.sfx('err'); this.flashTip(t('evBouquetFail')); } }
+      else if(ev.state==='leave'){ if(mv(ev,5.5,-3,2.4)){ ev.sprite.destroy(); this.bouquetEv=null; gone=true; } }
       if(!gone){ const p=iso(ev.gx,ev.gy,0); ev.sprite.setPosition(p.x,p.y).setDepth(tdepth(ev.gx,ev.gy,4)); } }
     if(this.spkTech){ const th=this.spkTech; let gone=false;
       if(th.state==='enter'){ if(mv(th,th.tx,th.ty,2.3)){ th.state='fix'; th.t=0; } }
@@ -1796,6 +1829,8 @@ class Dance extends Phaser.Scene{
     if(this.uncle && this.uncle.state==='enter' && near(this.uncle.gx,this.uncle.gy,1.4)) return {label:t('pUncle'),fn:()=>this.resolveUncle()};
     // zdjęcie z parą młodą
     if(this.photoEv && this.photoEv.state==='ask' && near(this.photoEv.spot.gx,this.photoEv.spot.gy,1.3)) return {label:t('pPhoto'),fn:()=>this.resolvePhoto()};
+    // rzut bukietem — oczepiny
+    if(this.bouquetEv && this.bouquetEv.state==='ask' && near(this.bouquetEv.spot.gx,this.bouquetEv.spot.gy,1.3)) return {label:t('pBouquet'),fn:()=>this.resolveBouquet()};
     // prośba o kawałek
     if(this.pendingReq && !this.pendingReq.accepted){ const c=this.pendingReq.cluster; if(near(c.gx,c.gy,1.6)) return {label:t('pRequest'),fn:()=>this.acceptRequest()}; }
     // zepsuty głośnik — naprawa przez przytrzymanie

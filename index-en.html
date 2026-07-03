@@ -224,7 +224,7 @@ const I18N={
   dh2:'Wszyscy czekają na wolny kawałek dla pary młodej', dh3:'Przycisz — spokojne tło do toastów i życzeń',
   dh4:'Pełna moc! Cała sala chce mocnych bitów', dh5:'Utrzymaj energię — gusta zmieniają się szybko', dh6:'Wygaszamy wieczór — romantycznie na koniec',
   dNext:'Za chwilę: ',
-  pDJ:'Zmień muzykę', pCheer:'Zagrzej grupę', pUncle:'Odprowadź wujka', pRequest:'Przyjmij prośbę', pPhoto:'Ustaw się do zdjęcia', pFix:'Napraw głośnik (przytrzymaj)', pGather:'Zaproś do kręgu!',
+  pDJ:'Zmień muzykę', pCheer:'Zagrzej grupę', pUncle:'Odprowadź wujka', pRequest:'Przyjmij prośbę', pPhoto:'Ustaw się do zdjęcia', pFix:'Napraw głośnik (przytrzymaj)', pGather:'Zaproś do kręgu!', pCheerCouple:'Zagrzej parę młodą!',
   pConga:'Poprowadź wężyka!', d_conga:'🚂 WĘŻYK', congaReadyTip:'Wężyk naładowany — poprowadź pociąg po parkiecie!', congaStart:'WĘŻYK! Prowadź gości po całej sali!', congaDone:'Wężyk rozgrzał całą salę! 🔥',
   evUncle:'Wujek chce przejąć mikrofon! Zatrzymaj go!', evUncleFail:'Wujek dorwał mikrofon… parkiet stygnie', evUncleOk:'Wujek odprowadzony do stolika!',
   evRequest:'Prośba o kawałek! Podejdź do grupy', evReqPlay:'Zagraj teraz: ', evReqOk:'Prośba spełniona! Sala szaleje!', evReqFail:'Prośba przepadła…',
@@ -232,6 +232,7 @@ const I18N={
   evSpk:'Głośnik przestał grać! Napraw go szybko!', evSpkOk:'Głośnik naprawiony — gra dalej!', evSpkTech:'Technik już biegnie do głośnika…', evSpkFail:'Technik naprawił głośnik… straciłeś sporo energii',
   evBouquet:'Oczepiny! Zbierz gości w krąg wokół panny młodej!', evBouquetGathered:'Grupa dołączyła do kręgu!', evBouquetThrow:'Panna młoda rzuca bukiet!',
   evBouquetOk:'Bukiet złapany! Wszyscy się cieszą!', evBouquetFail:'Nie zebraliście kręgu na czas… panna młoda odchodzi z bukietem',
+  evFirstDance:'Pierwszy taniec! Para młoda otwiera parkiet…', evFirstDanceOk:'Owacje dla pary młodej! 💞',
   mixTitle:'KONSOLA DJ — ZMIEŃ MUZYKĘ', mixSub:'Wybierz styl dla parkietu (kliknij albo 1–4)', mixGo:'Trafiaj nuty w rytm!  A S D F / strzałki / tapnij tor',
   mixPerfect:'Idealnie!', mixGood:'Dobrze', mixMiss:'Pudło', mixBoost:(n)=>'Mix gotowy! +'+n+' energii',
   dLow:'Parkiet gaśnie! Zmień muzykę przy konsoli!', dMatchAll:'Cała sala tańczy! 🔥', dBoo:'Goście zaczynają buczeć! Ratuj parkiet NATYCHMIAST!',
@@ -276,7 +277,7 @@ const I18N={
   dh2:'Everyone is waiting for the newlyweds\' slow dance', dh3:'Turn it down — calm background for the toasts',
   dh4:'Full power! The whole room wants big beats', dh5:'Keep the energy up — tastes change fast', dh6:'Wind the night down — end on a romantic note',
   dNext:'Coming up: ',
-  pDJ:'Change the music', pCheer:'Hype the group', pUncle:'Walk uncle back', pRequest:'Take the request', pPhoto:'Pose for the photo', pFix:'Fix the speaker (hold)', pGather:'Invite to the circle!',
+  pDJ:'Change the music', pCheer:'Hype the group', pUncle:'Walk uncle back', pRequest:'Take the request', pPhoto:'Pose for the photo', pFix:'Fix the speaker (hold)', pGather:'Invite to the circle!', pCheerCouple:'Cheer for the newlyweds!',
   pConga:'Lead the conga line!', d_conga:'🚂 CONGA', congaReadyTip:'Conga charged — lead the train around the floor!', congaStart:'CONGA! Lead the guests around the room!', congaDone:'The conga heated up the whole room! 🔥',
   evUncle:'Uncle wants to grab the mic! Stop him!', evUncleFail:'Uncle got the mic… the floor cools down', evUncleOk:'Uncle walked back to his table!',
   evRequest:'Song request! Go to the group', evReqPlay:'Play now: ', evReqOk:'Request delivered! The room goes wild!', evReqFail:'The request slipped away…',
@@ -284,6 +285,7 @@ const I18N={
   evSpk:'A speaker just died! Fix it fast!', evSpkOk:'Speaker fixed — back in business!', evSpkTech:'The technician is running to the speaker…', evSpkFail:'The technician fixed the speaker… you lost a lot of energy',
   evBouquet:'Oczepiny! Gather the guests in a circle around the bride!', evBouquetGathered:'A group joined the circle!', evBouquetThrow:'The bride is throwing the bouquet!',
   evBouquetOk:'Bouquet caught! Everyone cheers!', evBouquetFail:'You didn\'t gather the circle in time… the bride walks off with the bouquet',
+  evFirstDance:'First dance! The newlyweds open the floor…', evFirstDanceOk:'The room cheers for the couple! 💞',
   mixTitle:'DJ CONSOLE — CHANGE THE MUSIC', mixSub:'Pick a style for the floor (click or 1–4)', mixGo:'Hit the notes on beat!  A S D F / arrows / tap a lane',
   mixPerfect:'Perfect!', mixGood:'Good', mixMiss:'Miss', mixBoost:(n)=>'Mix done! +'+n+' energy',
   dLow:'The floor is dying down! Change the music at the console!', dMatchAll:'The whole room is dancing! 🔥', dBoo:'The crowd starts booing! Save the floor NOW!',
@@ -371,7 +373,8 @@ const CHARS={
   guestE:  {shirt:0xd4b23f,dress:0xd4b23f,skin:0xf1c9a5,hair:0x2a1a10,curly:true},
   uncle:   {shirt:0x9a4a3a,pants:0x4a3a2a,skin:0xf1c9a5,hair:0x9a9aa2},
   tech:    {shirt:0xd97a1a,pants:0x33343c,skin:0xf1c9a5,hair:0x2a1a10,hat:'cap',hatCol:0x555a64},
-  bride:   {shirt:0xf5f0ea,dress:0xf5f0ea,skin:0xf1c9a5,hair:0xd9a24a,curly:true}
+  bride:   {shirt:0xf5f0ea,dress:0xf5f0ea,skin:0xf1c9a5,hair:0xd9a24a,curly:true},
+  groom:   {shirt:0x14141a,pants:0x14141a,vest:true,bow:true,skin:0xf1c9a5,hair:0x2a1a10}
 };
 
 function iso(gx,gy,z){ return { x: OX+(gx-gy)*(TW/2), y: OY+(gx+gy)*(TH/2) - (z||0) }; }
@@ -1447,6 +1450,7 @@ class Dance extends Phaser.Scene{
     this.score=0; this.eventsDone=0; this.done=false; this.modalOpen=false;
     this.pendingReq=null; this.uncle=null; this.photoEv=null; this.spkBroken=null; this.spkTech=null; this._lowWarnT=0; this._booWarnT=0; this.holding=false; this.holdT=0;
     this.bouquetEv=null; this.bouquetPending=false; this.bouquetFired=false;
+    this.firstDance=null; this.firstDanceFired=false;
     this.congaCharge=40; this.congaActive=false; this.congaT=0; this.congaTrail=[]; this._vigOn=false;
 
     // sprzęt stoi już rozstawiony (finał minigry 1) — pełna ciągłość świata
@@ -1526,7 +1530,8 @@ class Dance extends Phaser.Scene{
 
     this.events.once('shutdown',()=>{ if(this._disco){this._disco.remove(); this._disco=null;}
       if(this._notes){this._notes.remove(); this._notes=null;}
-      if(this._mixKey){ this.input.keyboard.off('keydown',this._mixKey); this._mixKey=null; } });
+      if(this._mixKey){ this.input.keyboard.off('keydown',this._mixKey); this._mixKey=null; }
+      if(this.firstDance && this.firstDance.spinT){ this.firstDance.spinT.remove(); } });
   }
 
   fmt(s){ const m=Math.floor(s/60); const ss=s%60; return m+':'+(ss<10?'0':'')+ss; }
@@ -1534,9 +1539,11 @@ class Dance extends Phaser.Scene{
 
   /* ---------- FAZY ---------- */
   enterPhase(i){ this.phaseIdx=i; const ph=this.DPH[i];
+    if(this.firstDance && i!==2) this.endFirstDance();
     if(ph.mode==='force'){ this.clusters.forEach(c=>{ if(!c.request){ c.pref=ph.genre; this.refreshBubble(c,true); } }); }
     else { this.clusters.forEach(c=>{ c.changeT=ph.change>0?ph.change+Phaser.Math.Between(-3,3):0; }); }
     if(i>0){ Audio.sfx('phase'); }
+    if(i===2 && !this.firstDanceFired){ this.firstDanceFired=true; this.startFirstDance(); }   // pierwszy taniec pary młodej
     if(i===4 && !this.bouquetFired) this.bouquetPending=true;   // oczepiny — rzut bukietem
     this.flashTip(ph.name+' — '+ph.hint); this.refreshHUD(); }
   curPhase(){ return this.DPH[this.phaseIdx]; }
@@ -1875,6 +1882,8 @@ class Dance extends Phaser.Scene{
     if(this.photoEv && this.photoEv.state==='ask' && near(this.photoEv.spot.gx,this.photoEv.spot.gy,1.3)) return {label:t('pPhoto'),fn:()=>this.resolvePhoto()};
     // oczepiny — zaproś grupę gości do kręgu wokół panny młodej
     if(this.bouquetEv && this.bouquetEv.state==='gather'){ const gc=this.clusters.find(cl=>!this.bouquetEv.gathered.has(cl) && near(cl.gx,cl.gy,1.5)); if(gc) return {label:t('pGather'),fn:()=>this.gatherCluster(gc)}; }
+    // pierwszy taniec — jednorazowe owacje dla pary młodej
+    if(this.firstDance && !this.firstDance.cheered && near(this.firstDance.spot.gx,this.firstDance.spot.gy,1.4)) return {label:t('pCheerCouple'),fn:()=>this.cheerCouple()};
     // prośba o kawałek
     if(this.pendingReq && !this.pendingReq.accepted){ const c=this.pendingReq.cluster; if(near(c.gx,c.gy,1.6)) return {label:t('pRequest'),fn:()=>this.acceptRequest()}; }
     // zepsuty głośnik — naprawa przez przytrzymanie
@@ -1894,6 +1903,30 @@ class Dance extends Phaser.Scene{
     c.sprites.forEach((sp,i)=>{ this.tweens.add({targets:sp.s,y:sp.s.y-14,yoyo:true,duration:150,delay:i*60,ease:'Quad.out'}); });
     const e=this.add.text(p.x,p.y,Phaser.Utils.Array.GetRandom(['🙌','🎉','🔥']),{fontSize:'24px'}).setOrigin(0.5).setDepth(96000);
     this.tweens.add({targets:e,y:p.y-34,alpha:0,duration:900,onComplete:()=>e.destroy()}); this.refreshHUD(); }
+
+  /* ---------- PIERWSZY TANIEC PARY MŁODEJ ---------- */
+  startFirstDance(){ const spot={gx:6,gy:4.5};
+    const gp=iso(spot.gx-0.35,spot.gy,0), bp=iso(spot.gx+0.35,spot.gy,0);
+    const groom=this.add.image(gp.x,gp.y,'groom').setOrigin(0.5,1).setScale(1.15).setDepth(tdepth(spot.gx-0.35,spot.gy,4));
+    const bride=this.add.image(bp.x,bp.y,'bride').setOrigin(0.5,1).setScale(1.15).setDepth(tdepth(spot.gx+0.35,spot.gy,4));
+    this.firstDance={groom,bride,spot,cheered:false};
+    Audio.sfx('ding'); this.flashTip(t('evFirstDance'));
+    const sway=(spr,delay)=>this.tweens.add({targets:spr,angle:{from:-6,to:6},yoyo:true,repeat:-1,duration:520,delay,ease:'Sine.inOut'});
+    sway(groom,0); sway(bride,260);
+    this.firstDance.spinT=this.time.addEvent({delay:5200,loop:true,callback:()=>{ if(this.done||this.modalOpen||!this.firstDance) return;
+      this.tweens.add({targets:this.firstDance.bride,angle:360,duration:900,ease:'Sine.inOut'});
+      const p=iso(spot.gx,spot.gy,50);
+      const e=this.add.text(p.x+Phaser.Math.Between(-14,14),p.y,'💞',{fontSize:'16px'}).setOrigin(0.5).setDepth(96200);
+      this.tweens.add({targets:e,y:e.y-26,alpha:0,duration:900,onComplete:()=>e.destroy()}); }}); }
+  cheerCouple(){ const fd=this.firstDance; if(!fd||fd.cheered) return; fd.cheered=true;
+    this.score+=40; this.energy=Math.min(100,this.energy+8); this.addCharge(15);
+    this.clusters.forEach(c=>{ c.zeal=Math.min(100,c.zeal+8); });
+    Audio.sfx('ding'); this.flashTip(t('evFirstDanceOk'));
+    const p=iso(fd.spot.gx,fd.spot.gy,50); this.burstAt(p.x,p.y,C.pink,14); this.refreshHUD(); }
+  endFirstDance(){ const fd=this.firstDance; if(!fd) return; if(fd.spinT) fd.spinT.remove();
+    this.tweens.killTweensOf(fd.groom); this.tweens.killTweensOf(fd.bride);
+    this.tweens.add({targets:[fd.groom,fd.bride],alpha:0,duration:500,onComplete:()=>{ fd.groom.destroy(); fd.bride.destroy(); }});
+    this.firstDance=null; }
 
   /* ---------- WĘŻYK (akcja specjalna) ---------- */
   addCharge(n){ if(this.congaActive||this.congaCharge>=100) return;

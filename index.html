@@ -1914,10 +1914,25 @@ class Dance extends Phaser.Scene{
     const sway=(spr,delay)=>this.tweens.add({targets:spr,angle:{from:-6,to:6},yoyo:true,repeat:-1,duration:520,delay,ease:'Sine.inOut'});
     sway(groom,0); sway(bride,260);
     this.firstDance.spinT=this.time.addEvent({delay:5200,loop:true,callback:()=>{ if(this.done||this.modalOpen||!this.firstDance) return;
-      this.tweens.add({targets:this.firstDance.bride,angle:360,duration:900,ease:'Sine.inOut'});
+      this.spinBride(this.firstDance.bride,spot);
       const p=iso(spot.gx,spot.gy,50);
       const e=this.add.text(p.x+Phaser.Math.Between(-14,14),p.y,'💞',{fontSize:'16px'}).setOrigin(0.5).setDepth(96200);
       this.tweens.add({targets:e,y:e.y-26,alpha:0,duration:900,onComplete:()=>e.destroy()}); }}); }
+  // obrót panny młodej: sylwetka "od boku" (ścieśnienie + przejście na drugą stronę) czyta się jako prawdziwy piruet,
+  // w odróżnieniu od pełnego obrotu płaskiego sprite'a, który wygląda jak wirujący talerzyk
+  spinBride(bride,spot){ if(!bride.active) return; const baseScale=bride.scaleX, baseY=bride.y;
+    Audio.sfx('pick'); bride.setDepth(tdepth(spot.gx+0.35,spot.gy,40));   // nad partnerem podczas obrotu
+    this.tweens.add({targets:bride,scaleX:0.06,y:baseY-12,duration:240,ease:'Sine.in',onComplete:()=>{
+      bride.toggleFlipX();
+      this.tweens.add({targets:bride,scaleX:baseScale*1.15,y:baseY-16,duration:240,ease:'Sine.out',onComplete:()=>{
+        this.tweens.add({targets:bride,scaleX:0.06,duration:220,ease:'Sine.in',onComplete:()=>{
+          bride.toggleFlipX();
+          this.tweens.add({targets:bride,scaleX:baseScale,y:baseY,duration:320,ease:'Bounce.out',onComplete:()=>{
+            bride.setDepth(tdepth(spot.gx+0.35,spot.gy,4)); }}); }}); }}); }});
+    const sparkle=this.time.addEvent({delay:55,repeat:16,callback:()=>{ if(!bride.active) return;
+      const sp=this.add.circle(bride.x+Phaser.Math.Between(-16,16),bride.y-Phaser.Math.Between(6,30),3,0xffe487,0.75).setDepth(96150);
+      this.tweens.add({targets:sp,alpha:0,scale:0.2,duration:340,onComplete:()=>sp.destroy()}); }});
+    this.time.delayedCall(1100,()=>sparkle.remove()); }
   cheerCouple(){ const fd=this.firstDance; if(!fd||fd.cheered) return; fd.cheered=true;
     this.score+=40; this.energy=Math.min(100,this.energy+8); this.addCharge(15);
     this.clusters.forEach(c=>{ c.zeal=Math.min(100,c.zeal+8); });

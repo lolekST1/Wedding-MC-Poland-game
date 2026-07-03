@@ -377,22 +377,23 @@ function tdepth(gx,gy,bonus){ return (gx+gy)*100 + (bonus||0); }
 const Audio=(function(){
   let ctx=null,master,musicG,sfxG,seq=null,bar=0,playing=false,muted=false,noiseBuf=null;
   // nastroje muzyczne (minigra 2 przełącza je w locie; 'loadin' = oryginalny groove minigry 1)
+  // każdy styl ma WŁASNĄ aranżację w tickBar — inną sekcję rytmiczną, bas i frazowanie
   const MOODS={
-    loadin:  {bpm:96, gain:0.16, padType:'triangle', pluckType:'sine', kicks:[0,2], hats:[],
+    loadin:  {bpm:96, gain:0.16,
       chords:[[196,247,294],[174,220,261],[220,277,330],[164,207,247]],
       mel:[392,440,523,440, 349,392,440,392, 523,494,440,392, 330,392,440,494]},
-    disco:   {bpm:122, gain:0.17, padType:'sawtooth', pluckType:'square', kicks:[0,1,2,3], hats:[0.5,1.5,2.5,3.5],
+    disco:   {bpm:122, gain:0.17,   // four-on-the-floor + oktawowy bas + werbel 2 i 4
       chords:[[220,277,330],[196,247,294],[174,220,261],[196,247,294]],
-      mel:[440,523,587,523, 440,587,659,587, 523,587,659,784, 659,587,523,440]},
-    romantic:{bpm:72, gain:0.15, padType:'triangle', pluckType:'sine', kicks:[0], hats:[],
+      mel:[440,523,659,523, 587,0,587,523, 440,523,659,784, 659,523,587,0]},
+    romantic:{bpm:76, gain:0.16,    // ballada: arpeggio 8-ek, długie frazy, bez perkusji
       chords:[[174,220,261],[164,207,247],[146,185,220],[196,247,294]],
-      mel:[349,440,523,659, 587,523,440,349, 330,415,494,659, 587,523,494,440]},
-    hype:    {bpm:134, gain:0.18, padType:'square', pluckType:'sawtooth', kicks:[0,1,1.5,2,3,3.5], hats:[0.5,1.5,2.5,3.5],
-      chords:[[164,207,247],[174,220,261],[196,247,294],[220,277,330]],
-      mel:[659,659,784,659, 587,587,659,587, 523,523,587,523, 659,784,880,784]},
-    chill:   {bpm:80, gain:0.11, padType:'sine', pluckType:'sine', kicks:[], hats:[],
-      chords:[[146,185,220],[164,207,247],[174,220,261],[164,207,247]],
-      mel:[293,330,370,330, 294,330,392,330, 261,330,392,440, 392,370,330,294]}
+      mel:[523,587,659,587, 523,440,523,494, 440,494,523,587, 659,587,523,440]},
+    hype:    {bpm:140, gain:0.18,   // twarda stopa, dublowany werbel, saw-riff + staby
+      chords:[[165,196,247],[147,185,220],[196,247,294],[165,196,247]],
+      mel:[659,659,784,880, 659,587,659,880, 988,880,784,659, 784,880,988,1175]},
+    chill:   {bpm:78, gain:0.12,    // lounge: akordy maj7, sinusowy bas, dużo przestrzeni
+      chords:[[174,220,261,330],[164,207,247,311],[146,185,220,277],[196,247,294,370]],
+      mel:[523,0,440,0, 392,0,494,0, 440,0,523,0, 349,0,440,0]}
   };
   let mood=MOODS.loadin, moodName='loadin', beat=60/mood.bpm;
   function init(){ if(ctx) return;
@@ -404,29 +405,87 @@ const Audio=(function(){
     const nd=noiseBuf.getChannelData(0); for(let i=0;i<nd.length;i++) nd[i]=Math.random()*2-1;
   }
   function resume(){ if(ctx&&ctx.state==='suspended') ctx.resume(); }
-  // miękki pad-akord
-  function pad(t,freqs){ const pg=mood.padType==='sawtooth'||mood.padType==='square'?0.09:0.18;
+  // ---- instrumenty (współdzielone przez aranżacje) ----
+  function pad(t,freqs,type,dur,g0){ type=type||'triangle'; dur=dur||beat*2;
+    const pg=g0!=null?g0:((type==='sawtooth'||type==='square')?0.08:0.18);
     freqs.forEach(f=>{ const o=ctx.createOscillator(),g=ctx.createGain();
-    o.type=mood.padType; o.frequency.value=f;
+    o.type=type; o.frequency.value=f;
     const lp=ctx.createBiquadFilter(); lp.type='lowpass'; lp.frequency.value=1200;
-    g.gain.setValueAtTime(0,t); g.gain.linearRampToValueAtTime(pg,t+0.4); g.gain.linearRampToValueAtTime(0.0,t+beat*2);
-    o.connect(lp); lp.connect(g); g.connect(musicG); o.start(t); o.stop(t+beat*2+0.1); }); }
+    g.gain.setValueAtTime(0,t); g.gain.linearRampToValueAtTime(pg,t+Math.min(0.4,dur*0.3)); g.gain.linearRampToValueAtTime(0.0,t+dur);
+    o.connect(lp); lp.connect(g); g.connect(musicG); o.start(t); o.stop(t+dur+0.1); }); }
   function softKick(t){ const o=ctx.createOscillator(),g=ctx.createGain();
     o.type='sine'; o.frequency.setValueAtTime(110,t); o.frequency.exponentialRampToValueAtTime(50,t+0.1);
     g.gain.setValueAtTime(0.5,t); g.gain.exponentialRampToValueAtTime(0.001,t+0.16);
     o.connect(g); g.connect(musicG); o.start(t); o.stop(t+0.18); }
-  function hat(t){ const src=ctx.createBufferSource(); src.buffer=noiseBuf;
+  function hardKick(t){ const o=ctx.createOscillator(),g=ctx.createGain();     // mocna stopa (hype)
+    o.type='sine'; o.frequency.setValueAtTime(150,t); o.frequency.exponentialRampToValueAtTime(44,t+0.12);
+    g.gain.setValueAtTime(0.66,t); g.gain.exponentialRampToValueAtTime(0.001,t+0.2);
+    o.connect(g); g.connect(musicG); o.start(t); o.stop(t+0.22); }
+  function hat(t,g0){ const src=ctx.createBufferSource(); src.buffer=noiseBuf;
     const hp=ctx.createBiquadFilter(); hp.type='highpass'; hp.frequency.value=6500;
-    const g=ctx.createGain(); g.gain.setValueAtTime(0.10,t); g.gain.exponentialRampToValueAtTime(0.001,t+0.05);
+    const g=ctx.createGain(); g.gain.setValueAtTime(g0||0.10,t); g.gain.exponentialRampToValueAtTime(0.001,t+0.05);
     src.connect(hp); hp.connect(g); g.connect(musicG); src.start(t); src.stop(t+0.07); }
-  function pluck(t,f){ const o=ctx.createOscillator(),g=ctx.createGain();
-    o.type=mood.pluckType; const pg=mood.pluckType==='sawtooth'||mood.pluckType==='square'?0.06:0.1;
-    o.frequency.value=f; g.gain.setValueAtTime(0.0,t); g.gain.linearRampToValueAtTime(pg,t+0.01);
-    g.gain.exponentialRampToValueAtTime(0.001,t+0.4); o.connect(g); g.connect(musicG); o.start(t); o.stop(t+0.42); }
+  function openHat(t){ const src=ctx.createBufferSource(); src.buffer=noiseBuf;  // otwarty hi-hat (disco)
+    const hp=ctx.createBiquadFilter(); hp.type='highpass'; hp.frequency.value=7000;
+    const g=ctx.createGain(); g.gain.setValueAtTime(0.07,t); g.gain.exponentialRampToValueAtTime(0.001,t+0.18);
+    src.connect(hp); hp.connect(g); g.connect(musicG); src.start(t); src.stop(t+0.2); }
+  function snare(t){ const src=ctx.createBufferSource(); src.buffer=noiseBuf;    // werbel
+    const bp=ctx.createBiquadFilter(); bp.type='bandpass'; bp.frequency.value=1800; bp.Q.value=0.8;
+    const g=ctx.createGain(); g.gain.setValueAtTime(0.22,t); g.gain.exponentialRampToValueAtTime(0.001,t+0.14);
+    src.connect(bp); bp.connect(g); g.connect(musicG); src.start(t); src.stop(t+0.16);
+    const o=ctx.createOscillator(),g2=ctx.createGain(); o.type='sine'; o.frequency.setValueAtTime(190,t);
+    g2.gain.setValueAtTime(0.10,t); g2.gain.exponentialRampToValueAtTime(0.001,t+0.08);
+    o.connect(g2); g2.connect(musicG); o.start(t); o.stop(t+0.1); }
+  function bassN(t,f,dur,type,g0){ const o=ctx.createOscillator(),g=ctx.createGain(); // bas
+    o.type=type||'sawtooth'; o.frequency.value=f;
+    const lp=ctx.createBiquadFilter(); lp.type='lowpass'; lp.frequency.value=420;
+    g.gain.setValueAtTime(g0||0.2,t); g.gain.exponentialRampToValueAtTime(0.001,t+dur);
+    o.connect(lp); lp.connect(g); g.connect(musicG); o.start(t); o.stop(t+dur+0.02); }
+  function stab(t,freqs,dur){ freqs.forEach(f=>{ const o=ctx.createOscillator(),g=ctx.createGain(); // akordowy stab
+    o.type='sawtooth'; o.frequency.value=f;
+    const lp=ctx.createBiquadFilter(); lp.type='lowpass'; lp.frequency.value=2000;
+    g.gain.setValueAtTime(0.055,t); g.gain.exponentialRampToValueAtTime(0.001,t+dur);
+    o.connect(lp); lp.connect(g); g.connect(musicG); o.start(t); o.stop(t+dur+0.02); }); }
+  function pluck(t,f,type,g0,dur){ if(!f) return; dur=dur||0.4;                  // f=0 → pauza
+    const o=ctx.createOscillator(),g=ctx.createGain();
+    o.type=type||'sine'; o.frequency.value=f;
+    g.gain.setValueAtTime(0.0,t); g.gain.linearRampToValueAtTime(g0||0.1,t+0.01);
+    g.gain.exponentialRampToValueAtTime(0.001,t+dur); o.connect(g); g.connect(musicG); o.start(t); o.stop(t+dur+0.02); }
+  // ---- aranżacje: każdy styl brzmi jak inny gatunek ----
   function tickBar(){ if(!playing) return; const t=ctx.currentTime+0.04;
-    const ch=mood.chords[bar%mood.chords.length]; pad(t,ch);
-    mood.kicks.forEach(k=>softKick(t+k*beat)); mood.hats.forEach(h=>hat(t+h*beat));
-    for(let i=0;i<4;i++){ pluck(t+i*beat, mood.mel[(bar*4+i)%mood.mel.length]); }
+    const ch=mood.chords[bar%mood.chords.length], root=ch[0];
+    const melAt=i=>mood.mel[(bar*4+i)%mood.mel.length];
+    if(moodName==='disco'){
+      for(let i=0;i<4;i++){ softKick(t+i*beat); openHat(t+(i+0.5)*beat); }
+      snare(t+1*beat); snare(t+3*beat);
+      for(let i=0;i<8;i++) bassN(t+i*beat/2, i%2?root:root/2, beat*0.45, 'sawtooth', 0.20);  // oktawowy bas disco
+      pad(t,ch,'sawtooth',beat*1.4,0.05); pad(t+2*beat,ch,'sawtooth',beat*1.4,0.05);
+      for(let i=0;i<4;i++) pluck(t+i*beat, melAt(i),'square',0.08,0.3);
+    } else if(moodName==='romantic'){
+      pad(t,ch,'triangle',beat*4,0.17);                                          // długi ciepły akord
+      const arp=[0,1,2,1, 2,1,2,1];
+      for(let i=0;i<8;i++) pluck(t+i*beat/2, ch[arp[i]]*2,'sine',0.05,0.55);      // balladowe arpeggio
+      pluck(t, melAt(0)*1.5,'sine',0.10,beat*1.9);                                // długie frazy melodii
+      pluck(t+2*beat, melAt(2)*1.5,'sine',0.10,beat*1.9);
+      bassN(t, root/2, beat*1.8,'sine',0.13);                                     // bez perkusji
+    } else if(moodName==='hype'){
+      [0,0.5,1,2,2.5,3].forEach(k=>hardKick(t+k*beat));
+      snare(t+1*beat); snare(t+3*beat); snare(t+3.75*beat);                       // dublowany werbel
+      [0.5,1.5,2.5,3.5].forEach(h=>hat(t+h*beat,0.09));
+      for(let i=0;i<8;i++) bassN(t+i*beat/2, root, beat*0.4,'square',0.19);       // napędzający bas 8-kami
+      stab(t,ch.map(f=>f*2),0.18); stab(t+2.5*beat,ch.map(f=>f*2),0.14);
+      for(let i=0;i<4;i++){ pluck(t+i*beat, melAt(i),'sawtooth',0.065,0.22); pluck(t+(i+0.5)*beat, melAt(i),'sawtooth',0.04,0.14); }
+    } else if(moodName==='chill'){
+      pad(t,ch,'sine',beat*4,0.11);                                               // maj7 w tle
+      bassN(t, root/2, beat*1.6,'sine',0.16); bassN(t+2*beat, root*0.75, beat*1.4,'sine',0.11);
+      hat(t+1*beat,0.035); hat(t+3*beat,0.035);                                   // ledwo słyszalny puls
+      pad(t+1*beat,[ch[1]*2,ch[2]*2],'triangle',beat*0.9,0.045);                  // jazzowe muśnięcia
+      pad(t+3*beat,[ch[2]*2,ch[3%ch.length]*2],'triangle',beat*0.9,0.045);
+      for(let i=0;i<4;i++) pluck(t+i*beat, melAt(i),'sine',0.085,0.9);            // rzadka melodia (pauzy)
+    } else { // loadin — oryginalny groove minigry 1
+      pad(t,ch,'triangle',beat*2); [0,2].forEach(k=>softKick(t+k*beat));
+      for(let i=0;i<4;i++) pluck(t+i*beat, melAt(i),'sine',0.1,0.4);
+    }
     bar++; }
   function startMusic(){ init(); resume(); if(playing) return; playing=true; bar=0; seq=setInterval(tickBar, beat*4*1000); tickBar(); }
   function stopMusic(){ playing=false; if(seq){clearInterval(seq); seq=null;} }

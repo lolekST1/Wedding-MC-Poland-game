@@ -12,6 +12,32 @@ prośby o piosenki, zdjęcie) oraz system energii parkietu i fazy wieczoru (`DPH
 
 ---
 
+## 0. Dom projektu — osobny produkt, to samo repo
+
+Decyzja: **Tycoon rozwija się niezależnie od gry reklamowej**, jako osobny
+projekt w katalogu `tycoon/` na `main`.
+
+- Gra reklamowa (`index.html`, `index-en.html`) zostaje **zamrożona jako osobny
+  produkt** — Tycoon niczego w niej nie zmienia i nie współdzieli z nią plików.
+  Kod prototypu jest do Tycoona **kopiowany (portowany), nie przenoszony**.
+- `tycoon/` deployuje się razem z resztą repo na GitHub Pages →
+  `https://lolekst1.github.io/Wedding-MC-Poland-game/tycoon/` — obecny workflow
+  „merge do main = test na żywo" działa więc od pierwszego dnia także dla
+  Tycoona. (Workflow Pages dostanie w M0 krok `npm ci && npm run build`
+  w `tycoon/`; artefakt = root repo + zbudowany `tycoon/`.)
+- Rozwój jak dotąd: krótkie feature-branche → PR → merge do `main`. Nie
+  utrzymujemy długiej gałęzi produktowej — separację daje katalog, nie branch
+  (długa gałąź = wieczne konflikty i brak deployu do testów).
+- Gdy projekt urośnie lub się skomercjalizuje, katalog da się wyciąć do
+  własnego repozytorium z pełną historią (`git subtree split` /
+  `git filter-repo`) — decyzja jest w pełni odwracalna.
+
+> Uzupełnieniem tego dokumentu jest **`WODZIREJ-TYCOON-BIALE-PLAMY.md`** —
+> krytyczna analiza luk w projekcie: decyzje fundamentalne do podjęcia, białe
+> plamy w pętli rozgrywki i lista pytań otwartych. Czytaj oba razem.
+
+---
+
 ## 1. Stos technologiczny — rekomendacja
 
 ### Werdykt: **Phaser 3 + TypeScript + Vite; faza menedżerska w DOM (Preact)**
@@ -40,13 +66,11 @@ Uzasadnienie kluczowych decyzji:
    TS + `lit-html`, jeśli chcesz zero frameworka.)
 
 3. **Vite + TypeScript.** Vite daje moduły, HMR i build do statycznych plików —
-   deploy na GitHub Pages i serwer klienta pozostaje „wgraj pliki".
-   `vite-plugin-singlefile` potrafi zbudować **jeden samowystarczalny HTML** —
-   czyli dokładnie dzisiejszy model hostingu u klienta (PL = `index.html`,
-   EN = `index-en.html`) da się zachować jako dwa artefakty builda z jednego
-   źródła, zamiast ręcznej synchronizacji dwóch plików. TypeScript jest
-   nieoceniony przy kontraktach danych (patrz §4) — to tam tycoon najczęściej się
-   sypie.
+   deploy pozostaje „wgraj pliki" (Pages lub dowolny hosting statyczny). Tycoon
+   to normalny wieloplikowy build Vite w `tycoon/` (lepszy caching niż jeden
+   wielki plik); gra reklamowa zostaje przy swoich dwóch ręcznie utrzymywanych
+   plikach i nic się w niej nie zmienia. TypeScript jest nieoceniony przy
+   kontraktach danych (patrz §4) — to tam tycoon najczęściej się sypie.
 
 4. **Phaser nadal z CDN, ładowany leniwie** (obecna optymalizacja PageSpeed
    zostaje) — faza menedżerska to czysty DOM, więc gra może startować do inboxa
@@ -83,9 +107,8 @@ Uzasadnienie kluczowych decyzji:
 ## 3. Struktura projektu
 
 ```
-wodzirej-tycoon/
-├─ index.html                  # entry PL (buduje się do pojedynczego pliku)
-├─ index-en.html               # entry EN (ten sam kod, inny WK_LANG)
+tycoon/                        # osobny projekt w repo (patrz §0)
+├─ index.html                  # entry (i18n w runtime, PL-first)
 ├─ vite.config.ts
 ├─ package.json
 ├─ public/                     # favicon, og-image itp.
@@ -315,15 +338,16 @@ zakończonych oceną ≥4.5★.
 Zasada: **po każdym kamieniu gra jest grywalna i wdrażalna**. Prototypowe sceny
 to od M2 „faza imprezy", więc pełna pętla tycoona działa bardzo wcześnie.
 
-### M0 — Migracja techniczna (fundament, zero nowych funkcji)
-- Init Vite + TS + Preact; przeniesienie kodu z `index.html` do modułów wg §3
-  (na razie `party/` + `audio/` + `i18n/`; można stopniowo, plik po pliku,
-  z `allowJs` — pełne typowanie później).
-- Build przez `vite-plugin-singlefile` → artefakty `index.html` / `index-en.html`
-  (koniec ręcznej synchronizacji dwóch plików — jedno źródło, dwa entry).
-- Aktualizacja workflow Pages (krok `npm ci && npm run build`, upload `dist/`).
-- **Definition of done:** zbudowana gra działa identycznie jak obecny prototyp
-  (Setup + Dance przechodzą się bez zmian), PL i EN, desktop i mobile.
+### M0 — Port prototypu do `tycoon/` (fundament, zero nowych funkcji)
+- Init Vite + TS + Preact w `tycoon/`; **skopiowanie** kodu z `index.html` do
+  modułów wg §3 (na razie `party/` + `audio/` + `i18n/`; można stopniowo, plik
+  po pliku, z `allowJs` — pełne typowanie później). Gra reklamowa w root
+  repo pozostaje nietknięta.
+- Aktualizacja workflow Pages: krok `npm ci && npm run build` w `tycoon/`;
+  artefakt = root repo + zbudowany Tycoon pod ścieżką `/tycoon/`.
+- **Definition of done:** `…/Wedding-MC-Poland-game/tycoon/` gra identycznie
+  jak prototyp (Setup + Dance przechodzą się bez zmian) na desktopie i mobile;
+  gra reklamowa działa bez żadnych zmian.
 
 ### M1 — Rdzeń symulacji
 - `core/`: `GameState`, `EventBus`, `save.ts` (localStorage + wersja + eksport),
@@ -391,11 +415,12 @@ recenzje karmią się wynikami kryzysów.
 
 ## 9. Ryzyka i decyzje odroczone
 
-- **Migracja M0 to największe pojedyncze ryzyko** (regresje przy porcie scen).
-  Mitygacja: przenosić mechanicznie bez refaktorów, porównywać zachowanie z żywym
-  prototypem po każdym pliku; syntax-check jak dotąd + smoke-test Playwright
-  (przeklikanie Setup do końca) w CI.
-- **Prototyp na `main` zostaje żywy** do końca M0 — nowy kod rozwija się w
-  podkatalogu lub na długiej gałęzi, żeby nie zepsuć assetu marketingowego.
+- **Port M0 to największe pojedyncze ryzyko** (regresje przy porcie scen).
+  Mitygacja: przenosić mechanicznie bez refaktorów, porównywać zachowanie z żywą
+  grą reklamową (ona zostaje wzorcem — port to kopia) po każdym pliku;
+  syntax-check jak dotąd + smoke-test Playwright (przeklikanie Setup do końca)
+  w CI.
+- **Gra reklamowa jest nietykalna** — Tycoon jej nie modyfikuje (§0), więc
+  regresje w assecie marketingowym są niemożliwe z definicji.
 - Odroczone (świadomie poza zakresem): multiplayer/leaderboardy online (wymaga
   backendu — obecny hosting to statyki), zapis w chmurze, edytor własnych wesel.

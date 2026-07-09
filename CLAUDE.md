@@ -9,8 +9,9 @@ Single-file HTML5 isometric game ("Wodzirej Karol: Master of the Dancefloor") bu
 > **Wodzirej Tycoon** is a separate product developed independently in `tycoon/`
 > — it must never modify the marketing game files (`index.html`, `index-en.html`).
 > Design docs: `docs/WODZIREJ-TYCOON-ARCHITEKTURA.md` (architecture, structure,
-> M0–M8 milestone plan) and `docs/WODZIREJ-TYCOON-BIALE-PLAMY.md` (gap analysis,
-> open questions P1–P10). Consult both before any tycoon-related work.
+> M0–M9 milestone plan) and `docs/WODZIREJ-TYCOON-BIALE-PLAMY.md` (gap analysis,
+> open questions P1–P10 — all resolved 2026-07-09 with the default proposals).
+> Consult both before any tycoon-related work.
 
 ## Running locally
 

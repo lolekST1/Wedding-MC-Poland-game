@@ -338,6 +338,16 @@ zakończonych oceną ≥4.5★.
 Zasada: **po każdym kamieniu gra jest grywalna i wdrażalna**. Prototypowe sceny
 to od M2 „faza imprezy", więc pełna pętla tycoona działa bardzo wcześnie.
 
+> **Decyzje P1–P10 przyjęte 2026-07-09** (BIALE-PLAMY §5) — ustalenia wiążące
+> dla planu: produkt z ambicją komercyjną walidowany darmową wersją web (P1);
+> infrastruktura i18n od dnia 1, treść tylko PL do końca M8 (P2); cele balansu:
+> **wesele 8–12 min, kariera do Legendy 25–35 wesel / ~6–8 h** (P3); obie fazy
+> projektowane pod landscape, desktop-first w devie (P4); gracz tworzy własną
+> postać z archetypem startowym (P5); ekipa/delegacja po 1.0, ale typy danych
+> projektowane pod nią od razu (P6); rywale w wersji lekkiej w 1.0 → M9 (P7);
+> rozbudowa syntezatora po M7 (P8); telemetria odroczona do publicznego
+> wydania (P9); setup grywalny przy każdym weselu do czasu technika (P10).
+
 ### M0 — Port prototypu do `tycoon/` (fundament, zero nowych funkcji)
 - Init Vite + TS + Preact w `tycoon/`; **skopiowanie** kodu z `index.html` do
   modułów wg §3 (na razie `party/` + `audio/` + `i18n/`; można stopniowo, plik
@@ -357,19 +367,29 @@ to od M2 „faza imprezy", więc pełna pętla tycoona działa bardzo wcześnie.
 ### M2 — Szkielet fazy menedżerskiej + pierwsza pełna pętla ⭐
 - `ManagerApp` z nawigacją (Inbox/Sklep/Szkolenia/Księgowość/Terminarz — na
   razie placeholdery) + HUD (kasa, tydzień, reputacja).
+- Nowa gra: własna postać — imię + archetyp startowy (Gadatliwy / Techniczny /
+  Wyszkolony; na razie różnią się tylko stanem startowym: skill/sprzęt/kasa).
 - `Calendar.tsx` z jednym wygenerowanym zleceniem → „Jedź na wesele" → leniwe
   ładowanie Phasera → istniejące sceny `Setup` + `Party(Dance)` → `Debrief`
   zwraca `WeddingResult` → wypłata, +tydzień, powrót do managera.
 - **DoD:** pełny cykl manager → wesele → wypłata → manager, z zapisem stanu.
   To jest moment, w którym gra staje się tycoonem.
 
-### M3 — Inbox i negocjacje
+### M3 — Inbox, negocjacje i tydzień jako zasób
+- **Sloty akcji tygodnia (2–3)** — BIALE-PLAMY §2.2: gracz wydaje je na
+  szkolenie / serwis sprzętu / marketing / spotkanie z parą / odpoczynek /
+  fuchę zastępczą. To rdzeń decyzyjny fazy menedżerskiej.
+- **Lejek marketingowy** — §2.3: źródła leadów (word-of-mouth z recenzji,
+  profil www, targi ślubne); oferty przestają spadać z nieba.
 - Generator ofert (`contracts.ts`): tier wg reputacji, seed, profil gości.
 - Wątek mailowy jako maszyna stanów: oferta → pytania/kontrpropozycja stawki
   (ryzyko odrzucenia) → ustalenie playlisty i **listy zakazanych utworów**
   (te dane zasilą kryzys wujka) → podpisanie → wpis do terminarza.
+- **Red flags** — §2.4: maile zawierają ukryte sygnały ryzyka; dopytywanie /
+  spotkanie z parą (slot akcji) odkrywa ukryte pola kontraktu. Wysoka
+  wynegocjowana stawka podnosi próg oczekiwań (trudniej o 5★).
 - **DoD:** można wynegocjować i zagrać 3 różne wesela; odrzucenie oferty ma koszt
-  (pusty tydzień = opłaty stałe lecą).
+  (pusty tydzień = opłaty stałe lecą); zignorowany red flag odpala się na weselu.
 
 ### M4 — Sklep i magazyn
 - `data/gear.ts`: 3 kategorie (nagłośnienie / światła / gadżety), 3–4 tiery.
@@ -386,7 +406,12 @@ to od M2 „faza imprezy", więc pełna pętla tycoona działa bardzo wcześnie.
   strategiczna).
 - Umiejętności odblokowują: nowe zabawy w fazie imprezy (nowe eventy podnoszące
   energię) i opcje w kryzysach (`requires.skill`).
-- **DoD:** co najmniej 6 szkoleń, z czego 2 odblokowują opcje kryzysowe.
+- **Kondycja i głos wodzireja** — BIALE-PLAMY §2.9: dwa paski; wesela i fuchy
+  je zużywają, odpoczynek (slot akcji) regeneruje; niska kondycja = wolniejszy
+  bieg i słabsze skill-checki, stracony głos praktycznie uniemożliwia wesele.
+  Koniec z darmowym overbookingiem.
+- **DoD:** co najmniej 6 szkoleń, z czego 2 odblokowują opcje kryzysowe;
+  granie co weekend bez odpoczynku ma odczuwalny koszt.
 
 ### M6 — Księgowość i podatki
 - `economy.ts`: przychody, koszty stałe (leasing busa, ZUS 😉), amortyzacja,
@@ -399,17 +424,38 @@ to od M2 „faza imprezy", więc pełna pętla tycoona działa bardzo wcześnie.
   z przełącznikiem PL/EN i chmurką z flagą.
 - Implementacja dwóch wzorcowych kryzysów z §5 (wujek z eskalacją, awaria prądu
   z sekwencją świeczki→quiz), potem tort i spodnie jako czyste wpisy w `data/`.
+- **Zabawy weselne jako mini-sekwencje** — BIALE-PLAMY §2.7: wybór z koła przy
+  DJ-ce → zebranie chętnych (mechanika z bukietu) → skill-check (3 szablony:
+  rytm / QTE / celowanie) → energia; cooldowny i „zużywanie się" zabaw; plan
+  zabaw ustawiany przed weselem (FM-owy „skład").
 - **DoD:** oba kryzysy grywalne we wszystkich wariantach rozwiązań; złe wyjście
-  językowe faktycznie blokuje interakcję.
+  językowe faktycznie blokuje interakcję; min. 4 zabawy na 3 szablonach.
 
 ### M8 — Opinie, tytuły, Legenda
 - Generator recenzji + ekran `Reviews.tsx` (profil ala Google Reviews),
   `titles.ts`, tiery reputacji, warunek Legendy; ekran końca kariery.
-- **DoD:** po każdym weselu pojawiają się 3–6 spójnych z przebiegiem recenzji;
-  tytuły wpadają zgodnie z regułami; Legenda osiągalna.
+- **Recenzje przychodzą z opóźnieniem** (2–5 dni po weselu, do inboxa) —
+  BIALE-PLAMY §2.8 — i zasilają word-of-mouth w lejku leadów z M3.
+- **Publiczne odpowiedzi na recenzje** (dyplomatycznie / z humorem / pyskówka)
+  — dobra odpowiedź neutralizuje niesprawiedliwą 1★ i buduje markę, pyskówka
+  szkodzi; wpływ na reputację i dopływ leadów.
+- Skryptowane **„wesele zerowe"** jako onboarding (§2.1 BIALE-PLAMY) — wymaga
+  gotowych kryzysów i zabaw, stąd dopiero tutaj.
+- **DoD:** po każdym weselu spływają w kolejnych dniach 3–6 spójnych
+  z przebiegiem recenzji; odpowiedź gracza ma mierzalny skutek; tytuły wpadają
+  zgodnie z regułami; Legenda osiągalna; nowy gracz przechodzi onboarding bez
+  instrukcji zewnętrznej.
+
+### M9 — Rywale (wersja lekka)
+- 3–5 nazwanych rywali (BIALE-PLAMY §2.12) z reputacją liczoną tym samym kodem
+  co gracza (dryf + kilka eventów, bez pełnej symulacji).
+- Część ofert to **przetargi**: para porównuje stawkę i reputację dwóch
+  wodzirejów; ranking regionalny jako stały cel pośredni w UI.
+- **DoD:** można przegrać przetarg i widać dlaczego; ranking regionalny żyje.
 
 Kolejność M3–M6 jest elastyczna (wszystkie wiszą na M2); M7 przed M8, bo
-recenzje karmią się wynikami kryzysów.
+recenzje karmią się wynikami kryzysów; M9 po M8, bo przetargi używają
+reputacji i lejka leadów.
 
 ---
 
@@ -422,5 +468,10 @@ recenzje karmią się wynikami kryzysów.
   w CI.
 - **Gra reklamowa jest nietykalna** — Tycoon jej nie modyfikuje (§0), więc
   regresje w assecie marketingowym są niemożliwe z definicji.
+- Odroczone decyzjami P1–P10 (2026-07-09): **ekipa i delegacja wesel** — po 1.0
+  (P6; typy danych — `OwnedGear`, `WeddingContract`, staty postaci — projektować
+  od razu tak, by NPC-pracownik się w nich zmieścił), **treść EN** — po M8 (P2),
+  **rozbudowa syntezatora** (+2–3 patterny na gatunek) — po M7 (P8),
+  **telemetria** — od pierwszego publicznego wydania (P9).
 - Odroczone (świadomie poza zakresem): multiplayer/leaderboardy online (wymaga
   backendu — obecny hosting to statyki), zapis w chmurze, edytor własnych wesel.

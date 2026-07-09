@@ -267,9 +267,13 @@ nowa kariera"), migracje włączamy dopiero od pierwszego publicznego wydania.
 
 ---
 
-## 5. Pytania otwarte — do Twojej decyzji
+## 5. Pytania otwarte — ROZSTRZYGNIĘTE
 
-| # | Pytanie | Domyślna propozycja (jeśli nie zdecydujesz inaczej) |
+> **Decyzja (2026-07-09): wszystkie domyślne propozycje przyjęte bez zmian.**
+> Wynikające z nich korekty zakresu są wpisane do planu M0–M9 w
+> `WODZIREJ-TYCOON-ARCHITEKTURA.md` §8.
+
+| # | Pytanie | Decyzja (przyjęta 2026-07-09) |
 |---|---|---|
 | P1 | Cel produktu: hobby / marketing / komercja? | Produkt z ambicją komercyjną, walidowany darmową wersją web |
 | P2 | Treść EN od początku? | Nie — i18n-infra tak, treść PL-first, EN po M8 |
@@ -282,7 +286,8 @@ nowa kariera"), migracje włączamy dopiero od pierwszego publicznego wydania.
 | P9 | Telemetria? | Odroczyć do pierwszego publicznego wydania |
 | P10 | Setup grywalny przy każdym weselu? | Tak, dopóki nie ma technika w ekipie; potem delegowalny |
 
-Odpowiedzi wpiszemy z powrotem do tego pliku (kolumna „Decyzja") i do
-architektury — wtedy plan M0–M8 dostanie korektę zakresu (przede wszystkim:
-sloty akcji tygodnia do M2/M3, marketing leadów do M3, kondycja do M5/M6,
-zabawy jako mini-sekwencje do M7, recenzje z opóźnieniem + odpowiedzi do M8).
+Korekty zakresu wynikające z decyzji zostały wpisane do architektury (§8):
+sloty akcji tygodnia w M3, lejek marketingowy i red flags w M3, kondycja/głos
+w M5, zabawy jako mini-sekwencje w M7, recenzje z opóźnieniem + publiczne
+odpowiedzi w M8, rywale (wersja lekka) jako nowy M9; ekipa/delegacja
+odroczona za 1.0 (typy danych projektowane pod nią od razu).

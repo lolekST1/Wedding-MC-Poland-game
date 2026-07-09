@@ -6,10 +6,11 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 
 Single-file HTML5 isometric game ("Wodzirej Karol: Master of the Dancefloor") built as a marketing/SEO asset for a Polish wedding MC business. The entire game — HTML, CSS, and JS — lives in `index.html`. There is no build system, no npm, no compilation step.
 
-> **Planned evolution:** the game is being expanded into a full tycoon/manager sim
-> ("Wodzirej Tycoon"). The architecture, target project structure, and milestone
-> plan live in `docs/WODZIREJ-TYCOON-ARCHITEKTURA.md` — consult it before starting
-> any tycoon-related work.
+> **Wodzirej Tycoon** is a separate product developed independently in `tycoon/`
+> — it must never modify the marketing game files (`index.html`, `index-en.html`).
+> Design docs: `docs/WODZIREJ-TYCOON-ARCHITEKTURA.md` (architecture, structure,
+> M0–M8 milestone plan) and `docs/WODZIREJ-TYCOON-BIALE-PLAMY.md` (gap analysis,
+> open questions P1–P10). Consult both before any tycoon-related work.
 
 ## Running locally
 

@@ -36,10 +36,12 @@ Everything inside `<script>` in `index.html` is wrapped in `startGame()`, which 
 
 | Scene | Purpose |
 |-------|---------|
-| `Boot` | Calls `genAssets()` to generate all textures procedurally, then starts `Hub` |
-| `Hub` | Minigame selection screen; only "Load-in" (→ `Setup`) is playable |
-| `Setup` | Main minigame — 7 sequential phases of wedding setup |
-| `Result` | End screen with score, stars, and CTA link to the real business site |
+| `Boot` | Calls `genAssets()` to generate all textures procedurally, then starts the scene picked in the HTML menu (`window.WK_START`: `Setup` / `Dance` / `Wedding`) |
+| `Hub` | Legacy in-canvas minigame picker (not normally reached — the HTML menu is used) |
+| `Setup` | Minigame 1 "Load-in" — 7 sequential phases of wedding setup |
+| `Dance` | Minigame 2 "Dancefloor with guests" — read the room, DJ console mix, floor events |
+| `Wedding` | Minigame 3 "International wedding PL/EN" — Polish-British wedding; see `docs/MINIGRA-3-WESELE-MIEDZYNARODOWE.md` |
+| `Result` | End screen with score, stars, and CTA link to the real business site (`registry.mode`: setup / `dance` / `intl`) |
 
 ### Coordinate system
 

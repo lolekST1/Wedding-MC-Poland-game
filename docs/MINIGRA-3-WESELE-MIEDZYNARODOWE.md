@@ -1,6 +1,7 @@
 # Minigra 3 — „Wesele międzynarodowe PL/EN" (propozycja)
 
-> Status: **koncepcja zaakceptowana do realizacji** (decyzje w sekcji 7, 2026-10-18). Nic nie jest jeszcze zaimplementowane.
+> Status: **zaimplementowana** (2026-10-19) — scena `Wedding` w `index.html` / `index-en.html`, karta 3 w menu odblokowana.
+> Różnice względem pierwotnej koncepcji opisuje sekcja 9.
 > Karta w menu już istnieje (`task3title` / `task3desc`, zablokowana 🔒) — ta minigra ją odblokowuje.
 
 ## 1. Pomysł w jednym zdaniu
@@ -134,3 +135,28 @@ Proponowane etapy (każdy jako osobny PR, testowany na Pages):
   profesjonalizm, ale nie wykorzystuje przygotowanej karty PL/EN.
 - **„Spotkanie z parą"** — rozmowa przed weselem, układanie scenariusza i playlisty pod parę — bardziej
   sprzedażowa, mniej zręcznościowa.
+
+## 9. Jak to zostało zrobione (stan wdrożenia)
+
+- **Scena `Wedding`** (klasa w `index.html`), ~174 s gry; zegar pauzuje w okienkach (jak w minigrze 2).
+  Wspólne narzędzia (sterowanie, joystick, efekty, piruet panny młodej) są pożyczone z prototypu `Dance`.
+- **Paski:** Rodzina PL (zaangażowanie), Goście UK (zrozumienie), 🌉 Most. Średnie z całego wieczoru +
+  liczba trafnych zapowiedzi dają gwiazdki; średni Most dodaje premię do wyniku (×2 pkt).
+- **Zapowiedź** (każda z 7 faz): okienko z linią po polsku → wybór wersji EN (3 karty w losowej kolejności,
+  z dopiskiem w języku interfejsu) → pasek proporcji PL↔EN (zatrzymaj wskaźnik w zielonej strefie; strefa
+  zwęża się z każdą fazą). Zwlekanie = „cisza na sali" (oba paski spadają). Pominięta zapowiedź = kara.
+- **Sto lat** (faza 1): po zapowiedzi Karol dyryguje salą — 10 nut melodii, każde trafienie śpiewa nutę.
+  Brytyjczycy śpiewają mocniej, jeśli piosenka została dobrze wyjaśniona.
+- **Pierwszy taniec** (faza 2): taniec z piruetami, owacje dla pary.
+- **Przemowy** (faza 3): świadek (EN) i tata panny młodej (PL) mówią sami, w dymkach, bez tłumaczenia.
+  Karol: podaje mikrofon, gasi sprzężenie przy konsoli DJ (pisk + ⚡), na koniec wznosi toast „Na zdrowie! / Cheers!".
+- **Oczepiny** (faza 4, „boss"): karteczki gości z flagą i komendą zjeżdżają do strefy — trzeba wydać
+  komendę w języku gościa (← / A = PL, → / D = EN, przyciski na dotyk). Na koniec rzut bukietem.
+- **Impreza** (faza 5): zapowiedź „Gorzko!" (Brytyjczycy skandują tylko, gdy zwyczaj wyjaśniono), dedykacje
+  (babcia — polskie disco, świadek — British classic; obietnica do spełnienia przy konsoli), wspólny taniec
+  stolika PL + UK, a przy Moście ≥ 80 — pociąg, w którym goście obu stron idą na przemian.
+- **Zdarzenia przy stolikach:** zdezorientowani Brytyjczycy ❓, znudzony polski stolik 😴, wujek z trzecią
+  kolejką dla Anglika 🥃 (przechwyć go z ogórkiem kiszonym 🥒).
+- **Tort i podziękowania** (faza 6) i ekran wyniku z CTA „Wesele z gośćmi z zagranicy?…".
+- Testy: przejście całej gry botem w Chromium (gra idealna → 3★, losowe decyzje → 2★), bez błędów JS,
+  w obu plikach (PL i EN).

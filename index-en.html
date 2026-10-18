@@ -161,7 +161,10 @@
             <span class="tc-txt"><span class="tc-title" data-i18n="task2title">2. Parkiet z gośćmi</span><span class="tc-desc" data-i18n="task2desc">Czytaj salę, graj to, czego chcą goście, i utrzymaj energię parkietu.</span></span>
             <span class="tc-go" data-i18n="play">▶ GRAJ</span>
           </button>
-          <div class="task-card locked"><span class="tc-txt"><span class="tc-title" data-i18n="task3title">3. Wesele międzynarodowe PL/EN</span><span class="tc-desc" data-i18n="task3desc">Płynne dwujęzyczne prowadzenie. (Wkrótce)</span></span><span class="tc-lock">🔒</span></div>
+          <button class="task-card active" id="task3" type="button">
+            <span class="tc-txt"><span class="tc-title" data-i18n="task3title">3. Wesele międzynarodowe PL/EN</span><span class="tc-desc" data-i18n="task3desc">Wesele polsko-brytyjskie: zapowiedzi w dwóch językach, tradycje i wspólna zabawa obu stron.</span></span>
+            <span class="tc-go" data-i18n="play">▶ GRAJ</span>
+          </button>
         </div>
         <p class="ctrls" data-i18n-html="controls"><b>Sterowanie:</b> Strzałki / WASD&nbsp;•&nbsp;Akcja: Spacja<br>📱 na telefonie: joystick + przycisk AKCJA</p>
         <div id="loadingTxt" aria-live="polite"></div>
@@ -192,7 +195,7 @@ const I18N={
   menuSub:'Profesjonalna logistyka wesela w izometrycznej grze — wybierz zadanie:',
   task1title:'1. Load-in: Rozstawienie sprzętu', task1desc:'Rozpakuj i ustaw sprzęt, ogarnij ekipę i zdąż przed gośćmi.',
   task2title:'2. Parkiet z gośćmi', task2desc:'Czytaj salę, graj to, czego chcą goście, i utrzymaj energię parkietu.',
-  task3title:'3. Wesele międzynarodowe PL/EN', task3desc:'Płynne dwujęzyczne prowadzenie. (Wkrótce)',
+  task3title:'3. Wesele międzynarodowe PL/EN', task3desc:'Wesele polsko-brytyjskie: zapowiedzi w dwóch językach, tradycje i wspólna zabawa obu stron.',
   play:'▶ GRAJ', loading:'Ładowanie sali…', loadErr:'Błąd ładowania. Sprawdź połączenie i spróbuj ponownie.',
   controls:'<b>Sterowanie:</b> Strzałki / WASD&nbsp;•&nbsp;Akcja: Spacja<br>📱 na telefonie: joystick + przycisk AKCJA',
   seo:'<strong>Wodzirej Karol</strong> to profesjonalny wodzirej i DJ prowadzący wesela polskie oraz międzynarodowe jako <strong>Wedding MC Poland</strong>. Zagraj i zobacz, ile pracy i logistyki kryje się za bezbłędnym weselem. <a href="http://www.wodzirejkarol.pl" target="_blank" rel="noopener">Sprawdź wolny termin u Karola →</a>',
@@ -238,14 +241,60 @@ const I18N={
   dLow:'Parkiet gaśnie! Zmień muzykę przy konsoli!', dMatchAll:'Cała sala tańczy! 🔥', dBoo:'Goście zaczynają buczeć! Ratuj parkiet NATYCHMIAST!',
   resDance:'PARKIET ROZGRZANY!', resDanceHi:'Sala szalała do końca — mistrzowskie czytanie parkietu!', resDanceMid:'Dobra impreza! Następnym razem rozkręcisz salę jeszcze mocniej.',
   resDanceScore:(s,n,m)=>'Wynik: '+s+' pkt  •  Akcje na sali: '+n+'/'+(m||6), resDanceAvg:(e)=>'Średnia energia parkietu: '+e+'%',
-  resDanceCopy:'Dobry wodzirej cały wieczór czyta salę i wie, co zagrać.\nKarol robi to na każdym weselu — sprawdź go w akcji.'
+  resDanceCopy:'Dobry wodzirej cały wieczór czyta salę i wie, co zagrać.\nKarol robi to na każdym weselu — sprawdź go w akcji.',
+  /* ---- Minigra 3: Wesele międzynarodowe PL/EN (Kasia 🇵🇱 + James 🇬🇧) ---- */
+  i_pl:'RODZINA (PL) — ZAANGAŻOWANIE', i_uk:'GOŚCIE Z UK — ZROZUMIENIE', i_bridge:'🌉 MOST', i_ann:'Zapowiedzi: ', i_trainReady:'🚂 gotowy!',
+  iph0:'Chleb i sól', iph1:'Toast i Sto lat', iph2:'Pierwszy taniec', iph3:'Przemowy', iph4:'Oczepiny', iph5:'Impreza', iph6:'Tort i podziękowania',
+  ih0:'Zapowiedz powitanie przy mikrofonie 🎤 — goście z UK nie znają tego zwyczaju', ih1:'Zapowiedz toast, a potem zaintonuj „Sto lat" z całą salą',
+  ih2:'Krótka, elegancka zapowiedź — i owacje dla pary', ih3:'Zapowiedz mówców, podaj mikrofon, pilnuj dźwięku. Przemów nie tłumaczysz!',
+  ih4:'Wyjaśnij oczepiny i poprowadź mieszane drużyny', ih5:'Dedykacje z obu krajów, wspólne tańce, pociąg — połącz salę!', ih6:'Tort i podziękowania dla rodziców — w obu językach',
+  pMic:'Zapowiedź przy mikrofonie', pStoLat:'Zaintonuj „Sto lat"!', pExplain:'Wyjaśnij zwyczaj (EN)', pChat:'Zagadaj po polsku', pPickle:'Podsuń ogórka do wódki 🥒',
+  pDedic:'Przyjmij dedykację', pPlayDedic:'Zagraj dedykację: ', pInvite:'Zaproś na wspólny taniec', pGiveMic:'Podaj mikrofon', pFeedback:'Usuń sprzężenie!',
+  pToast:'Wznieś toast: Na zdrowie! / Cheers!', pBoss:'Rozpocznij zabawy oczepinowe', pTrain:'Poprowadź pociąg obu stron!',
+  ivAnnDue:'pora na zapowiedź — podejdź do mikrofonu 🎤', ivDeadAir:'Cisza na sali! Obie strony się nudzą — do mikrofonu!', ivLateSkip:'Zapowiedź przepadła — ten moment uciekł…',
+  ivConfused:'Goście z UK nie rozumieją, co się dzieje ❓', ivConfusedOk:'Wyjaśnione! Brytyjczycy dołączają do zabawy 👍', ivConfusedFail:'Brytyjczycy dalej nic nie rozumieją…',
+  ivBored:'Polski stolik się nudzi — babcia ziewa 😴', ivBoredOk:'Polski stolik znów w formie!', ivBoredFail:'Polski stolik stracił zapał…',
+  ivVodka:'Wujek niesie Brytyjczykowi trzecią kolejkę! 🥃 Przechwyć go!', ivVodkaOk:'Ogórek kiszony podany — Anglik przetrwał! 🥒', ivVodkaFail:'Anglik po trzeciej kolejce… 🥴',
+  ivReqPL:'Babcia prosi o polski przebój!', ivReqUK:'Świadek prosi o brytyjski klasyk!', ivReqGo:'Obiecane! Zagraj przy konsoli DJ: ', ivReqOk:'Dedykacja zagrana — stolik szaleje!', ivReqFail:'Obietnica niespełniona…',
+  songPL:'polskie disco', songUK:'British classic',
+  ivMixed:'Zaproś polski i brytyjski stolik na wspólny taniec! 🤝', ivMixedHalf:'Świetnie — teraz druga strona!', ivMixedOk:'Polska i Wielka Brytania tańczą razem! 🌉', ivMixedFail:'Stoliki zostały przy swoich…',
+  ivSpeechGive:'Mówca czeka przy mikrofonie — podaj mu mikrofon', ivSpeechOn:'Przemowa trwa — nie tłumaczysz, pilnujesz dźwięku 🎧',
+  ivFeedback:'Sprzężenie! Biegnij do konsoli DJ!', ivFeedbackOk:'Sprzężenie wyciszone — przemowa płynie dalej', ivFeedbackFail:'Pisk na całą salę… 🙉',
+  ivToastDue:'Przemowy skończone — wznieś toast przy mikrofonie!', ivToastOk:'Na zdrowie! Cheers! Cała sala wznosi kieliszki 🥂',
+  ivBossDue:'Wszyscy na parkiecie — rozpocznij zabawy na środku sali!', ivStoLatDue:'Zaintonuj „Sto lat" przy mikrofonie!',
+  ivTrainReady:'Most jest mocny — poprowadź pociąg obu stron! 🚂', ivTrainStart:'Jedzie pociąg z daleka! Polacy i Brytyjczycy razem!', ivTrainDone:'Pociąg połączył całą salę! 🌉',
+  ivGorzko:'GORZKO!', ivThanks:'Brawa dla rodziców! 👏', ivCake:'Wjeżdża tort! 🎂',
+  annTitle:'ZAPOWIEDŹ PRZY MIKROFONIE', annSaysPL:'Po polsku mówisz:', annPick:'Wybierz, jak powiesz to po angielsku (kliknij albo 1–3):',
+  annBal:'Proporcje języków — zatrzymaj wskaźnik na środku! (Spacja / STOP)', annBalL:'za dużo po polsku', annBalC:'krótko w obu', annBalR:'za dużo po angielsku', annStop:'STOP',
+  annQ0:'Dosłownie… Brytyjczycy w szoku 😂', annQ1:'Poprawnie, ale drewniano 😐', annQ2:'Wodzirejsko! Wszyscy rozumieją 👏',
+  annBC:'Idealny balans ⚖', annBL:'Za dużo polskiego — Brytyjczycy się gubią', annBR:'Za dużo angielskiego — rodzina się nudzi',
+  slTitle:'STO LAT! — DYRYGUJ SALĄ', slSub:'Trafiaj, gdy nuta dotknie złotego koła (Spacja / klik)', slDone:(n)=>'Cała sala śpiewa! Trafienia: '+n+'/10', slPerfect:'Czysto!', slMiss:'Fałsz!',
+  bTitle:'OCZEPINY — MIESZANE DRUŻYNY', bSub:'Gość z karteczki czeka na komendę — wydaj ją w JEGO języku!   ← / A = PL     → / D = EN',
+  bBtnPL:'PO POLSKU', bBtnUK:'PO ANGIELSKU', bTeamA:'Drużyna Kasi', bTeamB:'Drużyna Jamesa', bWrong:'Zły język! ❓', bMiss:'Za późno!',
+  bDone:(n,m)=>'Zabawy zaliczone! Trafienia: '+n+'/'+m,
+  resIntl:'MOST MIĘDZY NARODAMI!', resIntlLowT:'GOOGLE TRANSLATE Z MIKROFONEM', resIntlHi:'Obie strony bawiły się razem — dwujęzyczna klasa!',
+  resIntlMid:'Dobre wesele! Jeszcze trochę, a sala stanie się jedną.', resIntlLow:'Strony siedziały osobno — następnym razem połącz salę!',
+  resIntlScore:(s,n,m)=>'Wynik: '+s+' pkt  •  Trafne zapowiedzi: '+n+'/'+m, resIntlAvg:(p,u,b)=>'Rodzina PL '+p+'%  •  Goście UK '+u+'%  •  Most '+b+'%',
+  resIntlCopy:'Wesele z gośćmi z zagranicy? Karol poprowadzi je płynnie\npo polsku i angielsku — bez tłumacza, z klasą.',
+  spBest:['Hi everyone, I\'m Tom — the best man!','I\'ve known James since school… and he still can\'t dance.','Kasia, good luck teaching him. To the bride and groom!'],
+  spDad:['Kochani, dziękuję, że jesteście dziś z nami!','Kasiu, Jamesie — bądźcie zawsze tak szczęśliwi jak dziś.','Witamy Jamesa w rodzinie! Sto lat, dzieci!'],
+  bCmds:[{i:'🪑',pl:'Krzesło!',en:'Chair!'},{i:'💃',pl:'Tańczymy!',en:'Dance!'},{i:'🎈',pl:'Balon!',en:'Balloon!'},{i:'✋',pl:'Stop!',en:'Freeze!'},{i:'👏',pl:'Klaszczemy!',en:'Clap!'}],
+  slSyl:['Sto','lat,','sto','lat,','niech','ży-','je,','ży-','je','nam!'],
+  ann:[
+   {icon:'🍞',pl:'Proszę Państwa, wstajemy! Rodzice witają Parę Młodą chlebem i solą.',opts:[{en:'Please get up! The parents are now salting the bread of the young pair!',g:'(dosłownie: „rodzice solą chleb" — goście nie wiedzą, o co chodzi)',q:0},{en:'Please stand. Bread and salt now.',g:'(sucho — bez wyjaśnienia zwyczaju)',q:1},{en:'Please rise! In Poland, parents greet the newlyweds with bread and salt — so they never go hungry and face life\'s hardships together.',g:'(wyjaśnia sens tradycji — wszyscy rozumieją)',q:2}]},
+   {icon:'🥂',pl:'Wznosimy toast! A teraz wszyscy razem: Sto lat!',opts:[{en:'We raise the toast! And now all together: One hundred summers!',g:'(„lat" jak „lato" — totalna zagadka)',q:0},{en:'Toast. Now sing Sto lat.',g:'(nikt nie wie, co i jak śpiewać)',q:1},{en:'Raise your glasses! Now our Polish party anthem — Sto lat, wishing them a hundred years together. Just sing: sto lat, sto lat!',g:'(wyjaśnia piosenkę i daje prosty refren)',q:2}]},
+   {icon:'💑',pl:'Przed nami pierwszy taniec Państwa Młodych!',opts:[{en:'Before us is the first dance of the Young State!',g:'(„Państwo" jak państwo-kraj 😅)',q:0},{en:'Now the first dance of the young couple, which is the first dance that they dance as a couple, together, right now.',g:'(przegadane — moment ucieka)',q:1},{en:'Ladies and gentlemen — please welcome to the floor, for their first dance as husband and wife: Kasia and James!',g:'(krótko i elegancko)',q:2}]},
+   {icon:'🎤',pl:'Za chwilę przemówienia — najpierw świadek, potem tata Panny Młodej.',opts:[{en:'In a moment the speeches — first the witness, then the dad of the young miss.',g:'(„świadek" jak świadek w sądzie…)',q:0},{en:'Speeches now. Best man and the bride\'s father.',g:'(poprawnie, ale bez klimatu)',q:1},{en:'Time for the speeches! Please welcome the best man — and then the father of the bride. Glasses ready!',g:'(zapowiada mówców i szykuje toast)',q:2}]},
+   {icon:'💐',pl:'Zaczynamy oczepiny! Zapraszam wszystkich na parkiet!',opts:[{en:'We are starting the un-capping! Everybody to the floor!',g:'(dosłownie „od-czepianie" — brzmi groźnie)',q:0},{en:'Now: oczepiny. Come to the dance floor.',g:'(nazwa bez wyjaśnienia)',q:1},{en:'It\'s time for Oczepiny — the moment the bride becomes a wife, full of games for everyone. Mixed teams — come on down!',g:'(wyjaśnia zwyczaj i łączy obie strony)',q:2}]},
+   {icon:'💋',pl:'Coś mi tu gorzko… Gorzko, gorzko!',opts:[{en:'Something is bitter here… Bitter, bitter!',g:'(dosłownie — goście sprawdzają swoje drinki)',q:0},{en:'Please kiss now.',g:'(działa, ale zabija zabawę)',q:1},{en:'In Poland, when the vodka tastes bitter, only the couple\'s kiss can sweeten it — so everyone shout: GORZKO! GORZKO!',g:'(wyjaśnia zwyczaj i wciąga gości)',q:2}]},
+   {icon:'🎂',pl:'Na koniec tort — i wielkie podziękowania dla rodziców!',opts:[{en:'At the end the tort — and big thanks for the parents!',g:'(„tort" po angielsku to… delikt prawny 😅)',q:0},{en:'Cake now. Thank you, parents.',g:'(sucho)',q:1},{en:'And now the wedding cake — and a huge thank-you to the parents who made this day possible. Let\'s hear it for them!',g:'(ciepło i z energią — sala klaszcze)',q:2}]}],
  },
  en:{
   docTitle:'Wodzirej Karol: Master of the Dancefloor – game | Wedding MC Poland',
   menuSub:'Professional wedding logistics in an isometric game — pick a task:',
   task1title:'1. Load-in: Set up the gear', task1desc:'Unpack and set up the gear, wrangle the crew and beat the guests.',
   task2title:'2. Dancefloor with guests', task2desc:'Read the room, play what the guests want and keep the dancefloor energy up.',
-  task3title:'3. International wedding PL/EN', task3desc:'Smooth bilingual hosting. (Soon)',
+  task3title:'3. International wedding PL/EN', task3desc:'A Polish-British wedding: bilingual announcements, traditions and both sides partying together.',
   play:'▶ PLAY', loading:'Loading the venue…', loadErr:'Loading error. Check your connection and try again.',
   controls:'<b>Controls:</b> Arrows / WASD&nbsp;•&nbsp;Action: Space<br>📱 on phone: joystick + ACTION button',
   seo:'<strong>Wodzirej Karol</strong> is a professional wedding host (MC) and DJ for Polish and international weddings as <strong>Wedding MC Poland</strong>. Play and see how much work and logistics go into a flawless wedding. <a href="http://www.wodzirejkarol.pl" target="_blank" rel="noopener">Check Karol\'s availability →</a>',
@@ -291,7 +340,53 @@ const I18N={
   dLow:'The floor is dying down! Change the music at the console!', dMatchAll:'The whole room is dancing! 🔥', dBoo:'The crowd starts booing! Save the floor NOW!',
   resDance:'DANCEFLOOR ON FIRE!', resDanceHi:'The room partied to the very end — masterful floor reading!', resDanceMid:'Good party! Next time you\'ll heat the room up even more.',
   resDanceScore:(s,n,m)=>'Score: '+s+' pts  •  Floor actions: '+n+'/'+(m||6), resDanceAvg:(e)=>'Average dancefloor energy: '+e+'%',
-  resDanceCopy:'A good MC reads the room all night and knows what to play.\nKarol does it at every wedding — see him in action.'
+  resDanceCopy:'A good MC reads the room all night and knows what to play.\nKarol does it at every wedding — see him in action.',
+  /* ---- Minigame 3: International wedding PL/EN (Kasia 🇵🇱 + James 🇬🇧) ---- */
+  i_pl:'POLISH FAMILY — ENGAGEMENT', i_uk:'UK GUESTS — UNDERSTANDING', i_bridge:'🌉 BRIDGE', i_ann:'Announcements: ', i_trainReady:'🚂 ready!',
+  iph0:'Bread & salt', iph1:'Toast & Sto lat', iph2:'First dance', iph3:'Speeches', iph4:'Oczepiny', iph5:'Party time', iph6:'Cake & thank-yous',
+  ih0:'Announce the welcome at the mic 🎤 — the UK guests don\'t know this custom', ih1:'Announce the toast, then lead "Sto lat" with the whole room',
+  ih2:'A short, elegant intro — then cheer for the couple', ih3:'Introduce the speakers, hand over the mic, watch the sound. You don\'t translate speeches!',
+  ih4:'Explain Oczepiny and lead the mixed teams', ih5:'Requests from both countries, dancing together, the conga — unite the room!', ih6:'Cake and thank-yous to the parents — in both languages',
+  pMic:'Announce at the mic', pStoLat:'Lead "Sto lat"!', pExplain:'Explain the custom (EN)', pChat:'Chat in Polish', pPickle:'Offer a pickle with the vodka 🥒',
+  pDedic:'Take the request', pPlayDedic:'Play the request: ', pInvite:'Invite to dance together', pGiveMic:'Hand over the mic', pFeedback:'Kill the feedback!',
+  pToast:'Raise a toast: Na zdrowie! / Cheers!', pBoss:'Start the Oczepiny games', pTrain:'Lead a conga of both sides!',
+  ivAnnDue:'time for an announcement — go to the mic 🎤', ivDeadAir:'Dead air! Both sides are getting bored — to the mic!', ivLateSkip:'The announcement was missed — that moment is gone…',
+  ivConfused:'The UK guests don\'t get what\'s going on ❓', ivConfusedOk:'Explained! The Brits join in 👍', ivConfusedFail:'The Brits are still lost…',
+  ivBored:'The Polish table is bored — grandma is yawning 😴', ivBoredOk:'The Polish table is back in the game!', ivBoredFail:'The Polish table lost its spark…',
+  ivVodka:'Uncle is bringing a Brit his third shot! 🥃 Intercept him!', ivVodkaOk:'Pickle served — the Brit survives! 🥒', ivVodkaFail:'The Brit after the third shot… 🥴',
+  ivReqPL:'Grandma wants a Polish hit!', ivReqUK:'The best man wants a British classic!', ivReqGo:'Promised! Play it at the DJ console: ', ivReqOk:'Request played — the table goes wild!', ivReqFail:'Promise broken…',
+  songPL:'Polish disco', songUK:'British classic',
+  ivMixed:'Invite a Polish and a British table to dance together! 🤝', ivMixedHalf:'Great — now the other side!', ivMixedOk:'Poland and Britain dance together! 🌉', ivMixedFail:'The tables stayed apart…',
+  ivSpeechGive:'The speaker is waiting at the mic — hand it over', ivSpeechOn:'Speech in progress — no translating, just watch the sound 🎧',
+  ivFeedback:'Feedback! Run to the DJ console!', ivFeedbackOk:'Feedback killed — the speech goes on', ivFeedbackFail:'A screech across the room… 🙉',
+  ivToastDue:'Speeches done — raise a toast at the mic!', ivToastOk:'Na zdrowie! Cheers! The whole room raises a glass 🥂',
+  ivBossDue:'Everyone on the floor — start the games in the middle of the room!', ivStoLatDue:'Lead "Sto lat" at the mic!',
+  ivTrainReady:'The bridge is strong — lead a conga of both sides! 🚂', ivTrainStart:'All aboard! Poles and Brits together!', ivTrainDone:'The conga united the whole room! 🌉',
+  ivGorzko:'GORZKO!', ivThanks:'A round of applause for the parents! 👏', ivCake:'Here comes the cake! 🎂',
+  annTitle:'ANNOUNCEMENT AT THE MIC', annSaysPL:'In Polish you say:', annPick:'Pick how you\'ll say it in English (click or 1–3):',
+  annBal:'Language balance — stop the needle in the middle! (Space / STOP)', annBalL:'too much Polish', annBalC:'short in both', annBalR:'too much English', annStop:'STOP',
+  annQ0:'Word-for-word… the Brits are baffled 😂', annQ1:'Correct, but wooden 😐', annQ2:'Spot on! Everyone gets it 👏',
+  annBC:'Perfect balance ⚖', annBL:'Too much Polish — the Brits get lost', annBR:'Too much English — the family gets bored',
+  slTitle:'STO LAT! — CONDUCT THE ROOM', slSub:'Hit when the note touches the gold circle (Space / click)', slDone:(n)=>'The whole room sings! Hits: '+n+'/10', slPerfect:'In tune!', slMiss:'Off key!',
+  bTitle:'OCZEPINY — MIXED TEAMS', bSub:'The guest on the card awaits a command — give it in THEIR language!   ← / A = PL     → / D = EN',
+  bBtnPL:'IN POLISH', bBtnUK:'IN ENGLISH', bTeamA:'Kasia\'s team', bTeamB:'James\'s team', bWrong:'Wrong language! ❓', bMiss:'Too late!',
+  bDone:(n,m)=>'Games complete! Hits: '+n+'/'+m,
+  resIntl:'A BRIDGE BETWEEN NATIONS!', resIntlLowT:'GOOGLE TRANSLATE WITH A MIC', resIntlHi:'Both sides partied together — true bilingual class!',
+  resIntlMid:'A good wedding! A bit more and it\'s one big room.', resIntlLow:'The sides stayed apart — next time bring them together!',
+  resIntlScore:(s,n,m)=>'Score: '+s+' pts  •  Spot-on announcements: '+n+'/'+m, resIntlAvg:(p,u,b)=>'PL family '+p+'%  •  UK guests '+u+'%  •  Bridge '+b+'%',
+  resIntlCopy:'Getting married in Poland with guests from abroad?\nKarol hosts fluently in English and Polish — with class.',
+  spBest:['Hi everyone, I\'m Tom — the best man!','I\'ve known James since school… and he still can\'t dance.','Kasia, good luck teaching him. To the bride and groom!'],
+  spDad:['Kochani, dziękuję, że jesteście dziś z nami!','Kasiu, Jamesie — bądźcie zawsze tak szczęśliwi jak dziś.','Witamy Jamesa w rodzinie! Sto lat, dzieci!'],
+  bCmds:[{i:'🪑',pl:'Krzesło!',en:'Chair!'},{i:'💃',pl:'Tańczymy!',en:'Dance!'},{i:'🎈',pl:'Balon!',en:'Balloon!'},{i:'✋',pl:'Stop!',en:'Freeze!'},{i:'👏',pl:'Klaszczemy!',en:'Clap!'}],
+  slSyl:['Sto','lat,','sto','lat,','niech','ży-','je,','ży-','je','nam!'],
+  ann:[
+   {icon:'🍞',pl:'Proszę Państwa, wstajemy! Rodzice witają Parę Młodą chlebem i solą.',opts:[{en:'Please get up! The parents are now salting the bread of the young pair!',g:'(word-for-word — the guests have no idea)',q:0},{en:'Please stand. Bread and salt now.',g:'(dry — the custom isn\'t explained)',q:1},{en:'Please rise! In Poland, parents greet the newlyweds with bread and salt — so they never go hungry and face life\'s hardships together.',g:'(explains the tradition — everyone gets it)',q:2}]},
+   {icon:'🥂',pl:'Wznosimy toast! A teraz wszyscy razem: Sto lat!',opts:[{en:'We raise the toast! And now all together: One hundred summers!',g:'("lat" read as "summer" — a total riddle)',q:0},{en:'Toast. Now sing Sto lat.',g:'(nobody knows what or how to sing)',q:1},{en:'Raise your glasses! Now our Polish party anthem — Sto lat, wishing them a hundred years together. Just sing: sto lat, sto lat!',g:'(explains the song and gives an easy chorus)',q:2}]},
+   {icon:'💑',pl:'Przed nami pierwszy taniec Państwa Młodych!',opts:[{en:'Before us is the first dance of the Young State!',g:'("Państwo" read as a country 😅)',q:0},{en:'Now the first dance of the young couple, which is the first dance that they dance as a couple, together, right now.',g:'(waffly — the moment slips away)',q:1},{en:'Ladies and gentlemen — please welcome to the floor, for their first dance as husband and wife: Kasia and James!',g:'(short and elegant)',q:2}]},
+   {icon:'🎤',pl:'Za chwilę przemówienia — najpierw świadek, potem tata Panny Młodej.',opts:[{en:'In a moment the speeches — first the witness, then the dad of the young miss.',g:'("świadek" read as a court witness…)',q:0},{en:'Speeches now. Best man and the bride\'s father.',g:'(correct, but flat)',q:1},{en:'Time for the speeches! Please welcome the best man — and then the father of the bride. Glasses ready!',g:'(introduces the speakers and sets up the toast)',q:2}]},
+   {icon:'💐',pl:'Zaczynamy oczepiny! Zapraszam wszystkich na parkiet!',opts:[{en:'We are starting the un-capping! Everybody to the floor!',g:'(word-for-word "un-hooking" — sounds scary)',q:0},{en:'Now: oczepiny. Come to the dance floor.',g:'(the name, unexplained)',q:1},{en:'It\'s time for Oczepiny — the moment the bride becomes a wife, full of games for everyone. Mixed teams — come on down!',g:'(explains the custom and unites both sides)',q:2}]},
+   {icon:'💋',pl:'Coś mi tu gorzko… Gorzko, gorzko!',opts:[{en:'Something is bitter here… Bitter, bitter!',g:'(word-for-word — guests check their drinks)',q:0},{en:'Please kiss now.',g:'(works, but kills the fun)',q:1},{en:'In Poland, when the vodka tastes bitter, only the couple\'s kiss can sweeten it — so everyone shout: GORZKO! GORZKO!',g:'(explains the custom and pulls the guests in)',q:2}]},
+   {icon:'🎂',pl:'Na koniec tort — i wielkie podziękowania dla rodziców!',opts:[{en:'At the end the tort — and big thanks for the parents!',g:'("tort" in English is… a legal wrong 😅)',q:0},{en:'Cake now. Thank you, parents.',g:'(dry)',q:1},{en:'And now the wedding cake — and a huge thank-you to the parents who made this day possible. Let\'s hear it for them!',g:'(warm and upbeat — the room applauds)',q:2}]}],
  }
 };
 function detectLang(){ try{ const u=new URLSearchParams(location.search).get('lang'); if(u==='en'||u==='pl') return u;
@@ -338,6 +433,9 @@ function setLang(l){ if(l!==LANG){ LANG=l; try{localStorage.setItem('wk_lang',l)
   card1.addEventListener('keydown',e=>{ if(e.key==='Enter'||e.key===' '){e.preventDefault();loadGame('Setup');}});
   if(card2){ card2.addEventListener('click',()=>loadGame('Dance'));
     card2.addEventListener('keydown',e=>{ if(e.key==='Enter'||e.key===' '){e.preventDefault();loadGame('Dance');}}); }
+  const card3=document.getElementById('task3');
+  if(card3){ card3.addEventListener('click',()=>loadGame('Wedding'));
+    card3.addEventListener('keydown',e=>{ if(e.key==='Enter'||e.key===' '){e.preventDefault();loadGame('Wedding');}}); }
 })();
 
 /* =========================================================================
@@ -374,7 +472,14 @@ const CHARS={
   uncle:   {shirt:0x9a4a3a,pants:0x4a3a2a,skin:0xf1c9a5,hair:0x9a9aa2},
   tech:    {shirt:0xd97a1a,pants:0x33343c,skin:0xf1c9a5,hair:0x2a1a10,hat:'cap',hatCol:0x555a64},
   bride:   {shirt:0xf5f0ea,dress:0xf5f0ea,skin:0xf1c9a5,hair:0xd9a24a,curly:true},
-  groom:   {shirt:0x14141a,pants:0x14141a,vest:true,bow:true,skin:0xf1c9a5,hair:0x2a1a10}
+  groom:   {shirt:0x14141a,pants:0x14141a,vest:true,bow:true,skin:0xf1c9a5,hair:0x2a1a10},
+  // minigra 3: wesele polsko-brytyjskie
+  granny:  {shirt:0x7a4a8a,dress:0x7a4a8a,skin:0xf1c9a5,hair:0xc8c8d0,curly:true},
+  father:  {shirt:0x2a2a34,pants:0x2a2a34,vest:true,skin:0xf1c9a5,hair:0x9a9aa2},
+  bestman: {shirt:0x5a5e6a,pants:0x4a4e58,vest:true,skin:0xf6d2b4,hair:0xc8642a},
+  brit1:   {shirt:0x4a6a3a,pants:0x3a3a40,skin:0xf6d2b4,hair:0xc8642a},
+  brit2:   {shirt:0x2a3a7a,dress:0x2a3a7a,skin:0xf6d2b4,hair:0xe8d27a,curly:true},
+  brit3:   {shirt:0x8a2a3a,pants:0x2a2a34,skin:0xf1c9a5,hair:0x4a3020}
 };
 
 function iso(gx,gy,z){ return { x: OX+(gx-gy)*(TW/2), y: OY+(gx+gy)*(TH/2) - (z||0) }; }
@@ -516,8 +621,17 @@ const Audio=(function(){
     else if(type==='boo'){ [0,0.09,0.18].forEach(delay=>{ const oo=ctx.createOscillator(),gg=ctx.createGain(); oo.type='sawtooth'; const s=t+delay;
         oo.frequency.setValueAtTime(180,s); oo.frequency.exponentialRampToValueAtTime(90,s+0.32); gg.gain.setValueAtTime(0,s);
         gg.gain.linearRampToValueAtTime(0.16,s+0.04); gg.gain.exponentialRampToValueAtTime(0.001,s+0.36); oo.connect(gg); gg.connect(sfxG); oo.start(s); oo.stop(s+0.38); }); o.disconnect(); }
+    else if(type==='squeal'){ o.type='sine'; o.frequency.setValueAtTime(2600,t); o.frequency.linearRampToValueAtTime(3200,t+0.14); o.frequency.linearRampToValueAtTime(2800,t+0.3);   // sprzężenie mikrofonu
+      g.gain.setValueAtTime(0,t); g.gain.linearRampToValueAtTime(0.07,t+0.04); g.gain.exponentialRampToValueAtTime(0.001,t+0.32); o.start(t); o.stop(t+0.34); }
+    else if(type==='clink'){ [1568,2093].forEach((f,i)=>{ const oo=ctx.createOscillator(),gg=ctx.createGain(); oo.type='triangle'; oo.frequency.value=f; const s=t+i*0.06;   // stuknięcie kieliszków
+        gg.gain.setValueAtTime(0,s); gg.gain.linearRampToValueAtTime(0.16,s+0.01); gg.gain.exponentialRampToValueAtTime(0.001,s+0.28); oo.connect(gg); gg.connect(sfxG); oo.start(s); oo.stop(s+0.3); }); o.disconnect(); }
   }
-  return { startMusic, stopMusic, setMood, getMood, beatDur, toggleMute, isMuted, sfx, resume, init };
+  // pojedyncza nuta "chóru sali" (Sto lat) — ton + oktawa niżej
+  function tone(f,dur){ init(); resume(); const t=ctx.currentTime; dur=dur||0.3;
+    [[f,'triangle',0.2],[f/2,'sine',0.12]].forEach(([fr,ty,g0])=>{ const o=ctx.createOscillator(),g=ctx.createGain(); o.type=ty; o.frequency.value=fr;
+      g.gain.setValueAtTime(0,t); g.gain.linearRampToValueAtTime(g0,t+0.02); g.gain.exponentialRampToValueAtTime(0.001,t+dur);
+      o.connect(g); g.connect(sfxG); o.start(t); o.stop(t+dur+0.02); }); }
+  return { startMusic, stopMusic, setMood, getMood, beatDur, toggleMute, isMuted, sfx, tone, resume, init };
 })();
 
 /* ---------------------------------------------------------------------------
@@ -605,6 +719,17 @@ function drawItem(P,key){
   else if(key==='port'){ // małe kółeczko-gniazdo (białe, tintowane w grze)
     P(3,1,4,1,0xffffff); P(3,8,4,1,0xffffff); P(1,3,1,4,0xffffff); P(8,3,1,4,0xffffff);
     P(2,2,1,1,0xffffff); P(7,2,1,1,0xffffff); P(2,7,1,1,0xffffff); P(7,7,1,1,0xffffff); P(4,4,2,2,0xffffff,0.6); }
+  else if(key==='micstand'){ P(5,8,2,24,0x777b84); P(2,31,8,2,0x55585f); P(4,6,4,3,0x333333); P(4,1,4,6,0x1a1a1f); P(5,2,2,3,0x9a9aa2); }
+  else if(key==='breadsalt'){ // bochenek na tacy z haftowanym ręcznikiem + solniczka
+    P(1,8,18,3,0xc0c0c8); P(2,7,16,1,0xe0e0e8); P(3,6,14,2,0xf2f2f2); P(3,7,14,1,0xc0303a);
+    P(5,2,10,5,0xb8742a); P(6,1,8,2,0xd08a3a); P(7,3,6,1,0x8a5420); P(14,3,3,3,0xf8f8f8); }
+  else if(key==='cake'){ // trzypiętrowy tort weselny
+    P(0,24,22,2,0xc8c8d0); P(2,17,18,7,0xf8f4ee); P(5,10,12,7,0xf8f4ee); P(8,4,6,6,0xf8f4ee);
+    P(2,20,18,1,0xff9ac0); P(5,13,12,1,0xff9ac0); P(8,7,6,1,0xff9ac0); P(10,1,2,3,0xd4af37); }
+  else if(key==='flagPL'){ P(0,0,1,14,0x888888); P(1,1,14,5,0xffffff); P(1,6,14,5,0xdc143c); }
+  else if(key==='flagUK'){ P(0,0,1,14,0x888888); P(1,1,14,10,0x012169);
+    for(let i=0;i<14;i++){ const y=1+i*10/14; P(1+i,y,1,1.6,0xffffff); P(14-i,y,1,1.6,0xffffff); P(1+i,y+0.4,1,0.7,0xc8102e); P(14-i,y+0.4,1,0.7,0xc8102e); }
+    P(1,5,14,2,0xffffff); P(7,1,2,10,0xffffff); P(1,5.5,14,1,0xc8102e); P(7.5,1,1,10,0xc8102e); }
 }
 
 // garderoba do modala przebierania (siatka 22x34, jak postać) + manekin
@@ -692,6 +817,9 @@ function genAssets(scene){
       mk(key,sizes[0],sizes[1],P=>drawItem(P,key), key==='car'?{shade:{top:0.12,bot:0.22},rim:true}:iOpt); });
   mk('marker',64,34,P=>drawItem(P,'marker'),{noOutline:true,noShade:true});
   mk('port',10,10,P=>drawItem(P,'port'),{noShade:true});
+  // minigra 3: mikrofon, chleb i sól, tort, flagi stolików
+  [['micstand',12,34],['breadsalt',20,12],['cake',22,26]].forEach(([k,w,h])=>mk(k,w,h,P=>drawItem(P,k),iOpt));
+  ['flagPL','flagUK'].forEach(k=>mk(k,16,14,P=>drawItem(P,k),{noShade:true}));
   // garderoba + manekin (modal przebierania)
   ['mannequin','g_pants','g_shirt','g_suspenders','g_vest','g_shoes','g_bowtie','g_coat','g_tophat']
     .forEach(k=>mk(k,22,34,P=>drawGarment(P,k),{shade:{top:0.06,bot:0.10},rim:true}));
@@ -778,7 +906,7 @@ class Boot extends Phaser.Scene{
         {fontFamily:'Segoe UI',fontSize:'22px',color:'#ffe487',align:'center',fontStyle:'bold'}).setOrigin(0.5);
       return; }
     this.registry.set('best',this.registry.get('best')||0);
-    this.scene.start(window.WK_START==='Dance'?'Dance':'Setup'); }
+    this.scene.start({Dance:'Dance',Wedding:'Wedding'}[window.WK_START]||'Setup'); }
 }
 
 /* ===========================================================================
@@ -797,7 +925,7 @@ class Hub extends Phaser.Scene{
     const cards=[
       {t:t('task1title'), d:t('task1desc'), on:true, scene:'Setup'},
       {t:t('task2title'), d:t('task2desc'), on:true, scene:'Dance'},
-      {t:t('task3title'), d:t('task3desc'), on:false}
+      {t:t('task3title'), d:t('task3desc'), on:true, scene:'Wedding'}
     ];
     cards.forEach((c,i)=>{
       const y=290+i*86;
@@ -2130,6 +2258,701 @@ class Dance extends Phaser.Scene{
 }
 
 /* ===========================================================================
+   WEDDING — minigra 3 "Wesele międzynarodowe PL/EN" (Kasia 🇵🇱 + James 🇬🇧)
+   Zasada nadrzędna: wodzirej mówi w dwóch językach wyłącznie WŁASNE kwestie
+   (zapowiedzi, wyjaśnienia, komendy, toasty) — nie tłumaczy gości ani przemówień.
+=========================================================================== */
+class Wedding extends Phaser.Scene{
+  constructor(){ super('Wedding'); }
+
+  create(){
+    this.cameras.main.setBackgroundColor('#08070f');
+    Audio.setMood('chill'); Audio.startMusic();
+    this.input.once('pointerdown',()=>Audio.resume()); this.input.keyboard.once('keydown',()=>Audio.resume());
+    drawPalaceRoom(this);
+
+    // harmonogram wieczoru — każda faza zaczyna się zapowiedzią Karola przy mikrofonie
+    this.PH=[
+      {name:t('iph0'),hint:t('ih0'),icon:'🍞',dur:22,mood:'chill'},
+      {name:t('iph1'),hint:t('ih1'),icon:'🥂',dur:24,mood:'chill'},
+      {name:t('iph2'),hint:t('ih2'),icon:'💑',dur:20,mood:'romantic'},
+      {name:t('iph3'),hint:t('ih3'),icon:'🎤',dur:30,mood:'chill'},
+      {name:t('iph4'),hint:t('ih4'),icon:'💐',dur:28,mood:'hype'},
+      {name:t('iph5'),hint:t('ih5'),icon:'🎉',dur:30,mood:'disco'},
+      {name:t('iph6'),hint:t('ih6'),icon:'🎂',dur:20,mood:'romantic'}
+    ];
+    this.totalTime=this.PH.reduce((a,p)=>a+p.dur,0);
+    this.ANN=t('ann');
+    this.elapsed=0; this.phaseIdx=-1;
+
+    // stan: dwie strony sali + most (integracja)
+    this.pl=62; this.uk=48; this.bridge=20;
+    this.sumPl=0; this.sumUk=0; this.sumBr=0; this.ticks=0;
+    this.score=0; this.annGood=0; this.annDoneN=0; this.done=false; this.modalOpen=false;
+    this.annPend=null; this.stage=null; this.sideEvs=[]; this.uncleEv=null; this.feedback=null;
+    this.trainActive=false; this.trainDone=false; this.trainT=0; this.trainTrail=[]; this.trainGuests=[];
+    this._deadT=0; this._lowT=0; this.holding=false;
+    this.firstDance=null; this.groom=null; this.bride=null;
+
+    // sprzęt stoi rozstawiony (ciągłość z minigrami 1–2)
+    const gear=[
+      {key:'djtable', gx:6,gy:1.5,z:0},{key:'console',gx:6.05,gy:1.65,z:50},{key:'laptop',gx:5.45,gy:1.35,z:54},{key:'dmx',gx:6.65,gy:1.5,z:50},
+      {key:'spkstand',gx:1.8,gy:2.5,z:0},{key:'spkstand',gx:10.2,gy:2.5,z:0},{key:'speaker',gx:1.8,gy:2.5,z:24},{key:'speaker',gx:10.2,gy:2.5,z:24},
+      {key:'lightstand',gx:3,gy:6.5,z:0},{key:'lightstand',gx:9,gy:6.5,z:0},{key:'light',gx:3,gy:6.5,z:26},{key:'light',gx:9,gy:6.5,z:26}
+    ];
+    gear.forEach(s=>{ const p=iso(s.gx,s.gy,s.z); this.add.image(p.x,p.y,s.key).setOrigin(0.5,1).setDepth(tdepth(s.gx,s.gy,s.z*0.1+3)); });
+    const cp=iso(6,-2.2,0); this.add.image(cp.x,cp.y,'car').setOrigin(0.5,1).setDepth(tdepth(6,-2.2,5));
+    this.djSpot={gx:6,gy:2.5}; this.micSpot={gx:7.8,gy:2.7}; this.floorSpot={gx:6,gy:5.7}; this.coupleSpot={gx:6,gy:4.3};
+    const mp=iso(this.micSpot.gx,this.micSpot.gy,0);
+    this.add.image(mp.x,mp.y,'micstand').setOrigin(0.5,1).setScale(1.1).setDepth(tdepth(this.micSpot.gx,this.micSpot.gy,3));
+    this.micMark=this.evMark(this.micSpot.gx,this.micSpot.gy,C.gold).setVisible(false);
+    const mb=iso(this.micSpot.gx,this.micSpot.gy,84);
+    this.micBubble=this.add.text(mb.x,mb.y,'🎤',{fontSize:'24px'}).setOrigin(0.5).setDepth(96000).setVisible(false);
+    this.tweens.add({targets:this.micBubble,y:mb.y-8,yoyo:true,repeat:-1,duration:380,ease:'Sine.inOut'});
+
+    // światła sali
+    this.lightFX=[];
+    [{gx:3,gy:6.5,z:26},{gx:9,gy:6.5,z:26}].forEach(s=>{
+      const p=iso(s.gx,s.gy,s.z); const glow=this.add.image(p.x,p.y,'soft').setTint(0xffe9a0).setAlpha(0.35).setScale(1.5).setDepth(tdepth(s.gx,s.gy,2));
+      const fp=iso(s.gx,s.gy,0); const pool=this.add.ellipse(fp.x,fp.y+18,110,54,0xffe9a0,0.16).setDepth(tdepth(s.gx,s.gy,-3));
+      this.lightFX.push({glow,pool}); });
+    const pal=[0xdc143c,0xffffff,0x3a5ad0,0xffe487,0xff2e8b]; let dk=0;   // barwy obu flag
+    this._disco=this.time.addEvent({delay:520,loop:true,callback:()=>{ dk++; this.lightFX.forEach((f,j)=>{ const c=pal[(dk+j*2)%pal.length]; f.glow.setTint(c); f.pool.setFillStyle(c,f.pool.fillAlpha); }); }});
+
+    // stoliki: po lewej polska rodzina, po prawej goście z Wielkiej Brytanii
+    const defs=[
+      {side:'pl',gx:2.6,gy:4.0,keys:['father','guestA','granny']},
+      {side:'pl',gx:4.0,gy:7.0,keys:['guestC','guestB','guestE']},
+      {side:'uk',gx:9.5,gy:4.5,keys:['bestman','brit2','brit1']},
+      {side:'uk',gx:8.0,gy:7.0,keys:['brit3','guestD','brit2']}
+    ];
+    const offs=[[-0.55,0.15],[0.45,-0.05],[-0.05,0.6]];
+    this.clusters=defs.map((d,ci)=>{
+      const sprites=d.keys.map((key,i)=>{ const gx=d.gx+offs[i][0], gy=d.gy+offs[i][1]; const p=iso(gx,gy,0);
+        const s=this.add.image(p.x,p.y,key).setOrigin(0.5,1).setScale(1.05).setDepth(tdepth(gx,gy,4)).setFlipX(d.side==='uk'?i%2===0:i%2===1);
+        const tw=this.tweens.add({targets:s,scaleY:1.1,yoyo:true,repeat:-1,duration:300+ci*25,delay:i*90});
+        return {s,tw,gx,gy}; });
+      const fp=iso(d.gx,d.gy,74);
+      const flag=this.add.image(fp.x,fp.y,d.side==='pl'?'flagPL':'flagUK').setOrigin(0.5,1).setDepth(96000);
+      const icon=this.add.text(fp.x,fp.y-44,'',{fontSize:'24px'}).setOrigin(0.5).setDepth(96001);
+      const iconTw=this.tweens.add({targets:icon,scale:{from:1,to:1.3},yoyo:true,repeat:-1,duration:360,paused:true});
+      return {side:d.side,gx:d.gx,gy:d.gy,sprites,flag,icon,iconTw,ev:null,away:false};
+    });
+
+    // gracz — Karol we fraku, z mikrofonem w dłoni
+    this.px=6.9; this.py=3.4; this.facingBack=false; this.flip=false; this.bob=0;
+    this.player=this.add.image(0,0,'karolFrak').setOrigin(0.5,1).setScale(1.2);
+    this.playerShadow=this.add.image(0,0,'soft').setTint(0).setAlpha(0.3).setOrigin(0.5,0.5);
+
+    for(let i=0;i<(IS_MOBILE?7:16);i++){ const sx=Phaser.Math.Between(150,1050), sy=Phaser.Math.Between(130,540);
+      const d=this.add.image(sx,sy,'soft').setTint(0xffe9a0).setAlpha(Phaser.Math.FloatBetween(0.05,0.13)).setScale(Phaser.Math.FloatBetween(0.12,0.34)).setDepth(-70000);
+      this.tweens.add({targets:d, y:sy-Phaser.Math.Between(36,70), alpha:0.02, yoyo:true, repeat:-1, ease:'Sine.inOut', duration:Phaser.Math.Between(4200,8000), delay:Phaser.Math.Between(0,4000)}); }
+
+    // zdarzenia przy stolikach (poza fazami przemów i oczepin)
+    this.evPlan=[ {at:8,type:'confused'},{at:30,type:'bored'},{at:50,type:'vodka'},{at:126,type:'reqUK'},
+      {at:131,type:'mixed'},{at:140,type:'reqPL'},{at:147,type:'confused'},{at:160,type:'bored'} ];
+
+    this.buildHUD();
+    this.buildControls();
+    this.enterPhase(0);
+    this.time.addEvent({delay:1000,loop:true,callback:()=>this.tickSecond()});
+
+    this.events.once('shutdown',()=>{ if(this._disco){this._disco.remove(); this._disco=null;}
+      if(this._modalKey){ this.input.keyboard.off('keydown',this._modalKey); this._modalKey=null; }
+      if(this.firstDance && this.firstDance.spinT) this.firstDance.spinT.remove();
+      Audio.startMusic(); });
+  }
+
+  curPhase(){ return this.PH[this.phaseIdx]; }
+  clampAll(){ this.pl=Phaser.Math.Clamp(this.pl,0,100); this.uk=Phaser.Math.Clamp(this.uk,0,100); this.bridge=Phaser.Math.Clamp(this.bridge,0,100); }
+  side(s,n){ if(s==='pl') this.pl+=n; else this.uk+=n; }
+
+  /* ---------- FAZY ---------- */
+  enterPhase(i){
+    const missed=this.annPend && !this.annPend.done;
+    if(missed){ this.pl-=8; this.uk-=8; this.clampAll(); }
+    this.abortStage();
+    this.phaseIdx=i; const ph=this.PH[i];
+    Audio.setMood(ph.mood);
+    if(i>0) Audio.sfx('phase');
+    this.annPend={idx:i,due:this.elapsed+9,done:false}; this._deadT=0;
+    if(i===0) this.coupleEnter();
+    if(i===2) this.startFirstDance(); else if(this.firstDance) this.endFirstDance();
+    if(i===6) this.showCake();
+    this.flashTip(missed?t('ivLateSkip'):(ph.icon+' '+ph.name+' — '+t('ivAnnDue')));
+    this.refreshHUD(); }
+
+  // co dzieje się po udanej zapowiedzi w danej fazie
+  afterAnnouncement(i,q){
+    if(i===0){ if(this.bread){ const b=this.bread; this.tweens.add({targets:b,y:b.y-16,yoyo:true,duration:220,onComplete:()=>{ this.tweens.add({targets:b,alpha:0,delay:2600,duration:500,onComplete:()=>b.destroy()}); }}); this.bread=null; }
+      const p=iso(this.coupleSpot.gx,this.coupleSpot.gy,50); this.burstAt(p.x,p.y,C.gold,14); this.reactAll(['👏','🍞','❤️']); }
+    else if(i===1){ this.stage={type:'stolat',q,due:this.elapsed+8}; this.flashTip(t('ivStoLatDue')); }
+    else if(i===3){ this.startSpeeches(); }
+    else if(i===4){ this.stage={type:'boss',q,due:this.elapsed+8,mark:this.evMark(this.floorSpot.gx,this.floorSpot.gy,C.pink)}; this.flashTip(t('ivBossDue')); }
+    else if(i===5){ this.coupleKiss(q); }
+    else if(i===6){ this.flashTip(t('ivThanks')); this.reactAll(['👏','❤️','🎂','🥹']); Audio.sfx('clink'); }
+  }
+  // przerwanie niedokończonego etapu (koniec fazy)
+  abortStage(){ const st=this.stage; if(!st) return; this.stage=null;
+    if(st.mark) st.mark.destroy();
+    if(st.type==='speech'){ if(this.feedback) this.endFeedback(false,true);
+      if(st.bubble) st.bubble.destroy();
+      if(st.spk) this.returnSpeaker(st.spk);
+      Audio.startMusic(); } }
+
+  /* ---------- TIK SEKUNDOWY ---------- */
+  tickSecond(){ if(this.done||this.modalOpen) return;
+    this.elapsed++;
+    let acc=0, idx=0; for(let i=0;i<this.PH.length;i++){ acc+=this.PH[i].dur; if(this.elapsed<acc){ idx=i; break; } idx=i; }
+    if(this.elapsed>=this.totalTime){ this.finale(); return; }
+    if(idx!==this.phaseIdx) this.enterPhase(idx);
+    // naturalne wygasanie uwagi obu stron
+    let dPl=-0.55, dUk=-0.6, dBr=-0.25;
+    // cisza na sali: zaległa zapowiedź albo zaniedbany moment przy mikrofonie
+    const st=this.stage;
+    const dead=(this.annPend && !this.annPend.done && this.elapsed>this.annPend.due) ||
+      (st && (st.type==='stolat'||st.type==='boss') && this.elapsed>st.due) ||
+      (st && st.type==='speech' && (st.state==='await'||st.state==='toast') && this.elapsed>st.due);
+    if(dead){ dPl-=1.6; dUk-=1.6; this._deadT--; if(this._deadT<=0){ this._deadT=6; Audio.sfx('err'); this.flashTip(t('ivDeadAir')); } }
+    this.sideEvs.forEach(ev=>{ if(ev.type==='confused') dUk-=1.0; else if(ev.type==='bored') dPl-=1.0; });
+    if(this.trainActive){ dPl+=2.2; dUk+=2.2; dBr+=1.6; }
+    this.pl+=dPl; this.uk+=dUk; this.bridge+=dBr; this.clampAll();
+    this.sumPl+=this.pl; this.sumUk+=this.uk; this.sumBr+=this.bridge; this.ticks++;
+    // punkty: obie strony naraz — średnia i najsłabsza strona
+    const avg=(this.pl+this.uk)/2, mn=Math.min(this.pl,this.uk);
+    let pts = avg>=70?6 : avg>=45?4 : avg>=25?1 : 0; if(mn>=60) pts+=2; if(this.trainActive) pts+=5;
+    this.score+=pts;
+    // pociąg: odliczanie
+    if(this.trainActive){ this.trainT--; if(this.trainT<=0) this.endTrain(); }
+    // terminy zdarzeń przy stolikach
+    this.sideEvs.slice().forEach(ev=>{ if(this.elapsed>ev.deadline) this.failSide(ev); });
+    // plan zdarzeń
+    if(this.sideEvs.length<2) for(const e of this.evPlan){ if(!e.fired && this.elapsed>=e.at){ if(this.fireSide(e.type)) e.fired=true; break; } }
+    // pociąg gotowy (impreza, mocny most)
+    if(this.trainAvailable() && !this._trainTipped){ this._trainTipped=true; Audio.sfx('ding'); this.flashTip(t('ivTrainReady')); }
+    // reakcje stolików
+    this.clusters.forEach(c=>{ if(c.away) return; const v=c.side==='pl'?this.pl:this.uk;
+      c.sprites.forEach(sp=>{ sp.tw.timeScale=0.5+v/100; });
+      if(Math.random()<0.18){ const e=v>=60?Phaser.Utils.Array.GetRandom(['😀','👏','🎉','💃']) : v<28?Phaser.Utils.Array.GetRandom(['😴','🥱','😐']) : null;
+        if(e) this.popEmoji(c,e); } });
+    this._lowT--; if(Math.min(this.pl,this.uk)<22 && this._lowT<=0){ this._lowT=9; Audio.sfx('err'); this.flashTip(this.pl<this.uk?t('annBR'):t('annBL')); }
+    this.refreshHUD();
+  }
+
+  /* ---------- PARA MŁODA ---------- */
+  coupleEnter(){ const sp=this.coupleSpot; const g0=iso(5.2,-2.4,0), b0=iso(5.9,-2.4,0);
+    this.groom=this.add.image(g0.x,g0.y,'groom').setOrigin(0.5,1).setScale(1.15).setDepth(tdepth(sp.gx-0.35,sp.gy,4));
+    this.bride=this.add.image(b0.x,b0.y,'bride').setOrigin(0.5,1).setScale(1.15).setDepth(tdepth(sp.gx+0.35,sp.gy,4));
+    const gp=iso(sp.gx-0.35,sp.gy,0), bp=iso(sp.gx+0.35,sp.gy,0);
+    this.tweens.add({targets:this.groom,x:gp.x,y:gp.y,duration:2600,ease:'Sine.inOut'});
+    this.tweens.add({targets:this.bride,x:bp.x,y:bp.y,duration:2600,ease:'Sine.inOut',onComplete:()=>this.coupleIdle()});
+    const tp=iso(sp.gx,sp.gy+0.55,0);
+    this.bread=this.add.image(tp.x,tp.y,'breadsalt').setOrigin(0.5,1).setScale(1.2).setDepth(tdepth(sp.gx,sp.gy+0.55,5)).setAlpha(0);
+    this.tweens.add({targets:this.bread,alpha:1,delay:2400,duration:400}); }
+  coupleIdle(){ [this.groom,this.bride].forEach((s,i)=>{ if(s&&s.active) this.tweens.add({targets:s,scaleY:1.2,yoyo:true,repeat:-1,duration:430,delay:i*200}); }); }
+  startFirstDance(){ if(!this.groom) return; const spot=this.coupleSpot;
+    this.firstDance={cheered:false};
+    const sway=(spr,delay)=>this.tweens.add({targets:spr,angle:{from:-6,to:6},yoyo:true,repeat:-1,duration:520,delay,ease:'Sine.inOut'});
+    sway(this.groom,0); sway(this.bride,260);
+    this.firstDance.spinT=this.time.addEvent({delay:4600,loop:true,callback:()=>{ if(this.done||this.modalOpen||!this.firstDance) return;
+      this.spinBride(this.bride,spot);
+      const p=iso(spot.gx,spot.gy,50);
+      const e=this.add.text(p.x+Phaser.Math.Between(-14,14),p.y,'💞',{fontSize:'16px'}).setOrigin(0.5).setDepth(96200);
+      this.tweens.add({targets:e,y:e.y-26,alpha:0,duration:900,onComplete:()=>e.destroy()}); }}); }
+  endFirstDance(){ const fd=this.firstDance; if(!fd) return; if(fd.spinT) fd.spinT.remove(); this.firstDance=null;
+    [this.groom,this.bride].forEach(s=>{ this.tweens.killTweensOf(s); s.setAngle(0).setScale(1.15).setFlipX(false); });
+    this.coupleIdle(); }
+  cheerCouple(){ const fd=this.firstDance; if(!fd||fd.cheered) return; fd.cheered=true;
+    this.score+=40; this.pl+=6; this.uk+=6; this.bridge+=5; this.clampAll();
+    Audio.sfx('ding'); this.flashTip(t('evFirstDanceOk'));
+    const p=iso(this.coupleSpot.gx,this.coupleSpot.gy,50); this.burstAt(p.x,p.y,C.pink,14); this.reactAll(['👏','💞']); this.refreshHUD(); }
+  // "Gorzko!" — Polacy skandują zawsze; Brytyjczycy tylko gdy zwyczaj został dobrze wyjaśniony
+  coupleKiss(q){ if(this.groom&&this.bride){ const gx=this.groom.x, bx=this.bride.x;
+      this.tweens.add({targets:this.groom,x:gx+8,yoyo:true,hold:900,duration:300});
+      this.tweens.add({targets:this.bride,x:bx-8,yoyo:true,hold:900,duration:300});
+      const p=iso(this.coupleSpot.gx,this.coupleSpot.gy,56); this.time.delayedCall(320,()=>this.burstAt(p.x,p.y,C.pink,18)); }
+    this.clusters.forEach(c=>{ const ok=c.side==='pl'||q===2;
+      for(let k=0;k<2;k++) this.time.delayedCall(k*600,()=>{ if(!c.away) this.popEmoji(c, ok?t('ivGorzko'):'❓', ok?'#ffe487':null); }); });
+    if(q===2) this.bridge+=6; this.clampAll(); }
+  showCake(){ const sp={gx:6,gy:5.15}; const p=iso(sp.gx,sp.gy,0);
+    const ck=this.add.image(p.x,p.y,'cake').setOrigin(0.5,1).setScale(0).setDepth(tdepth(sp.gx,sp.gy,5));
+    this.tweens.add({targets:ck,scale:1.3,duration:500,ease:'Back.out'}); Audio.sfx('ding');
+    this.time.delayedCall(700,()=>{ const q=iso(sp.gx,sp.gy,40); this.burstAt(q.x,q.y,0xffffff,12); }); }
+
+  /* ---------- REAKCJE ---------- */
+  popEmoji(c,e,col){ const p=iso(c.gx,c.gy,70);
+    const o=this.add.text(p.x+Phaser.Math.Between(-22,22),p.y,e,{fontFamily:'Segoe UI',fontSize:col?'15px':'19px',color:col||'#fff',fontStyle:'bold'}).setOrigin(0.5).setDepth(95900);
+    if(col) o.setShadow(0,0,'#000',4);
+    this.tweens.add({targets:o,y:o.y-32,alpha:0,duration:1100,onComplete:()=>o.destroy()}); }
+  reactSide(side,e){ this.clusters.forEach(c=>{ if(c.side===side && !c.away) this.popEmoji(c,e); }); }
+  reactAll(list){ this.clusters.forEach((c,i)=>{ if(c.away) return; this.time.delayedCall(i*120,()=>this.popEmoji(c,Phaser.Utils.Array.GetRandom(list))); }); }
+  setIcon(c,txt){ c.icon.setText(txt||''); if(txt){ c.iconTw.resume(); } else { c.iconTw.pause(); c.icon.setScale(1); } }
+
+  /* ---------- ZDARZENIA PRZY STOLIKACH ---------- */
+  freeCluster(side,pref){ const ok=c=>c && c.side===side && !c.ev && !c.away; if(ok(pref)) return pref;
+    return Phaser.Utils.Array.GetRandom(this.clusters.filter(ok)); }
+  fireSide(type){
+    if(this.stage && (this.stage.type==='speech'||this.stage.type==='boss')) return false;
+    if(type==='vodka'){ if(this.uncleEv) return false;
+      const from={gx:3.2,gy:4.5}, to=this.freeCluster('uk',this.clusters[2]); if(!to) return false;
+      const p=iso(from.gx,from.gy,0); const spr=this.add.image(p.x,p.y,'uncle').setOrigin(0.5,1).setScale(1.1);
+      const bub=this.add.text(p.x,p.y-50,'🥃',{fontSize:'20px'}).setOrigin(0.5).setDepth(96000);
+      this.uncleEv={sprite:spr,bub,gx:from.gx,gy:from.gy,home:from,to,state:'walk'};
+      Audio.sfx('err'); this.flashTip(t('ivVodka')); return true; }
+    if(type==='mixed'){ const a=this.freeCluster('pl'), b=this.freeCluster('uk'); if(!a||!b) return false;
+      const ev={type,a,b,got:new Set(),deadline:this.elapsed+22,marks:[this.evMark(a.gx,a.gy,C.gold),this.evMark(b.gx,b.gy,C.gold)]};
+      a.ev=ev; b.ev=ev; this.setIcon(a,'🤝'); this.setIcon(b,'🤝'); this.sideEvs.push(ev);
+      Audio.sfx('ding'); this.flashTip(t('ivMixed')); return true; }
+    const side = (type==='confused'||type==='reqUK')?'uk':'pl';
+    const pref = type==='reqPL'?this.clusters[0] : type==='reqUK'?this.clusters[2] : null;
+    const c=this.freeCluster(side,pref); if(!c) return false;
+    const isReq=type==='reqPL'||type==='reqUK';
+    const ev={type:isReq?'req':type,side,c,state:'ask',deadline:this.elapsed+18,mark:this.evMark(c.gx,c.gy,side==='uk'?0x3a8ad0:0xdc143c)};
+    c.ev=ev; this.setIcon(c, type==='confused'?'❓':type==='bored'?'😴':'🎵'); this.sideEvs.push(ev);
+    Audio.sfx('ding'); this.flashTip(t({confused:'ivConfused',bored:'ivBored',reqPL:'ivReqPL',reqUK:'ivReqUK'}[type])); return true; }
+  removeSide(ev){ (ev.marks||[ev.mark]).forEach(m=>{ if(m) m.destroy(); });
+    [ev.c,ev.a,ev.b].forEach(c=>{ if(c && c.ev===ev){ c.ev=null; this.setIcon(c,null); } });
+    this.sideEvs=this.sideEvs.filter(e=>e!==ev); }
+  resolveSide(ev){ const p=iso((ev.c||ev.a).gx,(ev.c||ev.a).gy,50);
+    if(ev.type==='confused'){ this.uk+=12; this.bridge+=6; this.score+=40; this.flashTip(t('ivConfusedOk')); this.removeSide(ev); this.burstAt(p.x,p.y,0x3a8ad0,10); this.reactSide('uk','👍'); }
+    else if(ev.type==='bored'){ this.pl+=12; this.score+=40; this.flashTip(t('ivBoredOk')); this.removeSide(ev); this.burstAt(p.x,p.y,0xdc143c,10); this.popEmoji(ev.c,'😄'); }
+    else if(ev.type==='req' && ev.state==='ask'){ ev.state='promised'; ev.deadline=this.elapsed+20;
+      ev.mark.destroy(); ev.mark=this.evMark(this.djSpot.gx,this.djSpot.gy,C.gold); this.setIcon(ev.c,'⏳');
+      this.flashTip(t('ivReqGo')+t(ev.side==='pl'?'songPL':'songUK')); }
+    else if(ev.type==='req' && ev.state==='promised'){ Audio.setMood(ev.side==='pl'?'disco':'hype');
+      this.side(ev.side,14); this.bridge+=4; this.score+=50; this.flashTip(t('ivReqOk')); this.removeSide(ev);
+      const q=iso(this.djSpot.gx,this.djSpot.gy,40); this.burstAt(q.x,q.y,C.gold,12); this.reactSide(ev.side,'🎉'); }
+    Audio.sfx('ding'); this.clampAll(); this.refreshHUD(); }
+  failSide(ev){
+    if(ev.type==='confused'){ this.uk-=10; this.flashTip(t('ivConfusedFail')); }
+    else if(ev.type==='bored'){ this.pl-=10; this.flashTip(t('ivBoredFail')); }
+    else if(ev.type==='req'){ this.side(ev.side,-8); this.flashTip(t('ivReqFail')); }
+    else if(ev.type==='mixed'){ this.bridge-=6; this.flashTip(t('ivMixedFail')); }
+    Audio.sfx('err'); this.removeSide(ev); this.clampAll(); }
+  inviteMixed(ev,c){ if(ev.got.has(c)) return; ev.got.add(c); this.setIcon(c,'✅'); Audio.sfx('pick');
+    if(ev.got.size<2){ this.flashTip(t('ivMixedHalf')); return; }
+    this.removeSide(ev); this.mixedDance(ev.a,ev.b); }
+  // wspólny taniec: goście obu stron na przemian w kole na środku parkietu
+  mixedDance(a,b){ const all=[]; for(let i=0;i<3;i++){ all.push(a.sprites[i]); all.push(b.sprites[i]); }
+    a.away=true; b.away=true; a.flag.setAlpha(0.35); b.flag.setAlpha(0.35);
+    all.forEach((sp,i)=>{ const ang=i/all.length*Math.PI*2, gx=this.floorSpot.gx+Math.cos(ang)*1.05, gy=this.floorSpot.gy+Math.sin(ang)*0.75;
+      const p=iso(gx,gy,0); this.tweens.add({targets:sp.s,x:p.x,y:p.y,duration:600,ease:'Quad.out'}); sp.s.setDepth(tdepth(gx,gy,4)); sp.tw.timeScale=1.6; });
+    this.bridge+=22; this.pl+=8; this.uk+=8; this.score+=80; this.clampAll();
+    Audio.sfx('phase'); this.flashTip(t('ivMixedOk'));
+    const p=iso(this.floorSpot.gx,this.floorSpot.gy,30); this.time.delayedCall(600,()=>this.burstAt(p.x,p.y,C.gold,18));
+    this.time.delayedCall(7500,()=>{ if(this.trainActive){ this.time.delayedCall(2000,()=>this.backHome([a,b])); return; } this.backHome([a,b]); }); }
+  backHome(list){ list.forEach(c=>{ c.sprites.forEach(sp=>{ const p=iso(sp.gx,sp.gy,0);
+      this.tweens.add({targets:sp.s,x:p.x,y:p.y,duration:600,ease:'Quad.out',onComplete:()=>sp.s.setDepth(tdepth(sp.gx,sp.gy,4))}); });
+    c.away=false; c.flag.setAlpha(1); }); }
+  pickleUncle(){ const u=this.uncleEv; if(!u||u.state!=='walk') return; u.state='leave'; u.bub.setText('🥒');
+    this.score+=50; this.bridge+=8; this.uk+=4; this.clampAll(); Audio.sfx('ding'); this.flashTip(t('ivVodkaOk'));
+    const p=iso(u.gx,u.gy,40); this.burstAt(p.x,p.y,C.green,12); this.refreshHUD(); }
+
+  /* ---------- PRZEMOWY (Karol nie tłumaczy — obsługuje moment) ---------- */
+  startSpeeches(){
+    this.stage={type:'speech',list:[{c:this.clusters[2],lines:t('spBest'),fbAt:1},{c:this.clusters[0],lines:t('spDad'),fbAt:2}],i:0,state:'walk',spk:null,line:0,lineT:0,bubble:null,due:0};
+    this.beginSpeaker(); }
+  beginSpeaker(){ const st=this.stage, it=st.list[st.i], sp=it.c.sprites[0];
+    sp.tw.pause(); sp.s.setScale(1.05);
+    st.spk={sp,gx:sp.gx,gy:sp.gy}; st.state='walk'; st.target={gx:this.micSpot.gx+0.6,gy:this.micSpot.gy+0.55}; }
+  returnSpeaker(k){ const sp=k.sp, p=iso(sp.gx,sp.gy,0); sp.s.setPosition(p.x,p.y).setDepth(tdepth(sp.gx,sp.gy,4)); sp.tw.resume(); }
+  giveMic(){ const st=this.stage; if(!st||st.state!=='await') return; st.state='talk'; st.line=0; st.lineT=0;
+    Audio.stopMusic(); Audio.sfx('pick'); this.flashTip(t('ivSpeechOn')); this.score+=20; this.showSpeechLine(); }
+  showSpeechLine(){ const st=this.stage, it=st.list[st.i], k=st.spk;
+    if(st.bubble) st.bubble.destroy();
+    const p=iso(k.gx,k.gy,66);
+    st.bubble=this.add.text(p.x,p.y,it.lines[st.line],{fontFamily:'Segoe UI',fontSize:'14px',color:'#111',backgroundColor:'#ffffffee',padding:{x:9,y:6},wordWrap:{width:270},align:'center'}).setOrigin(0.5,1).setDepth(96500);
+    this.reactSide(it.c.side,Phaser.Utils.Array.GetRandom(['😂','👏','🥹','❤️']));
+    if(st.line===it.fbAt) this.startFeedback(); }
+  startFeedback(){ if(this.feedback) return; this.feedback={t:0,fx:0,mark:this.evMark(this.djSpot.gx,this.djSpot.gy,C.red)};
+    Audio.sfx('squeal'); this.flashTip(t('ivFeedback')); }
+  endFeedback(ok,silent){ const f=this.feedback; if(!f) return; if(f.mark) f.mark.destroy(); this.feedback=null;
+    if(silent) return;
+    if(ok){ this.score+=35; this.pl+=3; this.uk+=3; Audio.sfx('connect'); this.flashTip(t('ivFeedbackOk')); const p=iso(this.djSpot.gx,this.djSpot.gy,40); this.burstAt(p.x,p.y,C.green,10); }
+    else { this.pl-=7; this.uk-=7; Audio.sfx('boo'); this.flashTip(t('ivFeedbackFail')); this.reactAll(['🙉','😖']); }
+    this.clampAll(); this.refreshHUD(); }
+  raiseToast(){ const st=this.stage; if(!st||st.type!=='speech'||st.state!=='toast') return; this.stage=null;
+    this.pl+=15; this.uk+=15; this.bridge+=12; this.score+=60; this.clampAll();
+    Audio.startMusic(); Audio.sfx('clink'); this.flashTip(t('ivToastOk')); this.reactAll(['🥂','🥂','👏']);
+    const p=iso(this.micSpot.gx,this.micSpot.gy,50); this.burstAt(p.x,p.y,C.gold,14); this.refreshHUD(); }
+
+  /* ---------- POCIĄG (akcja specjalna imprezy) ---------- */
+  trainAvailable(){ return this.phaseIdx===5 && this.bridge>=80 && !this.trainActive && !this.trainDone && !this.clusters.some(c=>c.away); }
+  startTrain(){ if(!this.trainAvailable()) return; this.trainActive=true; this.trainT=10; this.trainTrail=[];
+    Audio.sfx('phase'); this.flashTip(t('ivTrainStart'));
+    const pp=iso(this.px,this.py,20); this.burstAt(pp.x,pp.y,C.gold,16);
+    const pl=this.clusters.filter(c=>c.side==='pl'), uk=this.clusters.filter(c=>c.side==='uk');
+    const A=[].concat(...pl.map(c=>c.sprites)), B=[].concat(...uk.map(c=>c.sprites));
+    this.trainGuests=[]; for(let i=0;i<Math.max(A.length,B.length);i++){ [A[i],B[i]].forEach(sp=>{ if(sp){ sp.tw.pause(); this.trainGuests.push(sp); } }); }
+    this.clusters.forEach(c=>{ c.away=true; c.flag.setAlpha(0.35); }); }
+  endTrain(){ if(!this.trainActive) return; this.trainActive=false; this.trainDone=true;
+    this.score+=60; this.bridge+=15; this.clampAll();
+    Audio.sfx('phase'); this.flashTip(t('ivTrainDone'));
+    const pp=iso(this.px,this.py,20); this.burstAt(pp.x,pp.y,C.pink,16);
+    this.trainGuests.forEach(sp=>sp.tw.resume()); this.trainGuests=[];
+    this.backHome(this.clusters); this.refreshHUD(); }
+
+  /* ---------- ZAPOWIEDŹ: wybór wersji EN + proporcje języków ---------- */
+  modalBase(w,h){ this.modalOpen=true; this.promptText.setVisible(false); this.modalObjs=[]; const D=97000;
+    const add=o=>{ this.modalObjs.push(o); return o; };
+    this.modalBg=add(this.add.rectangle(GW/2,GH/2,GW,GH,0x05050d,0.86).setDepth(D).setInteractive());
+    add(this.add.rectangle(GW/2,GH/2,w,h,0x141022,0.98).setStrokeStyle(3,C.gold).setDepth(D+1));
+    return add; }
+  openAnnModal(){ if(this.modalOpen||!this.annPend||this.annPend.done) return;
+    const A=this.ANN[this.annPend.idx], D=97000, add=this.modalBase(900,548);
+    add(this.add.text(GW/2,GH/2-246,A.icon+'  '+t('annTitle'),{fontFamily:'Segoe UI',fontSize:'25px',color:'#ffe487',fontStyle:'bold'}).setOrigin(0.5).setDepth(D+2));
+    add(this.add.text(GW/2,GH/2-212,t('annSaysPL'),{fontFamily:'Segoe UI',fontSize:'13px',color:'#9aa'}).setOrigin(0.5).setDepth(D+2));
+    add(this.add.text(GW/2,GH/2-186,'„'+A.pl+'”',{fontFamily:'Segoe UI',fontSize:'18px',color:'#ffe487',fontStyle:'italic',align:'center',wordWrap:{width:820}}).setOrigin(0.5).setDepth(D+2));
+    this.annSub=add(this.add.text(GW/2,GH/2-146,t('annPick'),{fontFamily:'Segoe UI',fontSize:'15px',color:'#c9c9e0'}).setOrigin(0.5).setDepth(D+2));
+    this.annStep=1; this.annStep1=[]; this.annOrder=[];
+    const add1=o=>{ add(o); this.annStep1.push(o); return o; };
+    Phaser.Utils.Array.Shuffle([0,1,2]).forEach((oi,k)=>{ const o=A.opts[oi], y=GH/2-80+k*94; this.annOrder.push(o.q);
+      const box=add1(this.add.rectangle(GW/2,y,830,84,0x232040,1).setStrokeStyle(2,0x6a5acd).setDepth(D+3).setInteractive());
+      add1(this.add.text(GW/2-394,y,(k+1)+'',{fontFamily:'Segoe UI',fontSize:'24px',color:'#ffe487',fontStyle:'bold'}).setOrigin(0.5).setDepth(D+4));
+      add1(this.add.text(GW/2-370,y-10,o.en,{fontFamily:'Segoe UI',fontSize:'15px',color:'#fff',wordWrap:{width:770}}).setOrigin(0,0.5).setDepth(D+4));
+      add1(this.add.text(GW/2-370,y+27,o.g,{fontFamily:'Segoe UI',fontSize:'12px',color:'#9aa',fontStyle:'italic'}).setOrigin(0,0.5).setDepth(D+4));
+      box.on('pointerdown',()=>this.pickAnn(o.q));
+      box.on('pointerover',()=>box.setStrokeStyle(3,C.gold)); box.on('pointerout',()=>box.setStrokeStyle(2,0x6a5acd)); });
+    this._modalKey=ev=>{ const k=(ev.key||'').toLowerCase();
+      if(this.annStep===1){ const n=parseInt(k,10); if(n>=1&&n<=3) this.pickAnn(this.annOrder[n-1]); }
+      else if(this.annStep===2 && (k===' '||k==='enter')) this.stopBalance(); };
+    this.input.keyboard.on('keydown',this._modalKey); }
+  pickAnn(q){ if(this.annStep!==1) return; this.annStep=2; this.annQ=q; const D=97000;
+    const add=o=>{ this.modalObjs.push(o); return o; };
+    this.annStep1.forEach(o=>{ if(o.active) o.destroy(); }); this.annStep1=[];
+    Audio.sfx(q===2?'ding':q===1?'pick':'err');
+    add(this.add.text(GW/2,GH/2-108,[t('annQ0'),t('annQ1'),t('annQ2')][q],{fontFamily:'Segoe UI',fontSize:'22px',color:['#ff6b6b','#ffd23f','#46d67a'][q],fontStyle:'bold'}).setOrigin(0.5).setDepth(D+3));
+    this.annSub.setText(t('annBal')).setY(GH/2-60);
+    // pasek proporcji: lewo = za dużo polskiego, prawo = za dużo angielskiego
+    const bw=640, bx=GW/2-bw/2, by=GH/2+20, cz=Math.max(0.12,0.24-this.phaseIdx*0.018);
+    const lw=bw*(0.5-cz/2);
+    add(this.add.rectangle(bx,by,lw,34,0xdc143c,0.55).setOrigin(0,0.5).setDepth(D+3));
+    add(this.add.rectangle(bx+lw,by,bw*cz,34,0x46d67a,0.85).setOrigin(0,0.5).setDepth(D+3));
+    add(this.add.rectangle(bx+lw+bw*cz,by,lw,34,0x3a5ad0,0.6).setOrigin(0,0.5).setDepth(D+3));
+    add(this.add.rectangle(GW/2,by,bw+4,38).setStrokeStyle(2,0xffffff,0.6).setDepth(D+4));
+    add(this.add.image(bx-28,by,'flagPL').setDepth(D+4)); add(this.add.image(bx+bw+28,by,'flagUK').setDepth(D+4));
+    add(this.add.text(bx,by+34,t('annBalL'),{fontFamily:'Segoe UI',fontSize:'13px',color:'#ff9aa8'}).setOrigin(0,0.5).setDepth(D+4));
+    add(this.add.text(GW/2,by+34,t('annBalC'),{fontFamily:'Segoe UI',fontSize:'13px',color:'#8ff0b0',fontStyle:'bold'}).setOrigin(0.5).setDepth(D+4));
+    add(this.add.text(bx+bw,by+34,t('annBalR'),{fontFamily:'Segoe UI',fontSize:'13px',color:'#9ab4ff'}).setOrigin(1,0.5).setDepth(D+4));
+    this.balNeedle=add(this.add.rectangle(bx,by,6,50,0xffffff,1).setStrokeStyle(2,0x000000).setDepth(D+5));
+    const stop=add(this.add.text(GW/2,by+112,t('annStop'),{fontFamily:'Segoe UI',fontSize:'24px',color:'#0a0a18',backgroundColor:'#d4af37',padding:{x:34,y:12},fontStyle:'bold'}).setOrigin(0.5).setDepth(D+5).setInteractive());
+    stop.on('pointerdown',()=>this.stopBalance());
+    this.tweens.add({targets:stop,scale:{from:1,to:1.06},yoyo:true,repeat:-1,duration:400});
+    this.balT=-Math.PI/2; this.balF=0; this.balCz=cz; const spd=2.0+this.phaseIdx*0.28;
+    this.balTimer=this.time.addEvent({delay:16,loop:true,callback:()=>{ this.balT+=0.016*spd; this.balF=0.5+0.5*Math.sin(this.balT); this.balNeedle.x=bx+this.balF*bw; }}); }
+  stopBalance(){ if(this.annStep!==2) return; this.annStep=3; if(this.balTimer){ this.balTimer.remove(); this.balTimer=null; }
+    const f=this.balF, zone=Math.abs(f-0.5)<=this.balCz/2?'C':(f<0.5?'L':'R');
+    Audio.sfx(zone==='C'?'ding':'err');
+    const o=this.add.text(GW/2,GH/2+84,t({C:'annBC',L:'annBL',R:'annBR'}[zone]),{fontFamily:'Segoe UI',fontSize:'19px',color:zone==='C'?'#46d67a':'#ff9a6b',fontStyle:'bold'}).setOrigin(0.5).setDepth(97010);
+    this.modalObjs.push(o);
+    this.time.delayedCall(1150,()=>{ if(!this.modalOpen) return; this.closeModal(); this.applyAnn(this.annQ,zone); }); }
+  applyAnn(q,zone){ const i=this.annPend.idx; this.annPend.done=true; this.annDoneN++;
+    let pts=0;
+    if(q===2){ this.uk+=20; this.bridge+=8; pts+=60; this.annGood++; }
+    else if(q===1){ this.uk+=8; pts+=25; }
+    else { this.uk-=10; this.reactSide('uk','❓'); this.reactSide('pl','😂'); }
+    if(zone==='C'){ this.pl+=12; this.uk+=6; this.bridge+=10; pts+=35; }
+    else if(zone==='L'){ this.pl+=8; this.uk-=12; }
+    else { this.pl-=12; this.uk+=4; }
+    this.clampAll(); this.score+=pts;
+    const p=iso(this.micSpot.gx,this.micSpot.gy,46); this.burstAt(p.x,p.y,q===2&&zone==='C'?C.gold:0x9aa0aa,12);
+    if(q===2 && zone==='C') this.reactAll(['👏','😀','🎉']);
+    this.afterAnnouncement(i,q); this.refreshHUD(); }
+  closeModal(){ if(this._modalKey){ this.input.keyboard.off('keydown',this._modalKey); this._modalKey=null; }
+    if(this.balTimer){ this.balTimer.remove(); this.balTimer=null; }
+    (this.modalObjs||[]).forEach(o=>{ if(o&&o.active){ this.tweens.killTweensOf(o); o.destroy(); } }); this.modalObjs=[];
+    this.modalOpen=false; this.annStep=0; this.slNotes=[]; this.bCues=[];
+    Phaser.Input.Keyboard.JustDown(this.keys.SPACE); this.actionQueued=false; }
+
+  /* ---------- STO LAT: Karol dyryguje śpiewem całej sali ---------- */
+  openStoLat(){ if(this.modalOpen||!this.stage||this.stage.type!=='stolat') return;
+    const D=97000, add=this.modalBase(900,420);
+    add(this.add.text(GW/2,GH/2-176,'🎶 '+t('slTitle'),{fontFamily:'Segoe UI',fontSize:'26px',color:'#ffe487',fontStyle:'bold'}).setOrigin(0.5).setDepth(D+2));
+    this.slSubTxt=add(this.add.text(GW/2,GH/2-140,t('slSub'),{fontFamily:'Segoe UI',fontSize:'15px',color:'#c9c9e0'}).setOrigin(0.5).setDepth(D+2));
+    const hitX=GW/2-300, laneY=GH/2-30, spawnX=GW/2+400; this.slHitX=hitX;
+    add(this.add.rectangle(GW/2+50,laneY,780,74,0xffffff,0.05).setDepth(D+2));
+    const ring=add(this.add.circle(hitX,laneY,32,0x000000,0).setStrokeStyle(4,C.gold).setDepth(D+5));
+    this.tweens.add({targets:ring,scale:{from:1,to:1.08},yoyo:true,repeat:-1,duration:280});
+    this.slSyl=t('slSyl'); this.slShown=this.slSyl.map(()=>'_');
+    this.slLyric=add(this.add.text(GW/2,GH/2+70,this.slShown.join(' '),{fontFamily:'Segoe UI',fontSize:'28px',color:'#ffe487',fontStyle:'bold'}).setOrigin(0.5).setDepth(D+3));
+    add(this.add.image(GW/2-90,GH/2+136,'flagPL').setDepth(D+3)); add(this.add.image(GW/2+90,GH/2+136,'flagUK').setDepth(D+3));
+    this.slFace=add(this.add.text(GW/2,GH/2+136,'🎤',{fontSize:'28px'}).setOrigin(0.5).setDepth(D+3));
+    // melodia "Sto lat": G E G E G A G F E F
+    const F=[392,330,392,330,392,440,392,349,330,349], DUR=[1,1,1,1,0.5,0.5,1,0.5,0.5,1.5], beat=560, travel=1500;
+    this.slNotes=[]; this.slHits=0; this.slPerf=0; this.slJudged=0;
+    let at=700;
+    F.forEach((f,i)=>{ const when=at; at+=DUR[i]*beat;
+      this.time.delayedCall(when,()=>{ if(!this.modalOpen||!this.slLyric) return;
+        const n=add(this.add.circle(spawnX,laneY,22,0xff2e8b,1).setStrokeStyle(3,0xffffff).setDepth(D+6));
+        const lb=add(this.add.text(spawnX,laneY,this.slSyl[i],{fontFamily:'Segoe UI',fontSize:'13px',color:'#fff',fontStyle:'bold'}).setOrigin(0.5).setDepth(D+7));
+        const note={i,f,spr:n,lb,judged:false}; this.slNotes.push(note);
+        const end=hitX-90;
+        this.tweens.add({targets:[n,lb],x:end,duration:travel*(spawnX-end)/(spawnX-hitX),ease:'Linear',
+          onUpdate:()=>{ if(!note.judged && n.x<hitX-46){ this.slResolve(note,0); } },
+          onComplete:()=>{ if(n.active){ n.destroy(); lb.destroy(); } } }); }); });
+    this._modalKey=ev=>{ if(ev.key===' '||ev.key==='Enter') this.slPress(); };
+    this.input.keyboard.on('keydown',this._modalKey);
+    this.modalBg.on('pointerdown',()=>this.slPress()); }
+  slPress(){ if(!this.slNotes) return; let best=null,bd=1e9;
+    this.slNotes.forEach(n=>{ if(n.judged) return; const d=Math.abs(n.spr.x-this.slHitX); if(d<bd){bd=d;best=n;} });
+    if(!best||bd>80) return;
+    this.slResolve(best, bd<=20?2 : bd<=46?1 : 0); }
+  slResolve(note,q){ if(note.judged) return; note.judged=true; this.slJudged++; const D=97000;
+    if(q>0){ this.slHits++; if(q===2) this.slPerf++; Audio.tone(note.f,0.4);
+      this.slShown[note.i]=this.slSyl[note.i]; this.slLyric.setText(this.slShown.join(' '));
+      this.burstAt(note.spr.x,note.spr.y,q===2?C.gold:C.neon,8); note.spr.destroy(); note.lb.destroy();
+      this.slFace.setText(Phaser.Utils.Array.GetRandom(['😀','🥳','🎶','🥂'])); }
+    else { note.spr.setFillStyle(0x555566,0.6); Audio.sfx('err'); this.slFace.setText('😬'); }
+    const o=this.add.text(this.slHitX,GH/2-80,q===2?t('slPerfect'):q===1?'✓':t('slMiss'),{fontFamily:'Segoe UI',fontSize:'16px',color:q?'#46d67a':'#ff6b6b',fontStyle:'bold'}).setOrigin(0.5).setDepth(D+8);
+    this.modalObjs.push(o); this.tweens.add({targets:o,y:o.y-24,alpha:0,duration:520});
+    if(this.slJudged>=this.slSyl.length) this.slFinish(); }
+  slFinish(){ const h=this.slHits, perf=this.slPerf;
+    this.slSubTxt.setText(t('slDone')(h)).setColor('#46d67a'); Audio.sfx('phase');
+    this.time.delayedCall(1300,()=>{ if(!this.modalOpen) return; const q=this.stage?this.stage.q:1; this.closeModal(); this.stage=null;
+      const ukMul=q===2?2:0.8;   // Brytyjczycy śpiewają z całą salą, jeśli wiedzą, o co chodzi
+      this.pl+=h*2.2; this.uk+=h*ukMul; this.bridge+=h*1.5; this.score+=h*12+perf*4; this.clampAll();
+      this.reactAll(['🎶','🥂','🎉','😀']); Audio.sfx('clink'); this.refreshHUD(); }); }
+
+  /* ---------- OCZEPINY: mieszane drużyny, komendy w dwóch językach ---------- */
+  openBoss(){ if(this.modalOpen||!this.stage||this.stage.type!=='boss') return;
+    const D=97000, add=this.modalBase(940,548);
+    add(this.add.text(GW/2,GH/2-246,'💐 '+t('bTitle'),{fontFamily:'Segoe UI',fontSize:'26px',color:'#ffe487',fontStyle:'bold'}).setOrigin(0.5).setDepth(D+2));
+    this.bSubTxt=add(this.add.text(GW/2,GH/2-210,t('bSub'),{fontFamily:'Segoe UI',fontSize:'14px',color:'#c9c9e0',align:'center',wordWrap:{width:880}}).setOrigin(0.5).setDepth(D+2));
+    const topY=GH/2-160, hitY=GH/2+110; this.bHitY=hitY;
+    add(this.add.rectangle(GW/2,(topY+hitY)/2+20,330,hitY-topY+90,0xffffff,0.04).setDepth(D+2));
+    const zone=add(this.add.rectangle(GW/2,hitY,330,66,0xffe487,0.12).setStrokeStyle(3,C.gold).setDepth(D+3));
+    this.tweens.add({targets:zone,alpha:0.6,yoyo:true,repeat:-1,duration:300});
+    // przyciski języków (dotyk) + klawisze
+    const mkBtn=(x,side,label,key)=>{ const b=add(this.add.rectangle(x,hitY,230,92,side==='pl'?0x5a1020:0x14245a,1).setStrokeStyle(3,side==='pl'?0xdc143c:0x3a5ad0).setDepth(D+4).setInteractive());
+      add(this.add.image(x,hitY-20,side==='pl'?'flagPL':'flagUK').setDepth(D+5));
+      add(this.add.text(x,hitY+20,label,{fontFamily:'Segoe UI',fontSize:'17px',color:'#fff',fontStyle:'bold'}).setOrigin(0.5).setDepth(D+5));
+      add(this.add.text(x,hitY+58,key,{fontFamily:'Segoe UI',fontSize:'13px',color:'#9aa'}).setOrigin(0.5).setDepth(D+5));
+      b.on('pointerdown',()=>{ this.bPress(side); b.setScale(0.94); this.time.delayedCall(90,()=>{ if(b.active) b.setScale(1); }); }); };
+    mkBtn(GW/2-310,'pl',t('bBtnPL'),'← / A'); mkBtn(GW/2+310,'uk',t('bBtnUK'),'→ / D');
+    this.bScoreTxt=add(this.add.text(GW/2,GH/2+226,'',{fontFamily:'Segoe UI',fontSize:'16px',color:'#ffe487',fontStyle:'bold'}).setOrigin(0.5).setDepth(D+3));
+    this.bCmds=t('bCmds'); this.bCues=[]; this.bTotal=14; this.bSpawned=0; this.bJudged=0; this.bRes={hit:0,perf:0,wrong:0,miss:0};
+    let lastSide=null, streak=0;
+    const spawn=()=>{ if(!this.modalOpen||!this.bCues||this.bSpawned>=this.bTotal) return; this.bSpawned++;
+      let side=Math.random()<0.5?'pl':'uk'; if(side===lastSide && streak>=2) side=side==='pl'?'uk':'pl';
+      streak=side===lastSide?streak+1:1; lastSide=side;
+      const cmd=Phaser.Utils.Array.GetRandom(this.bCmds), team=Math.random()<0.5?t('bTeamA'):t('bTeamB');
+      const ct=add(this.add.container(GW/2,topY-10).setDepth(D+6));
+      ct.add(this.add.rectangle(0,0,300,58,0x232040,1).setStrokeStyle(3,side==='pl'?0xdc143c:0x3a5ad0));
+      ct.add(this.add.image(-118,0,side==='pl'?'flagPL':'flagUK'));
+      ct.add(this.add.text(-84,-11,'🙋 '+cmd.i,{fontSize:'20px'}).setOrigin(0,0.5));
+      ct.add(this.add.text(-84,15,team,{fontFamily:'Segoe UI',fontSize:'12px',color:'#c9c9e0'}).setOrigin(0,0.5));
+      const cue={side,cmd,ct,judged:false}; this.bCues.push(cue);
+      const travel=Math.max(1150,1800-this.bSpawned*48);
+      this.tweens.add({targets:ct,y:hitY+90,duration:travel*(hitY+90-(topY-10))/(hitY-(topY-10)),ease:'Linear',
+        onUpdate:()=>{ if(!cue.judged && ct.y>hitY+46) this.bResolve(cue,'miss'); },
+        onComplete:()=>{ if(ct.active) ct.destroy(); } });
+      this.time.delayedCall(Math.max(700,1250-this.bSpawned*38),spawn); };
+    this.time.delayedCall(800,spawn);
+    this._modalKey=ev=>{ const k=(ev.key||'').toLowerCase();
+      if(k==='a'||k==='arrowleft') this.bPress('pl'); else if(k==='d'||k==='arrowright') this.bPress('uk'); };
+    this.input.keyboard.on('keydown',this._modalKey);
+    this.bRefresh(); }
+  bRefresh(){ const r=this.bRes; if(this.bScoreTxt) this.bScoreTxt.setText('✓ '+r.hit+'   ❓ '+r.wrong+'   ⌛ '+r.miss); }
+  bPress(side){ if(!this.bCues) return; let best=null,bd=1e9;
+    this.bCues.forEach(c=>{ if(c.judged) return; const d=Math.abs(c.ct.y-this.bHitY); if(d<bd){bd=d;best=c;} });
+    if(!best||bd>80) return;
+    if(side!==best.side) this.bResolve(best,'wrong');
+    else if(bd<=46) this.bResolve(best, bd<=18?'perf':'hit');
+    else this.bResolve(best,'miss'); }
+  bResolve(cue,res){ if(cue.judged) return; cue.judged=true; this.bJudged++; const D=97000, r=this.bRes;
+    let txt, col;
+    if(res==='hit'||res==='perf'){ r.hit++; if(res==='perf') r.perf++; txt=cue.cmd[cue.side]; col='#46d67a';
+      Audio.sfx(res==='perf'?'ding':'pick'); this.burstAt(cue.ct.x,cue.ct.y,cue.side==='pl'?0xdc143c:0x3a5ad0,10); cue.ct.destroy(); }
+    else if(res==='wrong'){ r.wrong++; txt=t('bWrong'); col='#ff9a6b'; Audio.sfx('err'); cue.ct.setAlpha(0.4); }
+    else { r.miss++; txt=t('bMiss'); col='#ff6b6b'; cue.ct.setAlpha(0.4); }
+    const o=this.add.text(GW/2,this.bHitY-64,txt,{fontFamily:'Segoe UI',fontSize:'24px',color:col,fontStyle:'bold'}).setOrigin(0.5).setDepth(D+9);
+    this.modalObjs.push(o); this.tweens.add({targets:o,y:o.y-30,alpha:0,duration:600});
+    cue.res=res; this.bRefresh();
+    if(this.bJudged>=this.bTotal) this.bFinish(); }
+  bFinish(){ const r=this.bRes;
+    this.bSubTxt.setText(t('bDone')(r.hit,this.bTotal)).setColor('#46d67a').setFontSize(20); Audio.sfx('phase');
+    this.time.delayedCall(1400,()=>{ if(!this.modalOpen) return; const cues=this.bCues; this.closeModal(); this.stage=null;
+      cues.forEach(c=>{ if(c.res==='hit'||c.res==='perf'){ this.side(c.side,2.2); this.bridge+=1.6; } else if(c.res==='wrong'){ this.side(c.side,-3); } else { this.pl-=1; this.uk-=1; } });
+      this.score+=r.hit*15+r.perf*5; this.clampAll();
+      // panna młoda rzuca bukiet nad mieszanym tłumem
+      const from=iso(this.coupleSpot.gx+0.35,this.coupleSpot.gy,46), tgt=Phaser.Utils.Array.GetRandom(this.clusters);
+      const to=iso(tgt.gx,tgt.gy,40); const bq=this.add.text(from.x,from.y,'💐',{fontSize:'30px'}).setOrigin(0.5).setDepth(97200);
+      const prog={t:0}; this.tweens.add({targets:prog,t:1,duration:1300,ease:'Sine.inOut',
+        onUpdate:()=>{ const p=prog.t; bq.x=from.x+(to.x-from.x)*p; bq.y=from.y+(to.y-from.y)*p-Math.sin(p*Math.PI)*150; bq.rotation+=0.2; },
+        onComplete:()=>{ bq.destroy(); this.burstAt(to.x,to.y,C.pink,16); this.reactAll(['🎉','💐','👏']); Audio.sfx('ding'); } });
+      this.refreshHUD(); }); }
+
+  /* ---------- HUD ---------- */
+  buildHUD(){
+    this.add.rectangle(0,0,GW,38,0x000000,0.5).setOrigin(0,0).setDepth(90000);
+    this.scoreText=this.add.text(14,9,'★ 0',{fontFamily:'Segoe UI',fontSize:'22px',color:'#ffe487',fontStyle:'bold'}).setDepth(90001);
+    this.annText=this.add.text(140,13,'',{fontFamily:'Segoe UI',fontSize:'16px',color:'#c9c9e0',fontStyle:'bold'}).setDepth(90001);
+    this.clockText=this.add.text(GW/2,9,'',{fontFamily:'Segoe UI',fontSize:'20px',color:'#00ffcc',fontStyle:'bold'}).setOrigin(0.5,0).setDepth(90001);
+    this.muteBtn=this.add.text(GW-14,9,Audio.isMuted()?'🔇':'🔊',{fontSize:'22px'}).setOrigin(1,0).setDepth(90001).setInteractive();
+    this.muteBtn.on('pointerdown',()=>{ const m=Audio.toggleMute(); this.muteBtn.setText(m?'🔇':'🔊'); });
+    // harmonogram wesela
+    this.tlX=150; this.tlW=900; const tlY=58, tlH=22;
+    this.add.rectangle(this.tlX+this.tlW/2,tlY,this.tlW+8,tlH+8,0x000000,0.5).setDepth(89999).setStrokeStyle(1,0x555566);
+    this.tlSegs=[]; let accS=0;
+    this.PH.forEach(ph=>{ const w=ph.dur/this.totalTime*this.tlW, x=this.tlX+accS/this.totalTime*this.tlW;
+      const rect=this.add.rectangle(x+w/2,tlY,w-2,tlH,0x171520,0.95).setDepth(90000).setStrokeStyle(1,0x3a3a4a);
+      const icon=this.add.text(x+w/2,tlY,ph.icon,{fontSize:'14px'}).setOrigin(0.5).setDepth(90001);
+      this.tlSegs.push({rect,icon,start:accS,dur:ph.dur}); accS+=ph.dur; });
+    this.tlCursor=this.add.rectangle(this.tlX,tlY,3,tlH+10,0xffe487,1).setDepth(90002);
+    this.tlNext=this.add.text(GW/2,84,'',{fontFamily:'Segoe UI',fontSize:'13px',color:'#ffd23f',fontStyle:'bold'}).setOrigin(0.5).setDepth(90002).setVisible(false);
+    // paski: rodzina PL • most • goście UK
+    const bar=(cx,w,label,col,flag,flagX)=>{ this.add.text(cx,101,label,{fontFamily:'Segoe UI',fontSize:'11px',color:'#c9c9e0',fontStyle:'bold'}).setOrigin(0.5).setDepth(90001);
+      this.add.rectangle(cx,117,w+4,14,0x000000,0.55).setDepth(90000).setStrokeStyle(1,0x555566);
+      if(flag) this.add.image(flagX,115,flag).setDepth(90001).setScale(0.9);
+      return this.add.rectangle(cx-w/2,117,w,10,col,1).setOrigin(0,0.5).setDepth(90001); };
+    this.plFill=bar(330,280,t('i_pl'),0xdc143c,'flagPL',330-162);
+    this.brFill=bar(600,170,t('i_bridge'),0xd4af37,null);
+    this.ukFill=bar(870,280,t('i_uk'),0x3a5ad0,'flagUK',870+162);
+    this.trainLbl=this.add.text(600,134,t('i_trainReady'),{fontFamily:'Segoe UI',fontSize:'12px',color:'#ffe487',fontStyle:'bold'}).setOrigin(0.5).setDepth(90001).setVisible(false);
+    this.tweens.add({targets:this.trainLbl,scale:{from:1,to:1.2},yoyo:true,repeat:-1,duration:350});
+    this.hintBar=this.add.rectangle(GW/2,GH-28,GW-40,34,0x000000,0.55).setDepth(90000);
+    this.hintText=this.add.text(GW/2,GH-28,'',{fontFamily:'Segoe UI',fontSize:'16px',color:'#ffe487',fontStyle:'bold'}).setOrigin(0.5).setDepth(90001);
+    this.promptText=this.add.text(0,0,'',{fontFamily:'Segoe UI',fontSize:'16px',color:'#fff',backgroundColor:'#000a',padding:{x:8,y:4}}).setOrigin(0.5,1).setDepth(95000).setVisible(false);
+    this.tipText=this.add.text(GW/2,156,'',{fontFamily:'Segoe UI',fontSize:'18px',color:'#00ffcc',fontStyle:'bold'}).setOrigin(0.5).setDepth(95001).setAlpha(0).setShadow(0,0,'#00ffcc',8);
+    this.refreshHUD(); }
+  refreshHUD(){
+    this.scoreText.setText('★ '+this.score);
+    this.annText.setText(t('i_ann')+this.annDoneN+'/'+this.PH.length);
+    const ph=this.curPhase(); if(ph){ this.clockText.setText(ph.icon+' '+ph.name+' • '+this.fmt(Math.max(0,this.totalTime-this.elapsed))); this.hintText.setText('🎯 '+ph.hint); }
+    const cx=this.tlX+Math.min(1,this.elapsed/this.totalTime)*this.tlW; this.tlCursor.x=cx;
+    this.tlSegs.forEach((s,i)=>{ const past=this.elapsed>=s.start+s.dur, cur=i===this.phaseIdx;
+      s.rect.setFillStyle(cur?0x2a2747:(past?0x101018:0x171520),0.95).setStrokeStyle(cur?2:1, cur?0xd4af37:0x3a3a4a);
+      s.icon.setAlpha(past?0.35:cur?1:0.7); });
+    const nxt=this.phaseIdx>=0?this.PH[this.phaseIdx+1]:null;
+    if(nxt && (this.tlSegs[this.phaseIdx].start+this.curPhase().dur-this.elapsed)<=6){
+      this.tlNext.setText(t('dNext')+nxt.icon+' '+nxt.name).setPosition(Phaser.Math.Clamp(cx,260,940),84).setVisible(true); }
+    else this.tlNext.setVisible(false);
+    const f=(o,v,c)=>{ o.setScale(Math.max(0.01,v/100),1); if(c) o.setFillStyle(v<25?0xff5252:c); };
+    f(this.plFill,this.pl,0xdc143c); f(this.ukFill,this.uk,0x3a5ad0); f(this.brFill,this.bridge,null);
+    this.brFill.setFillStyle(this.bridge>=80?0xffe487:0xd4af37);
+    this.trainLbl.setVisible(this.trainAvailable()); }
+
+  /* ---------- KONTEKSTOWA AKCJA ---------- */
+  getContext(){
+    if(this.trainActive) return null;
+    const near=(gx,gy,r)=>Math.hypot(this.px-gx,this.py-gy)<(r||1.2);
+    const atMic=near(this.micSpot.gx,this.micSpot.gy,1.25), atDJ=near(this.djSpot.gx,this.djSpot.gy,1.25);
+    const st=this.stage;
+    if(this.feedback && atDJ) return {label:t('pFeedback'),fn:()=>this.endFeedback(true)};
+    if(this.uncleEv && this.uncleEv.state==='walk' && near(this.uncleEv.gx,this.uncleEv.gy,1.3)) return {label:t('pPickle'),fn:()=>this.pickleUncle()};
+    if(atMic){
+      if(this.annPend && !this.annPend.done) return {label:t('pMic'),fn:()=>this.openAnnModal()};
+      if(st && st.type==='stolat') return {label:t('pStoLat'),fn:()=>this.openStoLat()};
+      if(st && st.type==='speech' && st.state==='await') return {label:t('pGiveMic'),fn:()=>this.giveMic()};
+      if(st && st.type==='speech' && st.state==='toast') return {label:t('pToast'),fn:()=>this.raiseToast()}; }
+    if(st && st.type==='boss' && near(this.floorSpot.gx,this.floorSpot.gy,1.4)) return {label:t('pBoss'),fn:()=>this.openBoss()};
+    if(atDJ){ const rq=this.sideEvs.find(e=>e.type==='req' && e.state==='promised');
+      if(rq) return {label:t('pPlayDedic')+t(rq.side==='pl'?'songPL':'songUK'),fn:()=>this.resolveSide(rq)}; }
+    for(const ev of this.sideEvs){
+      if(ev.type==='mixed'){ const c=[ev.a,ev.b].find(cl=>!ev.got.has(cl) && near(cl.gx,cl.gy,1.5)); if(c) return {label:t('pInvite'),fn:()=>this.inviteMixed(ev,c)}; continue; }
+      if(ev.type==='req' && ev.state!=='ask') continue;
+      if(near(ev.c.gx,ev.c.gy,1.5)) return {label:t({confused:'pExplain',bored:'pChat',req:'pDedic'}[ev.type]),fn:()=>this.resolveSide(ev)}; }
+    if(this.firstDance && !this.firstDance.cheered && near(this.coupleSpot.gx,this.coupleSpot.gy,1.4)) return {label:t('pCheerCouple'),fn:()=>this.cheerCouple()};
+    if(this.trainAvailable()) return {label:t('pTrain'),fn:()=>this.startTrain()};
+    return null; }
+
+  /* ---------- RUCH POSTACI W TLE ---------- */
+  updateEvents(dt){
+    const mv=(o,tx,ty,sp)=>{ const d=Math.hypot(tx-o.gx,ty-o.gy); if(d<0.08) return true; const s=Math.min(sp*dt/1000,d); o.gx+=(tx-o.gx)/d*s; o.gy+=(ty-o.gy)/d*s; return false; };
+    // wujek z kieliszkiem
+    if(this.uncleEv){ const u=this.uncleEv; let gone=false;
+      if(u.state==='walk'){ if(mv(u,u.to.gx-0.8,u.to.gy+0.3,0.42)){ u.state='leave'; u.bub.setText('🥴');
+        this.uk-=8; this.bridge-=4; this.clampAll(); Audio.sfx('err'); this.flashTip(t('ivVodkaFail')); this.popEmoji(u.to,'🥴'); } }
+      else if(u.state==='leave'){ if(mv(u,u.home.gx,u.home.gy,1.6)){ u.sprite.destroy(); u.bub.destroy(); this.uncleEv=null; gone=true; } }
+      if(!gone){ const p=iso(u.gx,u.gy,0); u.sprite.setPosition(p.x,p.y).setDepth(tdepth(u.gx,u.gy,4)).setFlipX(u.state==='leave'); u.bub.setPosition(p.x,p.y-50); } }
+    // przemowy
+    const st=this.stage;
+    if(st && st.type==='speech'){ const k=st.spk;
+      if(st.state==='walk'){ if(mv(k,st.target.gx,st.target.gy,3.2)){ st.state='await'; st.due=this.elapsed+4; Audio.sfx('ding'); this.flashTip(t('ivSpeechGive')); } }
+      else if(st.state==='talk'){ st.lineT+=dt;
+        if(st.lineT>=2100){ st.lineT=0; st.line++;
+          if(st.line>=st.list[st.i].lines.length){ if(st.bubble){ st.bubble.destroy(); st.bubble=null; } st.state='back'; Audio.sfx('clink'); this.reactAll(['👏','🥂']); }
+          else this.showSpeechLine(); } }
+      else if(st.state==='back'){ if(mv(k,k.sp.gx,k.sp.gy,3.4)){ this.returnSpeaker(k); st.spk=null; st.i++;
+          if(st.i<st.list.length) this.beginSpeaker(); else { st.state='toast'; st.due=this.elapsed+4; this.flashTip(t('ivToastDue')); } } }
+      if(st.spk && (st.state==='walk'||st.state==='back'||st.state==='await'||st.state==='talk')){ const p=iso(st.spk.gx,st.spk.gy,0);
+        st.spk.sp.s.setPosition(p.x,p.y).setDepth(tdepth(st.spk.gx,st.spk.gy,4)); } }
+    // sprzężenie: pisk co chwilę, aż Karol dobiegnie do konsoli
+    if(this.feedback){ const f=this.feedback; f.t+=dt; f.fx+=dt;
+      if(f.fx>650){ f.fx=0; Audio.sfx('squeal');
+        [{gx:1.8,gy:2.5},{gx:10.2,gy:2.5}].forEach(s=>{ const p=iso(s.gx,s.gy,40);
+          const z=this.add.text(p.x+Phaser.Math.Between(-10,10),p.y,'⚡',{fontSize:'18px'}).setOrigin(0.5).setDepth(95800);
+          this.tweens.add({targets:z,y:z.y-24,alpha:0,duration:600,onComplete:()=>z.destroy()}); }); }
+      if(f.t>5500) this.endFeedback(false); }
+  }
+
+  /* ---------- FINAŁ ---------- */
+  finale(){ if(this.done) return;
+    if(this.trainActive) this.endTrain();
+    this.abortStage(); this.sideEvs.slice().forEach(ev=>this.removeSide(ev));
+    this.done=true; this.promptText.setVisible(false);
+    this.clusters.forEach((c,ci)=>{ for(let i=0;i<4;i++){ const p=iso(c.gx,c.gy,60);
+      this.time.delayedCall(ci*200+i*240,()=>{ const e=this.add.text(p.x+Phaser.Math.Between(-30,30),p.y,Phaser.Utils.Array.GetRandom(['❤️','✨','🎉','🥂']),{fontSize:'22px'}).setOrigin(0.5).setDepth(96000);
+        this.tweens.add({targets:e,y:e.y-50,alpha:0,duration:1400,onComplete:()=>e.destroy()}); }); } });
+    Audio.sfx('phase');
+    this.time.delayedCall(2200,()=>this.finish()); }
+  finish(){
+    const n=this.ticks||1, aPl=Math.round(this.sumPl/n), aUk=Math.round(this.sumUk/n), aBr=Math.round(this.sumBr/n);
+    this.score+=aBr*2;   // most mnoży wynik całego wieczoru
+    const both=(aPl+aUk)/2;
+    const stars=(both>=60 && aBr>=45 && this.annGood>=5)?3 : ((both>=42 || this.annGood>=3)?2:1);
+    this.registry.set('stars',stars); this.registry.set('finalScore',this.score);
+    this.registry.set('late',false); this.registry.set('npcDone',this.annGood); this.registry.set('evTotal',this.PH.length);
+    this.registry.set('mode','intl'); this.registry.set('lastScene','Wedding'); this.registry.set('intlAvg',[aPl,aUk,aBr]);
+    this.registry.set('bestIntl',Math.max(this.registry.get('bestIntl')||0,this.score));
+    this.cameras.main.fade(500,5,5,12); this.time.delayedCall(520,()=>this.scene.start('Result')); }
+
+  /* ---------- UPDATE ---------- */
+  update(time,delta){
+    if(this.done||this.modalOpen) return;
+    const dt=delta;
+    let ix=0,iy=0;
+    if(this.cursors.left.isDown||this.keys.A.isDown) ix=-1; else if(this.cursors.right.isDown||this.keys.D.isDown) ix=1;
+    if(this.cursors.up.isDown||this.keys.W.isDown) iy=-1; else if(this.cursors.down.isDown||this.keys.S.isDown) iy=1;
+    if(Math.abs(this.joy.x)>0.2) ix=this.joy.x; if(Math.abs(this.joy.y)>0.2) iy=this.joy.y;
+    const moving=Math.hypot(ix,iy)>0.1;
+    if(moving){ this.facingBack=iy<0; this.flip=ix<0;
+      let dgx=ix/TW + iy/TH, dgy=-ix/TW + iy/TH; const l=Math.hypot(dgx,dgy)||1; dgx/=l; dgy/=l;
+      const spd=3.6*(dt/1000);
+      this.px=Phaser.Math.Clamp(this.px+dgx*spd,0.4,RW-1.4); this.py=Phaser.Math.Clamp(this.py+dgy*spd,0.4,RH-1.4); }
+    this.bob = moving ? this.bob+dt*0.012 : 0;
+    this.player.setTexture(this.facingBack?'karolFrak_b':'karolFrak').setFlipX(this.flip);
+    const pp=iso(this.px,this.py, moving?Math.abs(Math.sin(this.bob))*3:0);
+    this.player.setPosition(pp.x,pp.y).setDepth(tdepth(this.px,this.py,5));
+    const sh=iso(this.px,this.py,0); this.playerShadow.setPosition(sh.x,sh.y).setScale(1.1,0.5).setDepth(tdepth(this.px,this.py,-1));
+
+    // mikrofon świeci, gdy czeka na Karola
+    const st=this.stage;
+    const needMic=(this.annPend && !this.annPend.done) || (st && (st.type==='stolat' || (st.type==='speech' && (st.state==='await'||st.state==='toast'))));
+    this.micMark.setVisible(!!needMic); this.micBubble.setVisible(!!needMic);
+
+    const ctx=this.getContext();
+    const keyHint=this.sys.game.device.input.touch?t('keyAction'):t('keySpace');
+    if(ctx){ this.promptText.setText(keyHint+ctx.label).setPosition(pp.x,pp.y-52).setVisible(true); }
+    else this.promptText.setVisible(false);
+    const pressed=Phaser.Input.Keyboard.JustDown(this.keys.SPACE)||this.actionQueued; this.actionQueued=false;
+    if(pressed && ctx){ this.flashPrompt(); ctx.fn(); }
+
+    // pociąg: goście obu stron na przemian za Karolem
+    if(this.trainActive){
+      const last=this.trainTrail[this.trainTrail.length-1];
+      if(!last || Math.hypot(this.px-last.gx,this.py-last.gy)>0.06){ this.trainTrail.push({gx:this.px,gy:this.py}); if(this.trainTrail.length>260) this.trainTrail.shift(); }
+      this.trainGuests.forEach((sp,i)=>{ const idx=this.trainTrail.length-1-(i+1)*7;
+        if(idx>=0){ const tp=this.trainTrail[idx]; const p=iso(tp.gx,tp.gy,Math.abs(Math.sin(this.bob+i))*3);
+          sp.s.setFlipX(p.x<sp.s.x); sp.s.setPosition(p.x,p.y).setDepth(tdepth(tp.gx,tp.gy,4)); } }); }
+
+    this.updateEvents(dt);
+  }
+}
+// wspólne narzędzia sceny Parkietu (HUD-owe efekty, sterowanie, piruet panny młodej)
+['fmt','evMark','burstAt','flashTip','buildControls','buildJoy','buildActBtn','flashPrompt','spinBride'].forEach(m=>{ Wedding.prototype[m]=Dance.prototype[m]; });
+
+/* ===========================================================================
    RESULT
 =========================================================================== */
 class Result extends Phaser.Scene{
@@ -2139,12 +2962,13 @@ class Result extends Phaser.Scene{
     const score=this.registry.get('finalScore')||0, stars=this.registry.get('stars')||1;
     const best=this.registry.get('best')||0, late=this.registry.get('late'), npc=this.registry.get('npcDone')||0;
     const dance=this.registry.get('mode')==='dance', avgE=this.registry.get('avgEnergy')||0;
+    const intl=this.registry.get('mode')==='intl', ia=this.registry.get('intlAvg')||[0,0,0];
     for(let i=0;i<(IS_MOBILE?30:60);i++){ const c=this.add.rectangle(Phaser.Math.Between(0,GW),Phaser.Math.Between(-300,0),6,11,Phaser.Utils.Array.GetRandom([C.gold,C.neon,C.pink,C.green]));
       this.tweens.add({targets:c,y:GH+20,angle:360,duration:Phaser.Math.Between(2600,5200),repeat:-1,delay:Phaser.Math.Between(0,2200)}); }
     this.add.rectangle(GW/2,GH/2,720,476,0x05050d,0.92).setStrokeStyle(3,C.gold);
 
-    this.add.text(GW/2,110,t(dance?'resDance':'resReady'),{fontFamily:'Segoe UI',fontSize:'40px',color:'#d4af37',fontStyle:'bold'}).setOrigin(0.5).setShadow(0,0,'#d4af37',18);
-    this.add.text(GW/2,152, dance?(stars>=3?t('resDanceHi'):t('resDanceMid')):(late?t('resLate'):t('resOnTime')),
+    this.add.text(GW/2,110,intl?t(stars>=2?'resIntl':'resIntlLowT'):t(dance?'resDance':'resReady'),{fontFamily:'Segoe UI',fontSize:'40px',color:'#d4af37',fontStyle:'bold'}).setOrigin(0.5).setShadow(0,0,'#d4af37',18);
+    this.add.text(GW/2,152, intl?t(stars>=3?'resIntlHi':stars===2?'resIntlMid':'resIntlLow') : dance?(stars>=3?t('resDanceHi'):t('resDanceMid')):(late?t('resLate'):t('resOnTime')),
       {fontFamily:'Segoe UI',fontSize:'16px',color:'#c9c9e0',align:'center',wordWrap:{width:560}}).setOrigin(0.5);
 
     const sx=GW/2-70;
@@ -2154,9 +2978,9 @@ class Result extends Phaser.Scene{
     const k=this.add.image(GW/2,300,'karolFrak').setScale(1.7).setOrigin(0.5,1); k.y=320;
     this.tweens.add({targets:k,angle:{from:-4,to:4},yoyo:true,repeat:-1,duration:700});
 
-    this.add.text(GW/2,344,t(dance?'resDanceScore':'resScore')(score,npc,this.registry.get('evTotal')||6),{fontFamily:'Segoe UI',fontSize:'23px',color:'#00ffcc',fontStyle:'bold'}).setOrigin(0.5);
-    this.add.text(GW/2,372, dance?(t('resDanceAvg')(avgE)+'  •  '+t('resBest')+(this.registry.get('bestDance')||score)):(t('resBest')+best),{fontFamily:'Segoe UI',fontSize:'15px',color:'#9aa'}).setOrigin(0.5);
-    this.add.text(GW/2,404,t(dance?'resDanceCopy':'resCopy'),
+    this.add.text(GW/2,344,t(intl?'resIntlScore':dance?'resDanceScore':'resScore')(score,npc,this.registry.get('evTotal')||6),{fontFamily:'Segoe UI',fontSize:'23px',color:'#00ffcc',fontStyle:'bold'}).setOrigin(0.5);
+    this.add.text(GW/2,372, intl?(t('resIntlAvg')(ia[0],ia[1],ia[2])+'  •  '+t('resBest')+(this.registry.get('bestIntl')||score)) : dance?(t('resDanceAvg')(avgE)+'  •  '+t('resBest')+(this.registry.get('bestDance')||score)):(t('resBest')+best),{fontFamily:'Segoe UI',fontSize:'15px',color:'#9aa'}).setOrigin(0.5);
+    this.add.text(GW/2,404,t(intl?'resIntlCopy':dance?'resDanceCopy':'resCopy'),
       {fontFamily:'Segoe UI',fontSize:'15px',color:'#c9c9e0',align:'center',lineSpacing:4}).setOrigin(0.5);
 
     const cta=this.add.text(GW/2,452,t('resCta'),{fontFamily:'Segoe UI',fontSize:'19px',color:'#0a0a18',backgroundColor:'#d4af37',padding:{x:22,y:11},fontStyle:'bold'}).setOrigin(0.5).setInteractive().setShadow(0,0,'#d4af37',12);
@@ -2178,7 +3002,7 @@ const config={
   type:Phaser.AUTO, width:GW, height:GH, parent:'game-container', backgroundColor:'#08070f',
   pixelArt:true, roundPixels:true,
   scale:{ mode:Phaser.Scale.FIT, autoCenter:Phaser.Scale.CENTER_BOTH },
-  scene:[Boot,Hub,Setup,Dance,Result]
+  scene:[Boot,Hub,Setup,Dance,Wedding,Result]
 };
 window.WK_GAME=new Phaser.Game(config);
 

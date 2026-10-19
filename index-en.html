@@ -1820,7 +1820,7 @@ class Dance extends Phaser.Scene{
     this.pendingReq=null; this.uncle=null; this.photoEv=null; this.spkBroken=null; this.spkTech=null; this._lowWarnT=0; this._booWarnT=0; this.holding=false; this.holdT=0;
     this.bouquetEv=null; this.bouquetPending=false; this.bouquetFired=false;
     this.firstDance=null; this.firstDanceFired=false;
-    this.congaCharge=40; this.congaActive=false; this.congaT=0; this.congaTrail=[]; this._vigOn=false;
+    this.congaCharge=15; this.congaActive=false; this.congaT=0; this.congaTrail=[]; this._vigOn=false;
 
     // sprzęt stoi już rozstawiony (finał minigry 1) — pełna ciągłość świata
     const gear=[
@@ -2028,14 +2028,14 @@ class Dance extends Phaser.Scene{
     this.pendingReq=null; this.energy=Math.max(0,this.energy-8); Audio.sfx('err'); this.flashTip(t('evReqFail')); }
   fulfillRequest(){ const r=this.pendingReq; if(!r) return;
     r.cluster.request=false; r.cluster.reqAccepted=false; this.refreshBubble(r.cluster,true); if(r.mark)r.mark.destroy();
-    this.pendingReq=null; this.eventsDone++; this.score+=60; this.energy=Math.min(100,this.energy+8); this.addCharge(20);
+    this.pendingReq=null; this.eventsDone++; this.score+=60; this.energy=Math.min(100,this.energy+8); this.addCharge(12);
     Audio.sfx('ding'); this.flashTip(t('evReqOk'));
     const p=iso(r.cluster.gx,r.cluster.gy,40); this.burstAt(p.x,p.y,C.gold,12); }
   fixSpeaker(){ const b=this.spkBroken; if(!b) return;
     if(this.spkTech && this.spkTech.state==='fix') return;   // technik już przy głośniku
     if(b.fx)b.fx.remove(); if(b.mark)b.mark.destroy(); this.spkBroken=null;
     if(this.spkTech && this.spkTech.state==='enter') this.spkTech.state='leave';   // zdążyłeś — technik zawraca
-    this.eventsDone++; this.score+=40; this.energy=Math.min(100,this.energy+5); this.addCharge(20);
+    this.eventsDone++; this.score+=40; this.energy=Math.min(100,this.energy+5); this.addCharge(12);
     Audio.sfx('connect'); this.flashTip(t('evSpkOk'));
     const p=iso(b.gx,b.gy,30); this.burstAt(p.x,p.y,C.green,12); this.refreshHUD(); }
   // technik przybiega od drzwi, naprawia głośnik na miejscu i wychodzi (gracz bez nagrody)
@@ -2050,11 +2050,11 @@ class Dance extends Phaser.Scene{
       const p=iso(b.gx,b.gy,30); this.burstAt(p.x,p.y,0x9aa0aa,10); }
     this.spkTech.state='leave'; }
   resolveUncle(){ const u=this.uncle; if(!u||u.state!=='enter') return; u.state='leave';
-    this.eventsDone++; this.score+=50; this.addCharge(20); Audio.sfx('ding'); this.flashTip(t('evUncleOk'));
+    this.eventsDone++; this.score+=50; this.addCharge(12); Audio.sfx('ding'); this.flashTip(t('evUncleOk'));
     const p=iso(u.gx,u.gy,40); this.burstAt(p.x,p.y,C.green,10); this.refreshHUD(); }
   resolvePhoto(){ const ev=this.photoEv; if(!ev||ev.state!=='ask') return; ev.state='leave';
     if(ev.mark){ev.mark.destroy(); ev.mark=null;}
-    this.eventsDone++; this.score+=40; this.addCharge(20); Audio.sfx('ding'); this.flashTip(t('evPhotoOk'));
+    this.eventsDone++; this.score+=40; this.addCharge(12); Audio.sfx('ding'); this.flashTip(t('evPhotoOk'));
     const fl=this.add.rectangle(GW/2,GH/2,GW,GH,0xffffff,0.85).setDepth(97500);   // flesz aparatu
     this.tweens.add({targets:fl,alpha:0,duration:420,onComplete:()=>fl.destroy()}); this.refreshHUD(); }
   // oczepiny: gracz zwołuje grupy do kręgu; gdy komplet — panna młoda faktycznie rzuca bukiet do losowego gościa
@@ -2068,7 +2068,7 @@ class Dance extends Phaser.Scene{
       this.tweens.add({targets:sp.s,x:p.x,y:p.y,duration:500,ease:'Quad.out'});
       sp.s.setDepth(tdepth(gx,gy,4)); });
     c.bub.setVisible(false);
-    Audio.sfx('ding'); this.score+=15; this.addCharge(10); this.flashTip(t('evBouquetGathered')); this.refreshHUD();
+    Audio.sfx('ding'); this.score+=15; this.addCharge(5); this.flashTip(t('evBouquetGathered')); this.refreshHUD();
     if(ev.gathered.size>=this.clusters.length) this.startBouquetThrow(); }
   startBouquetThrow(){ const ev=this.bouquetEv; if(!ev) return; ev.state='throw';
     Audio.sfx('phase'); this.flashTip(t('evBouquetThrow'));
@@ -2087,7 +2087,7 @@ class Dance extends Phaser.Scene{
         bq.x=from.x+(tx-from.x)*p; bq.y=from.y+(ty-from.y)*p-Math.sin(p*Math.PI)*arcH; bq.rotation+=0.22; },
       onComplete:()=>{ trail.remove(); bq.destroy(); this.resolveBouquetCatch(); } }); }
   resolveBouquetCatch(){ const ev=this.bouquetEv; if(!ev) return; ev.state='celebrate';
-    this.eventsDone++; this.score+=70; this.energy=Math.min(100,this.energy+12); this.addCharge(25);
+    this.eventsDone++; this.score+=70; this.energy=Math.min(100,this.energy+12); this.addCharge(15);
     this.clusters.forEach(c=>{ c.zeal=Math.min(100,c.zeal+10); });
     Audio.sfx('ding'); this.flashTip(t('evBouquetOk'));
     const cp={x:ev.catcher.s.x,y:ev.catcher.s.y-20}; this.burstAt(cp.x,cp.y,C.pink,16);
@@ -2262,7 +2262,12 @@ class Dance extends Phaser.Scene{
     // zdjęcie z parą młodą
     if(this.photoEv && this.photoEv.state==='ask' && near(this.photoEv.spot.gx,this.photoEv.spot.gy,1.3)) return {label:t('pPhoto'),fn:()=>this.resolvePhoto()};
     // oczepiny — zaproś grupę gości do kręgu wokół panny młodej
-    if(this.bouquetEv && this.bouquetEv.state==='gather'){ const gc=this.clusters.find(cl=>!this.bouquetEv.gathered.has(cl) && near(cl.gx,cl.gy,1.5)); if(gc) return {label:t('pGather'),fn:()=>this.gatherCluster(gc)}; }
+    if(this.bouquetEv && this.bouquetEv.state==='gather'){ const ev=this.bouquetEv, free=this.clusters.filter(cl=>!ev.gathered.has(cl));
+      let gc=free.find(cl=>near(cl.gx,cl.gy,1.6));
+      // przy znaczniku kręgu: zaproś najbliższą jeszcze niezaproszoną grupę
+      if(!gc && free.length && BOUQUET_RING.some((r,i)=>ev.marks[i] && near(ev.spot.gx+r.dx,ev.spot.gy+r.dy,1.2)))
+        gc=free.slice().sort((a,b)=>Math.hypot(this.px-a.gx,this.py-a.gy)-Math.hypot(this.px-b.gx,this.py-b.gy))[0];
+      if(gc) return {label:t('pGather'),fn:()=>this.gatherCluster(gc)}; }
     // pierwszy taniec — jednorazowe owacje dla pary młodej
     if(this.firstDance && !this.firstDance.cheered && near(this.firstDance.spot.gx,this.firstDance.spot.gy,1.4)) return {label:t('pCheerCouple'),fn:()=>this.cheerCouple()};
     // prośba o kawałek
@@ -2275,11 +2280,12 @@ class Dance extends Phaser.Scene{
     const c=this.clusters.find(cl=>cl.zeal<60 && near(cl.gx,cl.gy,1.5));
     if(c) return {label:t('pCheer'),fn:()=>this.cheer(c)};
     // wężyk — akcja specjalna po naładowaniu
-    if(this.congaCharge>=100) return {label:t('pConga'),fn:()=>this.startConga()};
+    const busy=this.uncle||this.photoEv||this.spkBroken||this.bouquetEv||this.firstDance||(this.pendingReq&&!this.pendingReq.accepted);
+    if(this.congaCharge>=100 && !busy && this.phaseIdx!==2 && this.phaseIdx!==4) return {label:t('pConga'),fn:()=>this.startConga()};
     return null;
   }
   cheer(c){ c.zeal=Math.min(100,c.zeal+45); c.needy.setVisible(false); c.needyTw.pause();
-    this.energy=Math.min(100,this.energy+3); this.score+=5; this.addCharge(8);
+    this.energy=Math.min(100,this.energy+3); this.score+=5; this.addCharge(4);
     Audio.sfx('ding'); const p=iso(c.gx,c.gy,50); this.burstAt(p.x,p.y,C.neon,8);
     c.sprites.forEach((sp,i)=>{ this.tweens.add({targets:sp.s,y:sp.s.y-14,yoyo:true,duration:150,delay:i*60,ease:'Quad.out'}); });
     const e=emo(this,p.x,p.y,Phaser.Utils.Array.GetRandom(['🙌','🎉','🔥']),24).setOrigin(0.5).setDepth(96000);
@@ -2315,7 +2321,7 @@ class Dance extends Phaser.Scene{
       this.tweens.add({targets:sp,alpha:0,scale:0.2,duration:340,onComplete:()=>sp.destroy()}); }});
     this.time.delayedCall(1100,()=>sparkle.remove()); }
   cheerCouple(){ const fd=this.firstDance; if(!fd||fd.cheered) return; fd.cheered=true;
-    this.score+=40; this.energy=Math.min(100,this.energy+8); this.addCharge(15);
+    this.score+=40; this.energy=Math.min(100,this.energy+8); this.addCharge(8);
     this.clusters.forEach(c=>{ c.zeal=Math.min(100,c.zeal+8); });
     Audio.sfx('ding'); this.flashTip(t('evFirstDanceOk'));
     const p=iso(fd.spot.gx,fd.spot.gy,50); this.burstAt(p.x,p.y,C.pink,14); this.refreshHUD(); }
@@ -2411,8 +2417,8 @@ class Dance extends Phaser.Scene{
     if(!best||bd>110) return;
     best.hit=true;
     const D=97000;
-    if(bd<=32){ this.mixPts+=2; this.addCharge(6); Audio.sfx('ding'); this.laneFx(lane,t('mixPerfect'),'#46d67a',D); }
-    else if(bd<=64){ this.mixPts+=1; this.addCharge(3); Audio.sfx('pick'); this.laneFx(lane,t('mixGood'),'#ffd23f',D); }
+    if(bd<=32){ this.mixPts+=2; this.addCharge(2); Audio.sfx('ding'); this.laneFx(lane,t('mixPerfect'),'#46d67a',D); }
+    else if(bd<=64){ this.mixPts+=1; this.addCharge(1); Audio.sfx('pick'); this.laneFx(lane,t('mixGood'),'#ffd23f',D); }
     else { Audio.sfx('err'); best.missed=true; best.hit=false; this.laneFx(lane,t('mixMiss'),'#ff6b6b',D); }
     if(best.hit){ this.burstAt(best.spr.x,best.spr.y,this.genres[ln].col,7); best.spr.destroy(); }
     this.noteJudged(); }

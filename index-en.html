@@ -2177,7 +2177,7 @@ class Dance extends Phaser.Scene{
   }
   refreshHUD(){
     this.scoreText.setText('★ '+this.score);
-    this.evText.setText(t('d_events')+this.eventsDone+'/'+this.evPlan.length);
+    this.evText.setText(t('d_events')+this.eventsDone+'/'+(this.evPlan.length+1));   // +1 = bukiet na oczepinach
     const ph=this.curPhase(); if(ph){ this.clockText.setText(ph.icon+' '+ph.name+' • '+this.fmt(Math.max(0,this.totalTime-this.elapsed)));
       this.hintText.setText('🎯 '+ph.hint); }
     // oś czasu: kursor + stany segmentów
@@ -2200,6 +2200,7 @@ class Dance extends Phaser.Scene{
     // miernik wężyka: złoty gdy pełny + puls etykiety
     this.congaFill.setScale(Math.max(0.02,this.congaCharge/100),1);
     const full=this.congaCharge>=100 && !this.congaActive;
+    this.congaLbl.setAlpha(this.congaUsed?0.4:1); this.congaFill.setAlpha(this.congaUsed?0.35:1);   // wężyk już wykorzystany
     this.congaFill.setFillStyle(this.congaActive?0x00ffcc:full?0xffe487:0xd4af37);
     this.congaLbl.setColor(full?'#ffe487':'#9aa');
     if(full && !this._congaPulse){ this._congaPulse=this.tweens.add({targets:this.congaLbl,scale:{from:1,to:1.18},yoyo:true,repeat:-1,duration:350}); }
@@ -2281,7 +2282,7 @@ class Dance extends Phaser.Scene{
     if(c) return {label:t('pCheer'),fn:()=>this.cheer(c)};
     // wężyk — akcja specjalna po naładowaniu
     const busy=this.uncle||this.photoEv||this.spkBroken||this.bouquetEv||this.firstDance||(this.pendingReq&&!this.pendingReq.accepted);
-    if(this.congaCharge>=100 && !busy && this.phaseIdx!==2 && this.phaseIdx!==4) return {label:t('pConga'),fn:()=>this.startConga()};
+    if(this.congaCharge>=100 && !this.congaUsed && !busy && this.phaseIdx!==2 && this.phaseIdx!==4) return {label:t('pConga'),fn:()=>this.startConga()};
     return null;
   }
   cheer(c){ c.zeal=Math.min(100,c.zeal+45); c.needy.setVisible(false); c.needyTw.pause();
@@ -2331,7 +2332,7 @@ class Dance extends Phaser.Scene{
     this.firstDance=null; }
 
   /* ---------- WĘŻYK (akcja specjalna) ---------- */
-  addCharge(n){ if(this.congaActive||this.congaCharge>=100) return;
+  addCharge(n){ if(this.congaActive||this.congaUsed||this.congaCharge>=100) return;
     this.congaCharge=Math.min(100,this.congaCharge+n);
     if(this.congaCharge>=100){ Audio.sfx('ding'); this.flashTip(t('congaReadyTip')); } this.refreshHUD(); }
   startConga(){ if(this.congaActive) return; this.congaActive=true; this.congaT=12; this.congaTrail=[];
@@ -2340,7 +2341,7 @@ class Dance extends Phaser.Scene{
     this.congaGuests=[];
     this.clusters.forEach(c=>{ c.bub.setVisible(false);
       c.sprites.forEach(sp=>{ sp.tw.pause(); this.congaGuests.push({s:sp.s,homeX:sp.s.x,homeY:sp.s.y,homeD:sp.s.depth}); }); }); }
-  endConga(){ if(!this.congaActive) return; this.congaActive=false; this.congaCharge=0;
+  endConga(){ if(!this.congaActive) return; this.congaActive=false; this.congaCharge=0; this.congaUsed=true;   // wężyk raz na wesele
     this.score+=30; this.energy=Math.min(100,this.energy+10);
     Audio.sfx('phase'); this.flashTip(t('congaDone'));
     const pp=iso(this.px,this.py,20); this.burstAt(pp.x,pp.y,C.pink,16);
@@ -2462,7 +2463,7 @@ class Dance extends Phaser.Scene{
     this.registry.set('stars',stars); this.registry.set('finalScore',this.score);
     this.registry.set('late',false); this.registry.set('npcDone',this.eventsDone);
     this.registry.set('mode','dance'); this.registry.set('lastScene','Dance'); this.registry.set('avgEnergy',avgE);
-    this.registry.set('evTotal',this.evPlan.length);
+    this.registry.set('evTotal',this.evPlan.length+1);
     const bestD=Math.max(this.registry.get('bestDance')||0,this.score); this.registry.set('bestDance',bestD);
     this.cameras.main.fade(500,5,5,12); this.time.delayedCall(520,()=>this.scene.start('Result'));
   }

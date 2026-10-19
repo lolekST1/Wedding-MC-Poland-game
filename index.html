@@ -786,6 +786,19 @@ function drawItem(P,key){
   else if(key==='cake'){ // trzypiętrowy tort weselny
     P(0,24,22,2,0xc8c8d0); P(2,17,18,7,0xf8f4ee); P(5,10,12,7,0xf8f4ee); P(8,4,6,6,0xf8f4ee);
     P(2,20,18,1,0xff9ac0); P(5,13,12,1,0xff9ac0); P(8,7,6,1,0xff9ac0); P(10,1,2,3,0xd4af37); }
+  else if(key==='rtable'){ // okrągły stół gości: obrus do ziemi, złota szarfa, stroik i świece
+    const cx=17, cy=12, rx=16, ry=6.5, ell=(y,c)=>{ const d=(y+0.5-c)/ry; return Math.abs(d)<=1?rx*Math.sqrt(1-d*d):-1; };
+    for(let y=12;y<=27;y++){ const hw=y<=24?rx:ell(y,24); if(hw<0) continue; P(cx-hw,y,hw*2,1,0xe4ddd0); }   // spływający obrus
+    for(let x=3;x<=31;x+=4) P(x,15,1,10,0xd2cabb,0.7);                                                          // fałdy
+    for(let y=4;y<=20;y++){ const hw=ell(y,cy); if(hw<0) continue; P(cx-hw,y,hw*2,1,0xf6f3ec); }                // blat
+    P(2,15,30,1.5,0xd4af37); P(15,15,4,4,0xd4af37);                                                              // szarfa z kokardą
+    [[7,10],[25,10],[12,15],[22,15],[7,13],[27,13]].forEach(([x,y])=>P(x,y,3,1.5,0xffffff));                    // talerze
+    P(15,6,4,6,0xd4af37); P(16,7,2,4,0xf2d06b);                                                                   // wazon
+    P(12,1,4,3,0xff8fb3); P(16,0,3,3,0xffffff); P(18,2,4,3,0xe8436e); P(14,3,6,2,0x4f9a55); P(11,4,3,2,0x3f8445);   // kwiaty
+    P(9,7,1,4,0xfff4d0); P(9,6,1,1,0xffcf40); P(25,7,1,4,0xfff4d0); P(25,6,1,1,0xffcf40); }                      // świece
+  else if(key==='flowerstand'){ // złoty kwietnik z bukietem
+    P(2,32,8,2,0xb9952f); P(4,16,4,16,0xd4af37); P(5,16,1,16,0xf2d06b); P(2,13,8,3,0xd4af37);
+    P(0,4,5,5,0xff8fb3); P(5,2,5,5,0xffffff); P(8,6,4,4,0xe8436e); P(2,8,8,5,0x4f9a55); P(3,0,4,4,0xffd1e0); P(9,10,3,4,0x3f8445); }
   else if(key==='flagPL'){ P(0,0,1,14,0x888888); P(1,1,14,5,0xffffff); P(1,6,14,5,0xdc143c); }
   else if(key==='flagUK'){ P(0,0,1,14,0x888888); P(1,1,14,10,0x012169);
     for(let i=0;i<14;i++){ const y=1+i*10/14; P(1+i,y,1,1.6,0xffffff); P(14-i,y,1,1.6,0xffffff); P(1+i,y+0.4,1,0.7,0xc8102e); P(14-i,y+0.4,1,0.7,0xc8102e); }
@@ -878,7 +891,7 @@ function genAssets(scene){
   mk('marker',64,34,P=>drawItem(P,'marker'),{noOutline:true,noShade:true});
   mk('port',10,10,P=>drawItem(P,'port'),{noShade:true});
   // minigra 3: mikrofon, chleb i sól, tort, flagi stolików
-  [['micstand',12,34],['breadsalt',20,12],['cake',22,26]].forEach(([k,w,h])=>mk(k,w,h,P=>drawItem(P,k),iOpt));
+  [['micstand',12,34],['breadsalt',20,12],['cake',22,26],['rtable',34,28],['flowerstand',12,34]].forEach(([k,w,h])=>mk(k,w,h,P=>drawItem(P,k),iOpt));
   ['flagPL','flagUK'].forEach(k=>mk(k,16,14,P=>drawItem(P,k),{noShade:true}));
   // garderoba + manekin (modal przebierania)
   ['mannequin','g_pants','g_shirt','g_suspenders','g_vest','g_shoes','g_bowtie','g_coat','g_tophat']
@@ -893,7 +906,7 @@ function genAssets(scene){
 /* ===========================================================================
    RENDER SALI (pałac) — współdzielony przez minigry 1 i 2
 =========================================================================== */
-function drawPalaceRoom(scene){
+function drawPalaceRoom(scene,opts){
     const g=scene.add.graphics().setDepth(-99000);
     // podłoga — kafle parkietu (jodełka: floorWood/floorWoodB = przeciwne kierunki desek)
     for(let gx=0;gx<RW;gx++) for(let gy=-3;gy<RH;gy++){
@@ -933,7 +946,7 @@ function drawPalaceRoom(scene){
     const decorate=(x1,y1,x2,y2,ty)=>{ if(ty==='painting')painting(x1,y1,x2,y2); else if(ty==='drape')drape(x1,y1,x2,y2); else if(ty==='sconce')sconce(x1,y1,x2,y2); };
     // NW (gx=0, wzdłuż gy)
     for(let gy=0;gy<RH;gy++){ const a=iso(0,gy,0), b=iso(0,gy+1,0); wall(a.x,a.y,b.x,b.y,false);
-      decorate(a.x,a.y,b.x,b.y,{4:'sconce',5:'painting',7:'drape'}[gy]); }   // gy 0–3: miejsce na neon
+      decorate(a.x,a.y,b.x,b.y,{7:'sconce',8:'drape'}[gy]); }   // gy 0–3: neon, gy 4–6: ścianka kwiatowa
     // NE (gy=0, wzdłuż gx) — drzwi gx4..6
     for(let gx=0;gx<RW;gx++){ if(gx>=4&&gx<=6) continue; const a=iso(gx,0,0), b=iso(gx+1,0,0); wall(a.x,a.y,b.x,b.y,true);
       decorate(a.x,a.y,b.x,b.y,{1:'painting',2:'sconce',7:'sconce',8:'drape',9:'painting',10:'drape'}[gx]); }
@@ -949,6 +962,40 @@ function drawPalaceRoom(scene){
     // migoczące poświaty żyrandoli
     [[OX-20,OY-54],[OX+150,OY-18]].forEach(([cx,cy])=>{ const gl=scene.add.image(cx,cy,'soft').setTint(0xffe9a0).setScale(1.7).setAlpha(0.16).setDepth(-79000);
       scene.tweens.add({targets:gl,alpha:0.30,scale:1.85,yoyo:true,repeat:-1,ease:'Sine.inOut',duration:Phaser.Math.Between(700,1300)}); });
+
+
+    // ===== WYSTRÓJ WESELNY (sala udekorowana już przed przyjazdem wodzireja) =====
+    const wallPt=(gy,h)=>{ const p=iso(0,gy,0); return {x:p.x,y:p.y-h}; };          // punkt na lewej ścianie
+    // ścianka kwiatowa za stołem Pary Młodej (gy 4.3–6.7)
+    const bd=scene.add.graphics().setDepth(-98500);
+    { const A=wallPt(4.3,0), B=wallPt(6.7,0); deco(A.x,A.y,B.x,B.y,0,1,6,WH-16,0x4a2340,1); deco(A.x,A.y,B.x,B.y,0,1,WH-12,3,C.gold,0.8); }
+    let fs=1234; const fr=()=>{ fs=(fs*1103515245+12345)&0x7fffffff; return fs/0x7fffffff; };
+    for(let i=0;i<70;i++){ const p=wallPt(4.35+fr()*2.3, 8+fr()*(WH-22));
+      bd.fillStyle([0xff8fb3,0xffffff,0xe8436e,0xffd1e0,0x4f9a55][i%5],0.95); bd.fillCircle(p.x,p.y,1.6+fr()*1.8); }
+    { const c=wallPt(5.5,WH*0.52); bd.fillStyle(0xff4f86,1); bd.fillCircle(c.x-5,c.y-3,6); bd.fillCircle(c.x+5,c.y-1,6);
+      bd.fillTriangle(c.x-11,c.y-1,c.x+11,c.y+2,c.x+1,c.y+14); bd.fillStyle(0xffffff,0.5); bd.fillCircle(c.x-6,c.y-5,2); }   // serce
+    // stół Pary Młodej wzdłuż lewej ściany — 4 odcinki (poprawna głębia względem postaci)
+    const HX0=0.55, HX1=1.25, HZ=22, segs=[4.6,5.05,5.5,5.95,6.4];
+    for(let i=0;i<4;i++){ const y0=segs[i], y1=segs[i+1], tg=scene.add.graphics().setDepth(tdepth((HX0+HX1)/2,(y0+y1)/2,2));
+      poly(tg,[iso(HX1,y0,HZ),iso(HX1,y1,HZ),iso(HX1,y1,0),iso(HX1,y0,0)],0xe2dccf);                     // front obrusa
+      if(i===3) poly(tg,[iso(HX0,y1,HZ),iso(HX1,y1,HZ),iso(HX1,y1,0),iso(HX0,y1,0)],0xcfc7b8);          // bok
+      poly(tg,[iso(HX0,y0,HZ),iso(HX1,y0,HZ),iso(HX1,y1,HZ),iso(HX0,y1,HZ)],0xf6f3ec);                  // blat
+      const a=iso(HX1,y0,HZ-4), b=iso(HX1,y1,HZ-4); tg.lineStyle(2,C.gold,0.9); tg.lineBetween(a.x,a.y,b.x,b.y);
+      for(let k=0;k<3;k++){ const t=(k+0.5)/3, p=iso(HX1,y0+(y1-y0)*t,HZ-7); tg.fillStyle(k%2?0xffffff:0xff8fb3,1); tg.fillCircle(p.x,p.y,2.4); }   // girlanda na obrusie
+      const m=iso((HX0+HX1)/2,(y0+y1)/2,HZ+2);                                                              // nakrycia / kwiaty / świece
+      if(i===1||i===2){ tg.fillStyle(0xffffff,1); tg.fillEllipse(m.x,m.y,9,4); tg.fillStyle(0xd4af37,1); tg.fillRect(m.x-1,m.y-14,2,10); tg.fillStyle(0xffcf40,1); tg.fillCircle(m.x,m.y-15,1.6); }
+      else { tg.fillStyle(0x4f9a55,1); tg.fillEllipse(m.x,m.y-2,12,5); [[0xff8fb3,-4],[0xffffff,0],[0xe8436e,4]].forEach(([c,dx])=>{ tg.fillStyle(c,1); tg.fillCircle(m.x+dx,m.y-5,3); }); } }
+    // girlanda lampek pod gzymsem obu ścian (migocze)
+    const lights=[[],[]];
+    const garland=(P0,P1,n,sag)=>{ for(let i=0;i<=n;i++){ const t=i/n, x=P0.x+(P1.x-P0.x)*t, y=P0.y+(P1.y-P0.y)*t+Math.sin(t*Math.PI)*sag;
+      const dot=scene.add.circle(x,y,1.8,0xffe9a0,1).setDepth(-97900); lights[i%2].push(dot); } };
+    for(let gy=0;gy<RH;gy+=1.5){ garland(wallPt(gy,WH-14),wallPt(Math.min(RH,gy+1.5),WH-14),9,7); }
+    for(let gx=0;gx<RW;gx+=1.5){ if(gx>=3.5&&gx<7) continue; const a=iso(gx,0,WH-14), b=iso(Math.min(RW,gx+1.5),0,WH-14); garland({x:a.x,y:a.y},{x:b.x,y:b.y},9,7); }
+    lights.forEach((set,k)=>scene.tweens.add({targets:set,alpha:0.35,yoyo:true,repeat:-1,duration:900,delay:k*900,ease:'Sine.inOut'}));
+    // kwietniki na końcu czerwonego dywanu
+    [[4.3,8.6],[6.7,8.6]].forEach(([gx,gy])=>{ const p=iso(gx,gy,0); scene.add.image(p.x,p.y,'flowerstand').setOrigin(0.5,1).setDepth(tdepth(gx,gy,4)); });
+    // okrągłe stoły gości (minigry z gośćmi przekazują pozycje stolików)
+    ((opts&&opts.tables)||[]).forEach(tb=>{ const p=iso(tb.gx,tb.gy,0); scene.add.image(p.x,p.y+8,'rtable').setOrigin(0.5,0.8).setScale(0.9).setDepth(tdepth(tb.gx,tb.gy,1)); });
 
     // neon z marką — na wolnym odcinku lewej ściany (NW), równolegle do ściany
     const na=iso(0,3.6,0), nb=iso(0,0.4,0), nAng=Math.atan2(nb.y-na.y,nb.x-na.x)*180/Math.PI;
@@ -1679,7 +1726,7 @@ class Dance extends Phaser.Scene{
     this.cameras.main.setBackgroundColor('#08070f');
     Audio.setMood('disco'); Audio.startMusic();
     this.input.once('pointerdown',()=>Audio.resume()); this.input.keyboard.once('keydown',()=>Audio.resume());
-    drawPalaceRoom(this);
+    drawPalaceRoom(this,{tables:[{gx:3.2,gy:3.4},{gx:8.2,gy:3.2},{gx:5.3,gy:5.9}]});
 
     // style muzyczne
     this.genres=[
@@ -2412,7 +2459,7 @@ class Wedding extends Phaser.Scene{
     this.cameras.main.setBackgroundColor('#08070f');
     Audio.setMood('chill'); Audio.startMusic();
     this.input.once('pointerdown',()=>Audio.resume()); this.input.keyboard.once('keydown',()=>Audio.resume());
-    drawPalaceRoom(this);
+    drawPalaceRoom(this,{tables:[{gx:2.6,gy:4.0},{gx:4.0,gy:7.0},{gx:9.5,gy:4.5},{gx:8.0,gy:7.0}]});
 
     // harmonogram wieczoru — każda faza zaczyna się zapowiedzią Karola przy mikrofonie
     this.PH=[

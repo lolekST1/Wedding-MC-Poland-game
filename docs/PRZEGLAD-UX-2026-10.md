@@ -66,6 +66,9 @@ telefon pionowo 390×844) i przegląd kodu `index.html`. Priorytety: **P0** = sz
   „Następna minigra →" (#21), rekordy w `localStorage` (#17, część), opisy SEO o wszystkich minigrach + `meta description`
   w języku strony (#23), nowy podtytuł menu (#22, część).
 - **Zrobione — muzyka:** pętle ACE-Step (ComfyUI) w `music/*.mp3`, synteza zostaje jako zapas (#25).
+- **Zrobione — wystrój sali (#6):** okrągłe stoły gości z obrusem, szarfą, stroikiem i świecami (minigry 2–3),
+  stół Pary Młodej ze ścianką kwiatową i sercem na lewej ścianie, migocząca girlanda lampek pod gzymsem,
+  złote kwietniki na końcu dywanu (stół, ścianka, lampki i kwietniki również w minigrze 1).
 
 ## Proponowana kolejność
 

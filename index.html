@@ -2771,7 +2771,7 @@ class Wedding extends Phaser.Scene{
     if(this.bJudged>=this.bTotal) this.bFinish(); }
   bFinish(){ const r=this.bRes;
     this.bSubTxt.setText(t('bDone')(r.hit,this.bTotal)).setColor('#46d67a').setFontSize(20); Audio.sfx('phase');
-    this.time.delayedCall(1400,()=>{ if(!this.modalOpen) return; const cues=this.bCues; this.closeModal(); this.stage=null;
+    this.time.delayedCall(1400,()=>{ if(!this.modalOpen) return; const cues=this.bCues; this.closeModal(); if(this.stage&&this.stage.mark) this.stage.mark.destroy(); this.stage=null;
       cues.forEach(c=>{ if(c.res==='hit'||c.res==='perf'){ this.side(c.side,2.2); this.bridge+=1.6; } else if(c.res==='wrong'){ this.side(c.side,-3); } else { this.pl-=1; this.uk-=1; } });
       this.score+=r.hit*15+r.perf*5; this.clampAll();
       // panna młoda rzuca bukiet nad mieszanym tłumem

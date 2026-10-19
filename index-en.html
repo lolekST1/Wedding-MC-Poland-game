@@ -840,6 +840,66 @@ function drawGarmentIcon(P,key){
   else if(key==='g_tophat'){ P(4,12,12,2,0x111); P(6,3,8,9,0x0a0a0a); P(6,11,8,1,0x333); }
 }
 
+// ikony pixel-art 12x12 (zamiast emoji, które każdy system rysuje inaczej)
+const ICON_PAL={R:0xe8436e,P:0xff8fb3,W:0xffffff,Y:0xffd23f,O:0xff9f45,G:0xd4af37,B:0x4aa3ff,C:0x33e0ff,K:0x1a1a22,N:0x4f9a55,S:0xf1c9a5,L:0xfff1b8,V:0xb07cff,D:0x8a5a2a,g:0xb8bcc6,k:0x5a5e6a};
+const FACE=["...YYYYYY...","..YYYYYYYY..",".YYYYYYYYYY.",".YYYYYYYYYY.","YYYYYYYYYYYY","YYYYYYYYYYYY","YYYYYYYYYYYY","YYYYYYYYYYYY",".YYYYYYYYYY.",".YYYYYYYYYY.","..YYYYYYYY..","...YYYYYY..."];
+const face=(pts)=>{ const r=FACE.map(x=>x.split('')); pts.forEach(([x,y,c])=>{ r[y][x]=c; }); return r.map(x=>x.join('')); };
+const HEART=c=>["............",".."+c+c+c+".."+c+c+c+"..","."+c.repeat(10)+".","."+c+"W"+c.repeat(8)+".","."+c.repeat(10)+".","."+c.repeat(10)+".",".."+c.repeat(8)+"..","..."+c.repeat(6)+"...","...."+c.repeat(4)+"....","....."+c+c+".....","............","............"];
+const ICONS={
+  heart:HEART('R'), heartP:HEART('P'), heartY:HEART('Y'),
+  sparkle:[".....Y......",".....Y......","....YLY.....","YYYYLLLYYYY.","....YLY.....",".....Y......",".....Y...L..","........LLL.",".........L..","............","............","............"],
+  party:["........P..B","..Y...R.....",".......Y..P.","....B.......","...GGG...R..","..GGOGG.....","..GOGGO..Y..",".GGGOGG.....",".GOGGOG..B..","GGGGGGG.....","GOGG........","GG.........."],
+  clap:["......Y.....","..S.S...Y...",".SS.SS.S....",".SSSSS.SS...",".SSSSSSSS...","..SSSSSSS.Y.","..SSSSSSS...","...SSSSS....","...SSSSS....","....SSS.....","............","............"],
+  glass:["...W...W....","..WLW.WLW...","..LLL.LLL...","..LYL.LYL...","..LYL.LYL...","...L...L....","...W...W....","...W...W....","...W...W....","..WWW.WWW...","............","............"],
+  bouquet:["..R.P.W.....",".PRRPWWR....",".RPPWRRP....","..PRRWP.....","...NNNN.....","....NN......","...PNNP.....","....NN......","....NN......","............","............","............"],
+  note:[".......VV...",".....VVVV...",".....VV.V...",".....V..V...",".....V......",".....V......","...VVV......","..VVVV......","..VVV.......","............","............","............"],
+  notes:["....VVVVVV..","....VVVVVV..","....V....V..","....V....V..","....V....V..","..VVV..VVV..",".VVVV.VVVV..",".VVV..VVV...","............","............","............","............"],
+  mic:["....gggg....","...gWgWgg...","...gggggg...","...gWgWgg...","....gggg....",".....kk.....",".....kk.....",".....kk.....",".....kk.....",".....kk.....","....kkkk....","............"],
+  question:["...RRRR.....","..RR..RR....","......RR....",".....RR.....","....RR......","....RR......","............","....RR......","....RR......","............","............","............"],
+  smile:face([[3,4,'K'],[8,4,'K'],[3,7,'K'],[8,7,'K'],[4,8,'K'],[5,8,'K'],[6,8,'K'],[7,8,'K']]),
+  grin:face([[3,4,'K'],[8,4,'K'],[3,7,'K'],[4,7,'K'],[5,7,'K'],[6,7,'K'],[7,7,'K'],[8,7,'K'],[4,8,'R'],[5,8,'R'],[6,8,'R'],[7,8,'R']]),
+  laugh:face([[2,4,'K'],[3,3,'K'],[4,4,'K'],[7,4,'K'],[8,3,'K'],[9,4,'K'],[1,5,'B'],[1,6,'B'],[10,5,'B'],[10,6,'B'],[3,7,'K'],[4,7,'K'],[5,7,'K'],[6,7,'K'],[7,7,'K'],[8,7,'K'],[4,8,'R'],[5,8,'R'],[6,8,'R'],[7,8,'R']]),
+  love:face([[2,3,'R'],[4,3,'R'],[2,4,'R'],[3,4,'R'],[4,4,'R'],[3,5,'R'],[7,3,'R'],[9,3,'R'],[7,4,'R'],[8,4,'R'],[9,4,'R'],[8,5,'R'],[3,8,'K'],[4,8,'K'],[5,8,'K'],[6,8,'K'],[7,8,'K'],[8,8,'K']]),
+  sleep:face([[2,5,'K'],[3,5,'K'],[4,5,'K'],[7,5,'K'],[8,5,'K'],[9,5,'K'],[5,8,'K'],[6,8,'K'],[9,0,'B'],[10,0,'B'],[10,1,'B'],[9,2,'B'],[10,2,'B']]),
+  dizzy:face([[3,4,'K'],[8,5,'K'],[2,6,'P'],[9,6,'P'],[3,8,'K'],[4,7,'K'],[5,8,'K'],[6,7,'K'],[7,8,'K']]),
+  tear:face([[2,4,'W'],[3,4,'K'],[4,4,'W'],[7,4,'W'],[8,4,'K'],[9,4,'W'],[3,5,'B'],[8,5,'B'],[4,8,'K'],[5,8,'K'],[6,8,'K'],[7,8,'K']]),
+  meh:face([[3,4,'K'],[8,4,'K'],[4,8,'K'],[5,8,'K'],[6,8,'K'],[7,8,'K']]),
+  grimace:face([[3,4,'K'],[8,4,'K'],[3,7,'W'],[4,7,'K'],[5,7,'W'],[6,7,'K'],[7,7,'W'],[8,7,'K'],[3,8,'W'],[4,8,'K'],[5,8,'W'],[6,8,'K'],[7,8,'W'],[8,8,'K']]),
+  thumb:[".....S......","....SS......","....SS......","...SSS......",".SSSSSSSS...",".DSSSSSSSS..",".DSSSSSSS...",".DSSSSSSSS..",".DSSSSSSS...",".DDSSSSSS...","............","............"],
+  fire:[".....R......","....RR......","....RRR..R..","...RRORR.R..","..RROORRRR..","..ROOOORRR..",".RROOYOORR..",".ROOYYYOOR..",".ROYYYYYOR..","..OYYLYYO...","...OYYYO....","............"],
+  dance:[".....KK.....",".....SS.....","...S.RR.....","....RRRR.S..",".....RRRS...",".....RR.....","....RRRR....","...RRRRRR...","..RRRRRRRR..","....S..S....","....S...S...","...KK...KK.."],
+  bolt:["......YY....",".....YY.....","....YY......","...YYYYYY...","......YY....",".....YY.....","....YY......","...Y........","............","............","............","............"],
+  warn:[".....YY.....","....YYYY....","....YKKY....","...YYKKYY...","...YYKKYY...","..YYYKKYYY..","..YYYYYYYY..",".YYYYKKYYYY.",".YYYYYYYYYY.","............","............","............"],
+  wrench:["........gg..",".......g..g.",".......g.g..","......ggg...",".....gg.....","....gg......","...gg.......","..gg........",".gg.........",".g..........","............","............"],
+  handshake:["............","............","BB.......VV.","BBSS...SSVV.","BB.SSSSS.VV.","BB.SSSSSSVV.","BB..SSSS.VV.","BB.......VV.","............","............","............","............"],
+  check:["NNNNNNNNNNN.","NNNNNNNNNWN.","NNNNNNNNWWN.","NNNNNNNWWNN.","NWNNNNWWNNN.","NWWNNWWNNNN.","NNWWWWNNNNN.","NNNWWNNNNNN.","NNNNNNNNNNN.","............","............","............"],
+  cucumber:["........NN..",".......NLN..","......NLN...",".....NLN....","....NLN.....","...NLN......","..NLN.......","..NN........","............","............","............","............"],
+  shot:["............","..WWWWWWW...","..W.....W...","..W.....W...","..WOOOOOW...","..WOOOOOW...","..WOOOOOW...","..WWWWWWW...","............","............","............","............"],
+  bread:["............","..DDDDDDD...",".DOOOOOOOD..","DOOLOOLOOOD.","DOOOOOOOOOD.","DOOOOOOOOOD.",".DDDDDDDDD..","............","............","............","............","............"],
+  cake:[".....Y......",".....W......","...WWWWW....","...PPPPP....","..WWWWWWW...","..WWWWWWW...",".PPPPPPPPP..",".WWWWWWWWW..",".WWWWWWWWW..","gggggggggggg","............","............"],
+  hourglass:["GGGGGGGG....",".W.....W....","..WYYYW.....","...WYW......","....W.......","...W.W......","..W.Y.W.....",".WYYYYYW....","GGGGGGGG....","............","............","............"],
+  moon:["....YYYY....","...YYY......","..YYY.......","..YY........",".YYY........",".YYY........",".YYY........","..YYY.......","..YYYY...Y..","...YYYYYYY..","....YYYYY...","............"],
+  kiss:["............","............","..RR...RR...",".RRRR.RRRR..","RRRRRRRRRRR.",".RRRRRRRRR..","..RRRRRRR...","...RRRRR....","............","............","............","............"],
+  speaker:["....W.......","...WW...C...","WWWgW....C..","WggggW.C..C.","WggggW..C.C.","WggggW.C..C.","WWWgW....C..","...WW...C...","....W.......","............","............","............"],
+  mute:["....W.......","...WW.......","WWWgW.R...R.","WggggW.R.R..","WggggW..R...","WggggW.R.R..","WWWgW.R...R.","...WW.......","....W.......","............","............","............"],
+  wave:["..S.S.S.....",".S.S.S.S....",".S.S.S.S.S..",".SSSSSSS.S..",".SSSSSSSSS..","SSSSSSSSS...",".SSSSSSSS...","..SSSSSS....","...SSSS.....","............","............","............"],
+  couple:["..KK....YY..","..SS....SS..",".KKKK..WWWW.",".KWKK..WWWW.",".KKKK.WWWWWW",".KKKK.WWWWWW","..KK..WWWWWW","..KK...S..S.","..KK........","............","............","............"],
+  thumbdown:null
+};
+ICONS.thumbdown=ICONS.thumb.slice().reverse();
+// emoji → ikona
+const EMOJI_ICON={'❤️':'heart','❤':'heart','💛':'heartY','💞':'heartP','✨':'sparkle','★':'sparkle','🎉':'party','🥳':'party','👏':'clap','🙌':'clap',
+  '🥂':'glass','💐':'bouquet','🎵':'note','🎶':'notes','🎤':'mic','❓':'question','😀':'smile','😄':'grin','😂':'laugh','😍':'love','😴':'sleep','🥱':'sleep',
+  '🥴':'dizzy','😖':'dizzy','🥹':'tear','😐':'meh','😬':'grimace','🙉':'grimace','👍':'thumb','👎':'thumbdown','🔥':'fire','💃':'dance','🕺':'dance',
+  '⚡':'bolt','💥':'bolt','⚠️':'warn','⚠':'warn','🔧':'wrench','🤝':'handshake','✅':'check','🥒':'cucumber','🥃':'shot','🍞':'bread','🎂':'cake',
+  '⏳':'hourglass','🌙':'moon','💋':'kiss','🔊':'speaker','🔇':'mute','👋':'wave','💑':'couple'};
+// obraz-ikona zamiast emoji (z zapasowym tekstem, gdy brak ikony); obsługuje setText jak tekst
+function emo(scene,x,y,e,px){ px=px||20; const name=EMOJI_ICON[e];
+  if(name===undefined && e!=='') return scene.add.text(x,y,e,{fontSize:px+'px'});
+  const img=scene.add.image(x,y,'ic_'+(name||'question')).setScale(px*1.15/24).setVisible(!!name);
+  img.setText=function(v){ const n=EMOJI_ICON[v]; if(n) this.setTexture('ic_'+n); this.setVisible(!!n); return this; };
+  return img; }
+
 const PXF=2, MARGIN=4;   // supersampling + ramka pod obrys
 function genAssets(scene){
   if(scene.textures.exists('floorWood')) return;
@@ -893,6 +953,8 @@ function genAssets(scene){
   // minigra 3: mikrofon, chleb i sól, tort, flagi stolików
   [['micstand',12,34],['breadsalt',20,12],['cake',22,26],['rtable',34,28],['flowerstand',12,34]].forEach(([k,w,h])=>mk(k,w,h,P=>drawItem(P,k),iOpt));
   ['flagPL','flagUK'].forEach(k=>mk(k,16,14,P=>drawItem(P,k),{noShade:true}));
+  // ikony pixel-art zamiast emoji
+  Object.keys(ICONS).forEach(k=>mk('ic_'+k,12,12,P=>ICONS[k].forEach((row,y)=>row.split('').forEach((ch,x)=>{ if(ICON_PAL[ch]!=null) P(x,y,1,1,ICON_PAL[ch]); })),{noShade:true}));
   // garderoba + manekin (modal przebierania)
   ['mannequin','g_pants','g_shirt','g_suspenders','g_vest','g_shoes','g_bowtie','g_coat','g_tophat']
     .forEach(k=>mk(k,22,34,P=>drawGarment(P,k),{shade:{top:0.06,bot:0.10},rim:true}));
@@ -990,7 +1052,9 @@ function drawPalaceRoom(scene,opts){
     const garland=(P0,P1,n,sag)=>{ for(let i=0;i<=n;i++){ const t=i/n, x=P0.x+(P1.x-P0.x)*t, y=P0.y+(P1.y-P0.y)*t+Math.sin(t*Math.PI)*sag;
       const dot=scene.add.circle(x,y,1.8,0xffe9a0,1).setDepth(-97900); lights[i%2].push(dot); } };
     for(let gy=0;gy<RH;gy+=1.5){ garland(wallPt(gy,WH-14),wallPt(Math.min(RH,gy+1.5),WH-14),9,7); }
-    for(let gx=0;gx<RW;gx+=1.5){ if(gx>=3.5&&gx<7) continue; const a=iso(gx,0,WH-14), b=iso(Math.min(RW,gx+1.5),0,WH-14); garland({x:a.x,y:a.y},{x:b.x,y:b.y},9,7); }
+    // prawa ściana ma przerwę na drzwi (gx 4–7) — girlanda tylko na odcinkach ściany
+    [[0,4],[7,RW]].forEach(([g0,g1])=>{ const n=Math.max(1,Math.round((g1-g0)/1.5)), st=(g1-g0)/n;
+      for(let k=0;k<n;k++){ const a=iso(g0+k*st,0,WH-14), b=iso(g0+(k+1)*st,0,WH-14); garland({x:a.x,y:a.y},{x:b.x,y:b.y},9,7); } });
     lights.forEach((set,k)=>scene.tweens.add({targets:set,alpha:0.35,yoyo:true,repeat:-1,duration:900,delay:k*900,ease:'Sine.inOut'}));
     // kwietniki na końcu czerwonego dywanu
     [[4.3,8.6],[6.7,8.6]].forEach(([gx,gy])=>{ const p=iso(gx,gy,0); scene.add.image(p.x,p.y,'flowerstand').setOrigin(0.5,1).setDepth(tdepth(gx,gy,4)); });
@@ -1095,7 +1159,7 @@ class Hub extends Phaser.Scene{
         box.setInteractive(); const go=()=>{ Audio.startMusic(); this.scene.start(c.scene); };
         b.on('pointerdown',go); box.on('pointerdown',go);
         this.tweens.add({targets:b,scale:{from:1,to:1.06},yoyo:true,repeat:-1,duration:700}); }
-      else { this.add.text(GW/2+250,y,'🔒',{fontSize:'22px'}).setOrigin(0.5); }
+      else { emo(this,GW/2+250,y,'🔒',22).setOrigin(0.5); }
     });
     this.add.text(GW/2,560,'Sterowanie: Strzałki / WASD • Akcja: Spacja • na telefonie: joystick + AKCJA',{fontFamily:'Segoe UI',fontSize:'13px',color:'#9aa'}).setOrigin(0.5);
     this.input.keyboard.once('keydown-SPACE',()=>{ Audio.startMusic(); this.scene.start('Setup'); });
@@ -1267,7 +1331,7 @@ class Setup extends Phaser.Scene{
     this.scoreText=this.add.text(14,9,'★ 0',{fontFamily:'Segoe UI',fontSize:'22px',color:'#ffe487',fontStyle:'bold'}).setDepth(90001);
     this.clockText=this.add.text(GW/2,9,t('guestsIn')+this.fmt(SETUP_TIME),{fontFamily:'Segoe UI',fontSize:'22px',color:'#00ffcc',fontStyle:'bold'}).setOrigin(0.5,0).setDepth(90001);
     // mute
-    this.muteBtn=this.add.text(GW-14,9,Audio.isMuted()?'🔇':'🔊',{fontSize:'22px'}).setOrigin(1,0).setDepth(90001).setInteractive();
+    this.muteBtn=emo(this,GW-14,9,Audio.isMuted()?'🔇':'🔊',22).setOrigin(1,0).setDepth(90001).setInteractive();
     this.muteBtn.on('pointerdown',()=>{ const m=Audio.toggleMute(); this.muteBtn.setText(m?'🔇':'🔊'); });
     addPauseBtn(this);
 
@@ -1512,7 +1576,7 @@ class Setup extends Phaser.Scene{
       const dur=1400+Math.random()*1000;
       this.tweens.add({targets:spr,x:tp.x,y:tp.y,duration:dur,delay:i*120,ease:'Sine.inOut'});
       this.tweens.add({targets:spr,scaleY:1.06,yoyo:true,repeat:-1,duration:200,delay:i*120});   // dreptanie
-      this.time.delayedCall(i*120+dur+30,()=>{ Audio.sfx('ding'); const e=this.add.text(tp.x,tp.y-62,Phaser.Utils.Array.GetRandom(['👏','🎉','🥳','❤️','✨']),{fontSize:'22px'}).setOrigin(0.5).setDepth(96000);
+      this.time.delayedCall(i*120+dur+30,()=>{ Audio.sfx('ding'); const e=emo(this,tp.x,tp.y-62,Phaser.Utils.Array.GetRandom(['👏','🎉','🥳','❤️','✨']),22).setOrigin(0.5).setDepth(96000);
         this.tweens.add({targets:e,y:tp.y-84,alpha:0,duration:1200,onComplete:()=>e.destroy()}); });
     }
   }
@@ -1614,7 +1678,7 @@ class Setup extends Phaser.Scene{
     Audio.sfx('ding'); this.flashTip(Phaser.Utils.Array.GetRandom(t('npcTips'))); this.refreshHUD();
     // reakcja ekipy: emoji + podskok/puls
     const e=Phaser.Utils.Array.GetRandom(['👍','❤️','🎉','✨','😍','🙌']); const ep=iso(n.gx,n.gy,48);
-    const et=this.add.text(ep.x,ep.y,e,{fontSize:'24px'}).setOrigin(0.5).setDepth(96000);
+    const et=emo(this,ep.x,ep.y,e,24).setOrigin(0.5).setDepth(96000);
     this.tweens.add({targets:et,y:ep.y-30,scale:{from:0.4,to:1.2},alpha:{from:1,to:0},duration:1100,ease:'Quad.out',onComplete:()=>et.destroy()});
     if(n.sprite){ this.tweens.add({targets:n.sprite,scaleX:n.sprite.scaleX*1.16,scaleY:n.sprite.scaleY*1.16,yoyo:true,repeat:2,duration:130}); }
     const cp=iso(n.gx,n.gy,30); this.burstAt(cp.x,cp.y,C.gold,8); }
@@ -1801,7 +1865,7 @@ class Dance extends Phaser.Scene{
       // pasek zapału grupy (widać, kiedy potrzebują zachęty)
       const zealBg=this.add.rectangle(0,21,52,6,0x000000,0.6).setStrokeStyle(1,0x555566);
       const zealFill=this.add.rectangle(-25,21,50,4,0x46d67a,1).setOrigin(0,0.5);
-      const needy=this.add.text(0,42,'👏',{fontSize:'20px'}).setOrigin(0.5).setVisible(false);
+      const needy=emo(this,0,42,'👏',20).setOrigin(0.5).setVisible(false);
       bub.add([rect,note,lab,zealBg,zealFill,needy]);
       const c={gx:sp.gx,gy:sp.gy,pref:'disco',sprites,bub,rect,note,lab,zealFill,needy,zeal:80,changeT:0,request:false};
       c.needyTw=this.tweens.add({targets:needy,scale:{from:1,to:1.45},y:{from:42,to:34},yoyo:true,repeat:-1,duration:340,paused:true});
@@ -1888,7 +1952,7 @@ class Dance extends Phaser.Scene{
     // buczenie tłumu przy krytycznym spadku energii
     this._booWarnT--; if(this.energy<12 && this._booWarnT<=0){ this._booWarnT=10; Audio.sfx('boo'); this.flashTip(t('dBoo'));
       this.clusters.forEach(c=>{ const p=iso(c.gx,c.gy,60);
-        const e=this.add.text(p.x+Phaser.Math.Between(-16,16),p.y,'👎',{fontSize:'18px'}).setOrigin(0.5).setDepth(95900);
+        const e=emo(this,p.x+Phaser.Math.Between(-16,16),p.y,'👎',18).setOrigin(0.5).setDepth(95900);
         this.tweens.add({targets:e,y:e.y-26,alpha:0,duration:900,onComplete:()=>e.destroy()}); }); }
     // czerwona winieta przy gasnącym parkiecie
     if(this.energy<25 && !this._vigOn){ this._vigOn=true; this.tweens.add({targets:this.dangerVig,alpha:0.14,yoyo:true,repeat:-1,duration:500}); }
@@ -1899,7 +1963,7 @@ class Dance extends Phaser.Scene{
       const needy=c.zeal<35;
       if(needy!==c.needy.visible){ c.needy.setVisible(needy); if(needy){ c.needyTw.resume(); Audio.sfx('err'); } else { c.needyTw.pause(); } }
       if(on && !needy && Math.random()<0.25){ const p=iso(c.gx,c.gy,70);
-        const e=this.add.text(p.x+Phaser.Math.Between(-20,20),p.y,Phaser.Utils.Array.GetRandom(['🎉','😍','👏','🔥','💃','🕺']),{fontSize:'18px'}).setOrigin(0.5).setDepth(95900);
+        const e=emo(this,p.x+Phaser.Math.Between(-20,20),p.y,Phaser.Utils.Array.GetRandom(['🎉','😍','👏','🔥','💃','🕺']),18).setOrigin(0.5).setDepth(95900);
         this.tweens.add({targets:e,y:e.y-30,alpha:0,duration:1000,onComplete:()=>e.destroy()}); } });
     // prośba o kawałek — terminy
     if(this.pendingReq){ if(this.pendingReq.accepted){ if(this.elapsed>this.pendingReq.deadline){ this.failRequest(); } }
@@ -1931,13 +1995,13 @@ class Dance extends Phaser.Scene{
       Audio.sfx('err'); this.flashTip(t('evSpk'));
       this.spkBroken.fx=this.time.addEvent({delay:420,loop:true,callback:()=>{ if(this.modalOpen||this.done) return; const b=this.spkBroken; if(!b) return;
         const p=iso(b.gx,b.gy,30+Math.random()*20);
-        const z=this.add.text(p.x+Phaser.Math.Between(-10,10),p.y,Phaser.Utils.Array.GetRandom(['⚡','💥','⚠️']),{fontSize:'17px'}).setOrigin(0.5).setDepth(95800);
+        const z=emo(this,p.x+Phaser.Math.Between(-10,10),p.y,Phaser.Utils.Array.GetRandom(['⚡','💥','⚠️']),17).setOrigin(0.5).setDepth(95800);
         this.tweens.add({targets:z,y:z.y-24,alpha:0,duration:600,onComplete:()=>z.destroy()}); }}); }
     else if(type==='uncle'){ const st=iso(5.5,-2.5,0);
       const spr=this.add.image(st.x,st.y,'uncle').setOrigin(0.5,1).setScale(1.1);
       this.uncle={sprite:spr,gx:5.5,gy:-2.5,state:'enter'};
       Audio.sfx('err'); this.flashTip(t('evUncle'));
-      const bp=iso(5.5,-2.5,44); this.uncle.bubble=this.add.text(bp.x,bp.y,'🎤!',{fontSize:'20px'}).setOrigin(0.5).setDepth(96000); }
+      const bp=iso(5.5,-2.5,44); this.uncle.bubble=emo(this,bp.x,bp.y,'🎤!',20).setOrigin(0.5).setDepth(96000); }
     else if(type==='photo'){ const st=iso(5.5,-2.5,0);
       const spr=this.add.image(st.x,st.y,'photo').setOrigin(0.5,1).setScale(1.1);
       this.photoEv={sprite:spr,gx:5.5,gy:-2.5,state:'enter',timer:0,spot:{gx:8.4,gy:6.2}};
@@ -2012,7 +2076,7 @@ class Dance extends Phaser.Scene{
     const chosen=Phaser.Utils.Array.GetRandom(allSprites); ev.catcher=chosen;
     const from=iso(ev.gx,ev.gy,46);
     const tx=chosen.s.x, ty=chosen.s.y-26;
-    const bq=this.add.text(from.x,from.y,'💐',{fontSize:'32px'}).setOrigin(0.5).setDepth(97200).setShadow(0,0,'#ffe487',10);
+    const bq=emo(this,from.x,from.y,'💐',32).setOrigin(0.5).setDepth(97200);
     // wysoki łuk paraboliczny — w górę i dopiero potem w dół na wybranego gościa
     const dur=1700, arcH=180, prog={t:0};
     const trail=this.time.addEvent({delay:40,loop:true,callback:()=>{ if(!bq.active) return;
@@ -2028,7 +2092,7 @@ class Dance extends Phaser.Scene{
     Audio.sfx('ding'); this.flashTip(t('evBouquetOk'));
     const cp={x:ev.catcher.s.x,y:ev.catcher.s.y-20}; this.burstAt(cp.x,cp.y,C.pink,16);
     ev.gathered.forEach(c=>c.sprites.forEach(sp=>{ this.tweens.add({targets:sp.s,y:sp.s.y-14,yoyo:true,duration:180,ease:'Quad.out'});
-      const e=this.add.text(sp.s.x+Phaser.Math.Between(-10,10),sp.s.y-24,Phaser.Utils.Array.GetRandom(['🎉','👏','💐','😍']),{fontSize:'18px'}).setOrigin(0.5).setDepth(96500);
+      const e=emo(this,sp.s.x+Phaser.Math.Between(-10,10),sp.s.y-24,Phaser.Utils.Array.GetRandom(['🎉','👏','💐','😍']),18).setOrigin(0.5).setDepth(96500);
       this.tweens.add({targets:e,y:e.y-30,alpha:0,duration:900,onComplete:()=>e.destroy()}); }));
     this.refreshHUD();
     this.time.delayedCall(1800,()=>this.endBouquet()); }
@@ -2063,7 +2127,7 @@ class Dance extends Phaser.Scene{
       if(th.state==='enter'){ if(mv(th,th.tx,th.ty,2.3)){ th.state='fix'; th.t=0; } }
       else if(th.state==='fix'){ th.t+=dt;
         if(th.t%400<dt){ const p=iso(th.gx,th.gy,36);   // klucz w ruchu
-          const w=this.add.text(p.x+Phaser.Math.Between(-8,8),p.y,'🔧',{fontSize:'16px'}).setOrigin(0.5).setDepth(95900);
+          const w=emo(this,p.x+Phaser.Math.Between(-8,8),p.y,'🔧',16).setOrigin(0.5).setDepth(95900);
           this.tweens.add({targets:w,y:w.y-20,alpha:0,duration:420,onComplete:()=>w.destroy()}); }
         if(th.t>=1400) this.techRepairDone(); }
       else if(th.state==='leave'){ if(mv(th,5.5,-3,2.6)){ th.sprite.destroy(); this.spkTech=null; gone=true; } }
@@ -2076,7 +2140,7 @@ class Dance extends Phaser.Scene{
     this.scoreText=this.add.text(14,9,'★ 0',{fontFamily:'Segoe UI',fontSize:'22px',color:'#ffe487',fontStyle:'bold'}).setDepth(90001);
     this.evText=this.add.text(140,13,'',{fontFamily:'Segoe UI',fontSize:'16px',color:'#c9c9e0',fontStyle:'bold'}).setDepth(90001);
     this.clockText=this.add.text(GW/2,9,'',{fontFamily:'Segoe UI',fontSize:'20px',color:'#00ffcc',fontStyle:'bold'}).setOrigin(0.5,0).setDepth(90001);
-    this.muteBtn=this.add.text(GW-14,9,Audio.isMuted()?'🔇':'🔊',{fontSize:'22px'}).setOrigin(1,0).setDepth(90001).setInteractive();
+    this.muteBtn=emo(this,GW-14,9,Audio.isMuted()?'🔇':'🔊',22).setOrigin(1,0).setDepth(90001).setInteractive();
     this.muteBtn.on('pointerdown',()=>{ const m=Audio.toggleMute(); this.muteBtn.setText(m?'🔇':'🔊'); });
     addPauseBtn(this);
     // ===== HARMONOGRAM WESELA (oś czasu z fazami) =====
@@ -2085,7 +2149,7 @@ class Dance extends Phaser.Scene{
     this.tlSegs=[]; let accS=0;
     this.DPH.forEach((ph,i)=>{ const w=ph.dur/this.totalTime*this.tlW, x=this.tlX+accS/this.totalTime*this.tlW;
       const rect=this.add.rectangle(x+w/2,tlY,w-2,tlH,0x171520,0.95).setDepth(90000).setStrokeStyle(1,0x3a3a4a);
-      const icon=this.add.text(x+w/2,tlY,ph.icon,{fontSize:'14px'}).setOrigin(0.5).setDepth(90001);
+      const icon=emo(this,x+w/2,tlY,ph.icon,14).setOrigin(0.5).setDepth(90001);
       this.tlSegs.push({rect,icon,start:accS,dur:ph.dur}); accS+=ph.dur; });
     // kursor postępu
     this.tlCursor=this.add.rectangle(this.tlX,tlY,3,tlH+10,0xffe487,1).setDepth(90002);
@@ -2218,7 +2282,7 @@ class Dance extends Phaser.Scene{
     this.energy=Math.min(100,this.energy+3); this.score+=5; this.addCharge(8);
     Audio.sfx('ding'); const p=iso(c.gx,c.gy,50); this.burstAt(p.x,p.y,C.neon,8);
     c.sprites.forEach((sp,i)=>{ this.tweens.add({targets:sp.s,y:sp.s.y-14,yoyo:true,duration:150,delay:i*60,ease:'Quad.out'}); });
-    const e=this.add.text(p.x,p.y,Phaser.Utils.Array.GetRandom(['🙌','🎉','🔥']),{fontSize:'24px'}).setOrigin(0.5).setDepth(96000);
+    const e=emo(this,p.x,p.y,Phaser.Utils.Array.GetRandom(['🙌','🎉','🔥']),24).setOrigin(0.5).setDepth(96000);
     this.tweens.add({targets:e,y:p.y-34,alpha:0,duration:900,onComplete:()=>e.destroy()}); this.refreshHUD(); }
 
   /* ---------- PIERWSZY TANIEC PARY MŁODEJ ---------- */
@@ -2233,7 +2297,7 @@ class Dance extends Phaser.Scene{
     this.firstDance.spinT=this.time.addEvent({delay:5200,loop:true,callback:()=>{ if(this.done||this.modalOpen||!this.firstDance) return;
       this.spinBride(this.firstDance.bride,spot);
       const p=iso(spot.gx,spot.gy,50);
-      const e=this.add.text(p.x+Phaser.Math.Between(-14,14),p.y,'💞',{fontSize:'16px'}).setOrigin(0.5).setDepth(96200);
+      const e=emo(this,p.x+Phaser.Math.Between(-14,14),p.y,'💞',16).setOrigin(0.5).setDepth(96200);
       this.tweens.add({targets:e,y:e.y-26,alpha:0,duration:900,onComplete:()=>e.destroy()}); }}); }
   // obrót panny młodej: sylwetka "od boku" (ścieśnienie + przejście na drugą stronę) czyta się jako prawdziwy piruet,
   // w odróżnieniu od pełnego obrotu płaskiego sprite'a, który wygląda jak wirujący talerzyk
@@ -2382,7 +2446,7 @@ class Dance extends Phaser.Scene{
     this.promptText.setVisible(false);
     // ostatni taniec — serca nad parkietem
     this.clusters.forEach((c,ci)=>{ for(let i=0;i<4;i++){ const p=iso(c.gx,c.gy,60);
-      this.time.delayedCall(ci*220+i*260,()=>{ const e=this.add.text(p.x+Phaser.Math.Between(-30,30),p.y,Phaser.Utils.Array.GetRandom(['❤️','✨','🎉','💛']),{fontSize:'22px'}).setOrigin(0.5).setDepth(96000);
+      this.time.delayedCall(ci*220+i*260,()=>{ const e=emo(this,p.x+Phaser.Math.Between(-30,30),p.y,Phaser.Utils.Array.GetRandom(['❤️','✨','🎉','💛']),22).setOrigin(0.5).setDepth(96000);
         this.tweens.add({targets:e,y:e.y-50,alpha:0,duration:1400,onComplete:()=>e.destroy()}); }); } });
     Audio.sfx('phase');
     this.time.delayedCall(2200,()=>this.finish()); }
@@ -2497,7 +2561,7 @@ class Wedding extends Phaser.Scene{
     this.add.image(mp.x,mp.y,'micstand').setOrigin(0.5,1).setScale(1.1).setDepth(tdepth(this.micSpot.gx,this.micSpot.gy,3));
     this.micMark=this.evMark(this.micSpot.gx,this.micSpot.gy,C.gold).setVisible(false);
     const mb=iso(this.micSpot.gx,this.micSpot.gy,84);
-    this.micBubble=this.add.text(mb.x,mb.y,'🎤',{fontSize:'24px'}).setOrigin(0.5).setDepth(96000).setVisible(false);
+    this.micBubble=emo(this,mb.x,mb.y,'🎤',24).setOrigin(0.5).setDepth(96000).setVisible(false);
     this.tweens.add({targets:this.micBubble,y:mb.y-8,yoyo:true,repeat:-1,duration:380,ease:'Sine.inOut'});
 
     // światła sali
@@ -2524,7 +2588,7 @@ class Wedding extends Phaser.Scene{
         return {s,tw,gx,gy}; });
       const fp=iso(d.gx,d.gy,74);
       const flag=this.add.image(fp.x,fp.y,d.side==='pl'?'flagPL':'flagUK').setOrigin(0.5,1).setDepth(96000);
-      const icon=this.add.text(fp.x,fp.y-44,'',{fontSize:'24px'}).setOrigin(0.5).setDepth(96001);
+      const icon=emo(this,fp.x,fp.y-44,'',24).setOrigin(0.5).setDepth(96001);
       const iconTw=this.tweens.add({targets:icon,scale:{from:1,to:1.3},yoyo:true,repeat:-1,duration:360,paused:true});
       return {side:d.side,gx:d.gx,gy:d.gy,sprites,flag,icon,iconTw,ev:null,away:false};
     });
@@ -2648,7 +2712,7 @@ class Wedding extends Phaser.Scene{
     this.firstDance.spinT=this.time.addEvent({delay:4600,loop:true,callback:()=>{ if(this.done||this.modalOpen||!this.firstDance) return;
       this.spinBride(this.bride,spot);
       const p=iso(spot.gx,spot.gy,50);
-      const e=this.add.text(p.x+Phaser.Math.Between(-14,14),p.y,'💞',{fontSize:'16px'}).setOrigin(0.5).setDepth(96200);
+      const e=emo(this,p.x+Phaser.Math.Between(-14,14),p.y,'💞',16).setOrigin(0.5).setDepth(96200);
       this.tweens.add({targets:e,y:e.y-26,alpha:0,duration:900,onComplete:()=>e.destroy()}); }}); }
   endFirstDance(){ const fd=this.firstDance; if(!fd) return; if(fd.spinT) fd.spinT.remove(); this.firstDance=null;
     [this.groom,this.bride].forEach(s=>{ this.tweens.killTweensOf(s); s.setAngle(0).setScale(1.15).setFlipX(false); });
@@ -2671,8 +2735,8 @@ class Wedding extends Phaser.Scene{
     this.time.delayedCall(700,()=>{ const q=iso(sp.gx,sp.gy,40); this.burstAt(q.x,q.y,0xffffff,12); }); }
 
   /* ---------- REAKCJE ---------- */
-  popEmoji(c,e,col){ const p=iso(c.gx,c.gy,70);
-    const o=this.add.text(p.x+Phaser.Math.Between(-22,22),p.y,e,{fontFamily:'Segoe UI',fontSize:col?'15px':'19px',color:col||'#fff',fontStyle:'bold'}).setOrigin(0.5).setDepth(95900);
+  popEmoji(c,e,col){ const p=iso(c.gx,c.gy,70), x=p.x+Phaser.Math.Between(-22,22);
+    const o=(col||!EMOJI_ICON[e]?this.add.text(x,p.y,e,{fontFamily:'Segoe UI',fontSize:col?'15px':'19px',color:col||'#fff',fontStyle:'bold'}):emo(this,x,p.y,e,19)).setOrigin(0.5).setDepth(95900);
     if(col) o.setShadow(0,0,'#000',4);
     this.tweens.add({targets:o,y:o.y-32,alpha:0,duration:1100,onComplete:()=>o.destroy()}); }
   reactSide(side,e){ this.clusters.forEach(c=>{ if(c.side===side && !c.away) this.popEmoji(c,e); }); }
@@ -2687,7 +2751,7 @@ class Wedding extends Phaser.Scene{
     if(type==='vodka'){ if(this.uncleEv) return false;
       const from={gx:3.2,gy:4.5}, to=this.freeCluster('uk',this.clusters[2]); if(!to) return false;
       const p=iso(from.gx,from.gy,0); const spr=this.add.image(p.x,p.y,'uncle').setOrigin(0.5,1).setScale(1.1);
-      const bub=this.add.text(p.x,p.y-50,'🥃',{fontSize:'20px'}).setOrigin(0.5).setDepth(96000);
+      const bub=emo(this,p.x,p.y-50,'🥃',20).setOrigin(0.5).setDepth(96000);
       this.uncleEv={sprite:spr,bub,gx:from.gx,gy:from.gy,home:from,to,state:'walk'};
       Audio.sfx('err'); this.flashTip(t('ivVodka')); return true; }
     if(type==='mixed'){ const a=this.freeCluster('pl'), b=this.freeCluster('uk'); if(!a||!b) return false;
@@ -2867,7 +2931,7 @@ class Wedding extends Phaser.Scene{
     this.slSyl=t('slSyl'); this.slShown=this.slSyl.map(()=>'_');
     this.slLyric=add(this.add.text(GW/2,GH/2+70,this.slShown.join(' '),{fontFamily:'Segoe UI',fontSize:'28px',color:'#ffe487',fontStyle:'bold'}).setOrigin(0.5).setDepth(D+3));
     add(this.add.image(GW/2-90,GH/2+136,'flagPL').setDepth(D+3)); add(this.add.image(GW/2+90,GH/2+136,'flagUK').setDepth(D+3));
-    this.slFace=add(this.add.text(GW/2,GH/2+136,'🎤',{fontSize:'28px'}).setOrigin(0.5).setDepth(D+3));
+    this.slFace=add(emo(this,GW/2,GH/2+136,'🎤',28).setOrigin(0.5).setDepth(D+3));
     // melodia "Sto lat": G E G E G A G F E F
     const F=[392,330,392,330,392,440,392,349,330,349], DUR=[1,1,1,1,0.5,0.5,1,0.5,0.5,1.5], beat=560, travel=1500;
     this.slNotes=[]; this.slHits=0; this.slPerf=0; this.slJudged=0;
@@ -2930,7 +2994,7 @@ class Wedding extends Phaser.Scene{
       const ct=add(this.add.container(GW/2,topY-10).setDepth(D+6));
       ct.add(this.add.rectangle(0,0,300,58,0x232040,1).setStrokeStyle(3,side==='pl'?0xdc143c:0x3a5ad0));
       ct.add(this.add.image(-118,0,side==='pl'?'flagPL':'flagUK'));
-      ct.add(this.add.text(-84,-11,'🙋 '+cmd.i,{fontSize:'20px'}).setOrigin(0,0.5));
+      ct.add(emo(this,-84,-11,'🙋 '+cmd.i,20).setOrigin(0,0.5));
       ct.add(this.add.text(-84,15,team,{fontFamily:'Segoe UI',fontSize:'12px',color:'#c9c9e0'}).setOrigin(0,0.5));
       const cue={side,cmd,ct,judged:false}; this.bCues.push(cue);
       const travel=Math.max(1150,1800-this.bSpawned*48);
@@ -2967,7 +3031,7 @@ class Wedding extends Phaser.Scene{
       this.score+=r.hit*15+r.perf*5; this.clampAll();
       // panna młoda rzuca bukiet nad mieszanym tłumem
       const from=iso(this.coupleSpot.gx+0.35,this.coupleSpot.gy,46), tgt=Phaser.Utils.Array.GetRandom(this.clusters);
-      const to=iso(tgt.gx,tgt.gy,40); const bq=this.add.text(from.x,from.y,'💐',{fontSize:'30px'}).setOrigin(0.5).setDepth(97200);
+      const to=iso(tgt.gx,tgt.gy,40); const bq=emo(this,from.x,from.y,'💐',30).setOrigin(0.5).setDepth(97200);
       const prog={t:0}; this.tweens.add({targets:prog,t:1,duration:1300,ease:'Sine.inOut',
         onUpdate:()=>{ const p=prog.t; bq.x=from.x+(to.x-from.x)*p; bq.y=from.y+(to.y-from.y)*p-Math.sin(p*Math.PI)*150; bq.rotation+=0.2; },
         onComplete:()=>{ bq.destroy(); this.burstAt(to.x,to.y,C.pink,16); this.reactAll(['🎉','💐','👏']); Audio.sfx('ding'); } });
@@ -2979,7 +3043,7 @@ class Wedding extends Phaser.Scene{
     this.scoreText=this.add.text(14,9,'★ 0',{fontFamily:'Segoe UI',fontSize:'22px',color:'#ffe487',fontStyle:'bold'}).setDepth(90001);
     this.annText=this.add.text(140,13,'',{fontFamily:'Segoe UI',fontSize:'16px',color:'#c9c9e0',fontStyle:'bold'}).setDepth(90001);
     this.clockText=this.add.text(GW/2,9,'',{fontFamily:'Segoe UI',fontSize:'20px',color:'#00ffcc',fontStyle:'bold'}).setOrigin(0.5,0).setDepth(90001);
-    this.muteBtn=this.add.text(GW-14,9,Audio.isMuted()?'🔇':'🔊',{fontSize:'22px'}).setOrigin(1,0).setDepth(90001).setInteractive();
+    this.muteBtn=emo(this,GW-14,9,Audio.isMuted()?'🔇':'🔊',22).setOrigin(1,0).setDepth(90001).setInteractive();
     this.muteBtn.on('pointerdown',()=>{ const m=Audio.toggleMute(); this.muteBtn.setText(m?'🔇':'🔊'); });
     addPauseBtn(this);
     // harmonogram wesela
@@ -2988,7 +3052,7 @@ class Wedding extends Phaser.Scene{
     this.tlSegs=[]; let accS=0;
     this.PH.forEach(ph=>{ const w=ph.dur/this.totalTime*this.tlW, x=this.tlX+accS/this.totalTime*this.tlW;
       const rect=this.add.rectangle(x+w/2,tlY,w-2,tlH,0x171520,0.95).setDepth(90000).setStrokeStyle(1,0x3a3a4a);
-      const icon=this.add.text(x+w/2,tlY,ph.icon,{fontSize:'14px'}).setOrigin(0.5).setDepth(90001);
+      const icon=emo(this,x+w/2,tlY,ph.icon,14).setOrigin(0.5).setDepth(90001);
       this.tlSegs.push({rect,icon,start:accS,dur:ph.dur}); accS+=ph.dur; });
     this.tlCursor=this.add.rectangle(this.tlX,tlY,3,tlH+10,0xffe487,1).setDepth(90002);
     this.tlNext=this.add.text(GW/2,84,'',{fontFamily:'Segoe UI',fontSize:'15px',color:'#ffd23f',fontStyle:'bold'}).setOrigin(0.5).setDepth(90002).setVisible(false);
@@ -3084,7 +3148,7 @@ class Wedding extends Phaser.Scene{
     if(this.feedback){ const f=this.feedback; f.t+=dt; f.fx+=dt;
       if(f.fx>650){ f.fx=0; Audio.sfx('squeal');
         [{gx:1.8,gy:2.5},{gx:10.2,gy:2.5}].forEach(s=>{ const p=iso(s.gx,s.gy,40);
-          const z=this.add.text(p.x+Phaser.Math.Between(-10,10),p.y,'⚡',{fontSize:'18px'}).setOrigin(0.5).setDepth(95800);
+          const z=emo(this,p.x+Phaser.Math.Between(-10,10),p.y,'⚡',18).setOrigin(0.5).setDepth(95800);
           this.tweens.add({targets:z,y:z.y-24,alpha:0,duration:600,onComplete:()=>z.destroy()}); }); }
       if(f.t>5500) this.endFeedback(false); }
   }
@@ -3095,7 +3159,7 @@ class Wedding extends Phaser.Scene{
     this.abortStage(); this.sideEvs.slice().forEach(ev=>this.removeSide(ev));
     this.done=true; this.promptText.setVisible(false);
     this.clusters.forEach((c,ci)=>{ for(let i=0;i<4;i++){ const p=iso(c.gx,c.gy,60);
-      this.time.delayedCall(ci*200+i*240,()=>{ const e=this.add.text(p.x+Phaser.Math.Between(-30,30),p.y,Phaser.Utils.Array.GetRandom(['❤️','✨','🎉','🥂']),{fontSize:'22px'}).setOrigin(0.5).setDepth(96000);
+      this.time.delayedCall(ci*200+i*240,()=>{ const e=emo(this,p.x+Phaser.Math.Between(-30,30),p.y,Phaser.Utils.Array.GetRandom(['❤️','✨','🎉','🥂']),22).setOrigin(0.5).setDepth(96000);
         this.tweens.add({targets:e,y:e.y-50,alpha:0,duration:1400,onComplete:()=>e.destroy()}); }); } });
     Audio.sfx('phase');
     this.time.delayedCall(2200,()=>this.finish()); }

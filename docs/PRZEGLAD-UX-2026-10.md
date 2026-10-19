@@ -69,6 +69,8 @@ telefon pionowo 390×844) i przegląd kodu `index.html`. Priorytety: **P0** = sz
 - **Zrobione — wystrój sali (#6):** okrągłe stoły gości z obrusem, szarfą, stroikiem i świecami (minigry 2–3),
   stół Pary Młodej ze ścianką kwiatową i sercem na lewej ścianie, migocząca girlanda lampek pod gzymsem,
   złote kwietniki na końcu dywanu (stół, ścianka, lampki i kwietniki również w minigrze 1).
+- **Zrobione — ikony pixel-art (#11):** reakcje gości, ikony nad stolikami, dymki, oś czasu i przycisk głośnika
+  rysowane jako ikony 12×12 w `genAssets` (`ICONS` + `emo()`), spójne na każdym systemie; emoji w zdaniach zostają.
 
 ## Proponowana kolejność
 

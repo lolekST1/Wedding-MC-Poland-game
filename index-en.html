@@ -601,11 +601,33 @@ const Audio=(function(){
       for(let i=0;i<4;i++) pluck(t+i*beat, melAt(i),'sine',0.1,0.4);
     }
     bar++; }
-  function startMusic(){ init(); resume(); if(playing) return; playing=true; bar=0; seq=setInterval(tickBar, beat*4*1000); tickBar(); }
-  function stopMusic(){ playing=false; if(seq){clearInterval(seq); seq=null;} }
+  // ---- pętle z plików (ACE-Step 1.5 w ComfyUI, music/<nastrój>.mp3, tempo = mood.bpm) ----
+  // ładowane leniwie; dopóki plik nie dojdzie (albo go brak na serwerze), gra synteza powyżej
+  const buffers={}, loading={}; let fileSrc=null, fileGain=null;
+  const FILE_VOL=0.32, XFADE=1.2;
+  function loadTrack(name){ if(buffers[name]||loading[name]) return; loading[name]=true;
+    fetch('music/'+name+'.mp3').then(r=>{ if(!r.ok) throw 0; return r.arrayBuffer(); })
+      .then(b=>new Promise((ok,no)=>ctx.decodeAudioData(b,ok,no)))
+      .then(buf=>{ buffers[name]=buf; if(playing&&name===moodName&&!fileSrc) playFile(); })
+      .catch(()=>{}); }   // ponytail: brak pliku = zostaje synteza, bez ponawiania
+  function fadeOutFile(){ if(!fileSrc) return; const t=ctx.currentTime, s=fileSrc, g=fileGain;
+    g.gain.cancelScheduledValues(t); g.gain.setValueAtTime(g.gain.value,t); g.gain.linearRampToValueAtTime(0,t+XFADE);
+    s.stop(t+XFADE+0.05); fileSrc=null; fileGain=null; }
+  function playFile(){ const buf=buffers[moodName]; if(!buf) return false;
+    if(seq){ clearInterval(seq); seq=null; }                                     // synteza milknie (nuty wybrzmiewają)
+    fadeOutFile(); const t=ctx.currentTime;
+    fileSrc=ctx.createBufferSource(); fileSrc.buffer=buf; fileSrc.loop=true;
+    fileGain=ctx.createGain(); fileGain.gain.setValueAtTime(0,t); fileGain.gain.linearRampToValueAtTime(FILE_VOL,t+XFADE);
+    fileSrc.connect(fileGain); fileGain.connect(master); fileSrc.start(t); return true; }
+  function startSynth(){ bar=0; seq=setInterval(tickBar, beat*4*1000); tickBar(); }
+  function startMusic(){ init(); resume(); if(playing) return; playing=true; loadTrack(moodName); if(!playFile()) startSynth(); }
+  function stopMusic(){ playing=false; if(seq){clearInterval(seq); seq=null;} if(ctx) fadeOutFile(); }
   function setMood(name){ if(!MOODS[name]||name===moodName) return; mood=MOODS[name]; moodName=name; beat=60/mood.bpm;
     if(musicG) musicG.gain.value=mood.gain;
-    if(playing){ clearInterval(seq); bar=0; seq=setInterval(tickBar, beat*4*1000); tickBar(); } }
+    if(!playing) return; loadTrack(name);
+    if(!playFile()){ fadeOutFile(); if(seq) clearInterval(seq); startSynth(); } }
+  // karta w tle = cisza (pętla z pliku grałaby dalej, gdy gra stoi)
+  document.addEventListener('visibilitychange',()=>{ if(ctx) document.hidden?ctx.suspend():ctx.resume(); });
   function getMood(){ return moodName; }
   function beatDur(){ return beat; }
   function toggleMute(){ muted=!muted; if(master) master.gain.value=muted?0:0.8; return muted; }

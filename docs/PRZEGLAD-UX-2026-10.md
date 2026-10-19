@@ -57,6 +57,16 @@ telefon pionowo 390×844) i przegląd kodu `index.html`. Priorytety: **P0** = sz
 | 24 | Brak udostępniania wyniku. | „Udostępnij wynik" (Web Share API / kopiuj link) — darmowy zasięg. | P1 |
 | 25 | Syntetyczna muzyka brzmi „chiptune'owo" i cienko. | Wygenerowane pętle (np. ACE-Step przez ComfyUI — licencja Apache 2.0) jako pliki OGG ładowane leniwie po starcie gry; synteza zostaje jako zapas. Wymaga konektora ComfyUI MCP. | P2 |
 
+## Stan (2026-10-19)
+
+- **Zrobione — pakiet P0:** karta „Jak grać" przy pierwszym uruchomieniu każdej minigry (pamiętana w `localStorage`),
+  złota strzałka nad aktualnym celem (#1), pauza ⏸ / klawisz P z przypomnieniem zasad (#16), dźwięk milknie w tle
+  i w pauzie (#15), poprawione okienko przebierania (#7), niższe okienko zapowiedzi (#8), Karol obok gwiazdek (#9),
+  neon na wolnym odcinku ściany (#10), większe napisy HUD i dymków (#13), nakładka „obróć telefon" z pełnym ekranem (#18),
+  „Następna minigra →" (#21), rekordy w `localStorage` (#17, część), opisy SEO o wszystkich minigrach + `meta description`
+  w języku strony (#23), nowy podtytuł menu (#22, część).
+- **Zrobione — muzyka:** pętle ACE-Step (ComfyUI) w `music/*.mp3`, synteza zostaje jako zapas (#25).
+
 ## Proponowana kolejność
 
 1. **Pakiet P0 (jeden PR):** strzałka do celu, karta „Jak grać", poprawki modali i ekranu wyniku, neon, większe napisy HUD, pauza audio w tle, nakładka „obróć telefon", „Następna minigra →", SEO.

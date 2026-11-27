@@ -157,18 +157,18 @@
           <button id="langPL" type="button">PL</button><button id="langEN" type="button">EN</button>
         </div>
         <h1>WODZIREJ KAROL<br><span class="accent">Master of the Dancefloor</span></h1>
-        <p class="sub" data-i18n="menuSub">Zostań wodzirejem na jeden wieczór — wybierz minigrę:</p>
+        <p class="sub" data-i18n="menuSub">Zostań wodzirejem na jeden wieczór i wybierz, od czego zaczniesz:</p>
         <div class="cards">
           <button class="task-card active" id="task1" type="button">
-            <span class="tc-txt"><span class="tc-title" data-i18n="task1title">1. Load-in: Rozstawienie sprzętu</span><span class="tc-desc" data-i18n="task1desc">Rozpakuj i ustaw sprzęt, ogarnij ekipę i zdąż przed gośćmi.</span></span>
+            <span class="tc-txt"><span class="tc-title" data-i18n="task1title">1. Rozstawienie sprzętu</span><span class="tc-desc" data-i18n="task1desc">Rozpakuj i ustaw nagłośnienie oraz światła, pokieruj ekipą i zdąż ze wszystkim, zanim pojawią się goście.</span></span>
             <span class="tc-go" data-i18n="play">▶ GRAJ</span>
           </button>
           <button class="task-card active" id="task2" type="button">
-            <span class="tc-txt"><span class="tc-title" data-i18n="task2title">2. Parkiet z gośćmi</span><span class="tc-desc" data-i18n="task2desc">Czytaj salę, graj to, czego chcą goście, i utrzymaj energię parkietu.</span></span>
+            <span class="tc-txt"><span class="tc-title" data-i18n="task2title">2. Parkiet z gośćmi</span><span class="tc-desc" data-i18n="task2desc">Wyczuj nastrój gości i dobieraj muzykę tak, żeby parkiet ani na chwilę nie pustoszał.</span></span>
             <span class="tc-go" data-i18n="play">▶ GRAJ</span>
           </button>
           <button class="task-card active" id="task3" type="button">
-            <span class="tc-txt"><span class="tc-title" data-i18n="task3title">3. Wesele międzynarodowe PL/EN</span><span class="tc-desc" data-i18n="task3desc">Wesele polsko-brytyjskie: zapowiedzi w dwóch językach, tradycje i wspólna zabawa obu stron.</span></span>
+            <span class="tc-txt"><span class="tc-title" data-i18n="task3title">3. Wesele międzynarodowe PL/EN</span><span class="tc-desc" data-i18n="task3desc">Wesele polsko-brytyjskie, na którym zapowiadasz w dwóch językach, przybliżasz gościom polskie tradycje i łączysz obie rodziny we wspólnej zabawie.</span></span>
             <span class="tc-go" data-i18n="play">▶ GRAJ</span>
           </button>
         </div>
@@ -198,10 +198,10 @@ window.WK_LANG = 'pl';
 const I18N={
  pl:{
   docTitle:'Wodzirej Karol: Master of the Dancefloor – gra | Wedding MC Poland',
-  menuSub:'Zostań wodzirejem na jeden wieczór — wybierz minigrę:',
-  task1title:'1. Load-in: Rozstawienie sprzętu', task1desc:'Rozpakuj i ustaw sprzęt, ogarnij ekipę i zdąż przed gośćmi.',
-  task2title:'2. Parkiet z gośćmi', task2desc:'Czytaj salę, graj to, czego chcą goście, i utrzymaj energię parkietu.',
-  task3title:'3. Wesele międzynarodowe PL/EN', task3desc:'Wesele polsko-brytyjskie: zapowiedzi w dwóch językach, tradycje i wspólna zabawa obu stron.',
+  menuSub:'Zostań wodzirejem na jeden wieczór i wybierz, od czego zaczniesz:',
+  task1title:'1. Rozstawienie sprzętu', task1desc:'Rozpakuj i ustaw nagłośnienie oraz światła, pokieruj ekipą i zdąż ze wszystkim, zanim pojawią się goście.',
+  task2title:'2. Parkiet z gośćmi', task2desc:'Wyczuj nastrój gości i dobieraj muzykę tak, żeby parkiet ani na chwilę nie pustoszał.',
+  task3title:'3. Wesele międzynarodowe PL/EN', task3desc:'Wesele polsko-brytyjskie, na którym zapowiadasz w dwóch językach, przybliżasz gościom polskie tradycje i łączysz obie rodziny we wspólnej zabawie.',
   play:'▶ GRAJ', loading:'Ładowanie sali…', loadErr:'Błąd ładowania. Sprawdź połączenie i spróbuj ponownie.',
   controls:'<b>Sterowanie:</b> Strzałki / WASD&nbsp;•&nbsp;Akcja: Spacja<br>📱 na telefonie: joystick + przycisk AKCJA',
   seo:'<strong>Wodzirej Karol</strong> to profesjonalny wodzirej i DJ prowadzący wesela polskie oraz międzynarodowe jako <strong>Wedding MC Poland</strong>. Zagraj i zobacz, ile pracy i logistyki kryje się za bezbłędnym weselem. <a href="http://www.wodzirejkarol.pl" target="_blank" rel="noopener">Sprawdź wolny termin u Karola →</a>',
@@ -209,100 +209,100 @@ const I18N={
   guestsIn:'Goście za: ', guestsSoon:'Goście zaraz wejdą! Kończ szybko!',
   ckCarry:'Wnieś torby', ckUnpack:'Rozpakuj', ckPlace:'Rozstaw sprzęt', ckCable:'Okabluj', ckTidy:'Sprzątnij kable', ckReturn:'Zanieś torby', ckChange:'Przebierz się',
   h0:'Wnieś torby ze sprzętem z auta na salę', h1:'Rozpakuj torby w strefie odkładczej', h2:'Zanieś sprzęt na świecące się miejsca (najpierw stół DJ)', h3:'Podłącz kable: głośniki, światła i zasilanie', h4:'Uprzątnij kable, żeby było bezpiecznie i estetycznie', h5:'Zanieś puste torby z powrotem do auta', h6:'Przebierz się we frak przy parawanie', hDone:'Gotowe! Świetna robota.',
-  stageDone:'Etap zaliczony!', cablesTidy:'Kable uprzątnięte i oklejone taśmą!', guestsEnter:'Goście wchodzą — zaczynamy wesele! 🎉', npcLeft:'NPC odszedł nieobsłużony…',
+  stageDone:'Etap zaliczony!', cablesTidy:'Kable uprzątnięte i oklejone taśmą!', guestsEnter:'Goście wchodzą, zaczynamy wesele! 🎉', npcLeft:'Ktoś z obsługi sali odszedł bez pomocy…',
   staging:'ZNIEŚ TORBY TUTAJ', carPickup:'🚐 ODBIERZ SPRZĘT', carReturn:'🚐 ZWRÓĆ TORBY', dropped:'Odłożono',
   pPutBag:'Połóż torbę', pDropBag:'Odłóż torbę', pBagToCar:'Włóż torbę do auta', pPlace:'Postaw: ', pDropHere:'Odłóż tutaj', pTakeBag:'Weź torbę', pTakeBagCar:'Weź torbę z auta', pUnpack:'Rozpakuj (przytrzymaj)', pPickup:'Podnieś: ', pGrabPlug:'Chwyć wtyk', pConnect:'Podłącz kabel', pDropPlug:'Odłóż wtyk', pTidy:'Uprzątnij kabel', pTakeEmpty:'Weź pustą torbę', pChange:'Przebierz się we frak', pSchedule:'Ułóż harmonogram', pShow:'Pokaż / załatw',
   keySpace:'[Spacja] ', keyAction:'[AKCJA] ', btnAction:'AKCJA', brandSign:'WODZIREJ KAROL',
   slot_djtable:'Stół DJ', slot_console:'Konsola', slot_laptop:'Laptop', slot_dmx:'DMX', slot_sstL:'Statyw L', slot_sstR:'Statyw P', slot_spkL:'Głośnik L', slot_spkR:'Głośnik P', slot_lstL:'Statyw św. L', slot_lstR:'Statyw św. P', slot_liL:'Lampa L', slot_liR:'Lampa P',
-  npc_manager:'Menager sali', npc_photo:'Fotograf', npc_camera:'Kamerzysta', npc_booth:'Fotobudka', npc_barman:'Barman',
+  npc_manager:'Menedżer sali', npc_photo:'Fotograf', npc_camera:'Kamerzysta', npc_booth:'Fotobudka', npc_barman:'Barman',
   req_manager:'Ułóż kolejność wesela!', req_photo:'Gdzie gniazdko na ładowarki?', req_camera:'Gdzie kamera, by nie zasłaniać?', req_booth:'Róg z prądem na fotobudkę?', req_barman:'Przedłużacz do baru?',
   npcTips:['Świetna logistyka!','Koordynacja ekipy!','Wszystko dograne przed gośćmi!','Profesjonalizm!'],
-  dressTitle:'PRZEBIERZ SIĘ WE FRAK', dressSub:'Przeciągnij elementy na Karola — we właściwej kolejności', dressFirst:'Najpierw załóż: ', dressDone:'Elegancko! Gotowe.',
+  dressTitle:'PRZEBIERZ SIĘ WE FRAK', dressSub:'Przeciągaj elementy stroju na Karola we właściwej kolejności', dressFirst:'Najpierw załóż: ', dressDone:'Elegancko! Gotowe.',
   g_shirt:'Koszula', g_pants:'Spodnie', g_shoes:'Buty', g_suspenders:'Szelki', g_bowtie:'Muszka', g_vest:'Kamizelka', g_coat:'Marynarka', g_tophat:'Cylinder',
-  mgrTitle:'MENAGER SALI — KOLEJNOŚĆ WESELA', mgrSub:'Przeciągnij bloki do miejsc 1–6 we właściwej kolejności', mgrPerfect:'Idealna kolejność! 🎉', mgrWrong:'Zła kolejność — popraw bloki',
+  mgrTitle:'MENEDŻER SALI: KOLEJNOŚĆ WESELA', mgrSub:'Przeciągnij bloki do miejsc 1–6 we właściwej kolejności', mgrPerfect:'Idealna kolejność! 🎉', mgrWrong:'Coś się nie zgadza w kolejności, popraw bloki',
   blk:['Przywitanie chlebem i solą','Posiłek','Polonez','Pierwszy taniec','Animacje taneczne','Oczepiny'],
-  resReady:'SPRZĘT GOTOWY!', resLate:'Zdążyłeś tuż przed gośćmi — profesjonalista ratuje sytuację!', resOnTime:'Wszystko dograne z zapasem czasu. Klasa!',
+  resReady:'SPRZĘT GOTOWY!', resLate:'Zdążyłeś w ostatniej chwili, tuż przed wejściem gości, i nikt nie zauważył pośpiechu.', resOnTime:'Wszystko dograne z zapasem czasu, więc goście wchodzą na gotową salę.',
   resScore:(s,n)=>'Wynik: '+s+' pkt  •  Ekipa: '+n+'/5', resBest:'Najlepszy wynik: ',
-  resCopy:'Tyle pracy i logistyki kryje się ZANIM zabrzmi pierwszy kawałek.\nKarol i jego zespół ogarną to za Ciebie — bezbłędnie.',
+  resCopy:'Tyle pracy i logistyki dzieje się, zanim zabrzmi pierwszy utwór.\nKarol i jego zespół zadbają o to za Ciebie, spokojnie i bez potknięć.',
   resCta:'✦ SPRAWDŹ WOLNY TERMIN U KAROLA ✦', resReplay:'↻ Powtórz', resMenu:'≡ Menu',
   /* ---- Minigra 2: Parkiet z gośćmi ---- */
   mus_disco:'Disco', mus_rom:'Wolny taniec', mus_hype:'Mocne bity', mus_chill:'Spokojne tło',
   d_energy:'ENERGIA PARKIETU', d_now:'♪ Teraz gra: ', d_events:'Akcje: ',
   dph0:'Powitanie gości', dph1:'Integracja', dph2:'Pierwszy taniec', dph3:'Toasty', dph4:'Oczepiny', dph5:'Impreza', dph6:'Ostatni taniec',
-  dh0:'Rozgrzewka — sprawdź chmurki nad grupami i ustaw muzykę przy konsoli DJ', dh1:'Krąż po sali i dopasowuj muzykę do grup gości',
-  dh2:'Pierwszy taniec — zagraj przy konsoli „Wolny taniec” dla pary młodej', dh3:'Przycisz — spokojne tło do toastów i życzeń',
-  dh4:'Pełna moc! Cała sala chce mocnych bitów', dh5:'Utrzymaj energię — gusta zmieniają się szybko', dh6:'Wygaszamy wieczór — na koniec „Wolny taniec”',
+  dh0:'Na rozgrzewkę zerknij na chmurki nad grupami i dobierz muzykę przy konsoli DJ', dh1:'Krąż po sali i dopasowuj muzykę do grup gości',
+  dh2:'Nadchodzi pierwszy taniec, więc włącz przy konsoli „Wolny taniec” dla pary młodej', dh3:'Przycisz muzykę, żeby toasty i życzenia miały spokojne tło',
+  dh4:'Pełna moc! Cała sala chce mocnych bitów', dh5:'Gusta gości szybko się zmieniają, więc pilnuj, żeby parkiet nie przygasł', dh6:'Wieczór powoli dobiega końca, a na pożegnanie zagraj „Wolny taniec”',
   dNext:'Za chwilę: ',
   pDJ:'Zmień muzykę', pCheer:'Zagrzej grupę', pUncle:'Odprowadź wujka', pRequest:'Przyjmij prośbę', pPhoto:'Ustaw się do zdjęcia', pFix:'Napraw głośnik (przytrzymaj)', pGather:'Zaproś do kręgu!', pCheerCouple:'Zagrzej parę młodą!',
-  pConga:'Poprowadź wężyka!', d_conga:'🚂 WĘŻYK', congaReadyTip:'Wężyk naładowany — poprowadź pociąg po parkiecie!', congaStart:'WĘŻYK! Prowadź gości po całej sali!', congaDone:'Wężyk rozgrzał całą salę! 🔥',
+  pConga:'Poprowadź wężyka!', d_conga:'🚂 WĘŻYK', congaReadyTip:'Wężyk gotowy, poprowadź go przez cały parkiet!', congaStart:'WĘŻYK! Prowadź gości po całej sali!', congaDone:'Wężyk rozgrzał całą salę! 🔥',
   evUncle:'Wujek chce przejąć mikrofon! Zatrzymaj go!', evUncleFail:'Wujek dorwał mikrofon… parkiet stygnie', evUncleOk:'Wujek odprowadzony do stolika!',
   evRequest:'Prośba o kawałek! Podejdź do grupy', evReqPlay:'Zagraj teraz: ', evReqOk:'Prośba spełniona! Sala szaleje!', evReqFail:'Prośba przepadła…',
   evPhoto:'Fotograf prosi o ustawkę przy parze młodej!', evPhotoOk:'Pstryk! Pamiątkowe zdjęcie!', evPhotoFail:'Fotograf poszedł dalej…',
-  evSpk:'Głośnik przestał grać! Napraw go szybko!', evSpkOk:'Głośnik naprawiony — gra dalej!', evSpkTech:'Technik już biegnie do głośnika…', evSpkFail:'Technik naprawił głośnik… straciłeś sporo energii',
+  evSpk:'Głośnik przestał grać! Napraw go szybko!', evSpkOk:'Głośnik naprawiony, muzyka gra dalej!', evSpkTech:'Technik już biegnie do głośnika…', evSpkFail:'Technik naprawił głośnik… straciłeś sporo energii',
   evBouquet:'Oczepiny! Zbierz gości w krąg wokół panny młodej!', evBouquetGathered:'Grupa dołączyła do kręgu!', evBouquetThrow:'Panna młoda rzuca bukiet!',
   evBouquetOk:'Bukiet złapany! Wszyscy się cieszą!', evBouquetFail:'Nie zebraliście kręgu na czas… panna młoda odchodzi z bukietem',
   evFirstDance:'Pierwszy taniec! Para młoda otwiera parkiet…', evFirstDanceOk:'Owacje dla pary młodej! 💞',
-  mixTitle:'KONSOLA DJ — ZMIEŃ MUZYKĘ', mixSub:'Wybierz styl dla parkietu (kliknij albo 1–4)', mixGo:'Trafiaj nuty w rytm!  A S D F / strzałki / tapnij tor',
+  mixTitle:'KONSOLA DJ: ZMIEŃ MUZYKĘ', mixSub:'Wybierz styl dla parkietu (kliknij albo 1–4)', mixGo:'Trafiaj nuty w rytm!  A S D F / strzałki / tapnij tor',
   mixPerfect:'Idealnie!', mixGood:'Dobrze', mixMiss:'Pudło', mixBoost:(n)=>'Mix gotowy! +'+n+' energii',
-  dLow:'Parkiet gaśnie! Zmień muzykę przy konsoli!', dMatchAll:'Cała sala tańczy! 🔥', dBoo:'Goście zaczynają buczeć! Ratuj parkiet NATYCHMIAST!',
-  resDance:'PARKIET ROZGRZANY!', resDanceHi:'Sala szalała do końca — mistrzowskie czytanie parkietu!', resDanceMid:'Dobra impreza! Następnym razem rozkręcisz salę jeszcze mocniej.',
+  dLow:'Parkiet gaśnie! Zmień muzykę przy konsoli!', dMatchAll:'Cała sala tańczy! 🔥', dBoo:'Goście zaczynają się nudzić! Ratuj parkiet, zanim opustoszeje!',
+  resDance:'PARKIET ROZGRZANY!', resDanceHi:'Sala bawiła się do samego końca, bo za każdym razem trafiałeś w nastrój gości.', resDanceMid:'Dobra impreza! Następnym razem rozkręcisz salę jeszcze mocniej.',
   resDanceScore:(s,n,m)=>'Wynik: '+s+' pkt  •  Akcje na sali: '+n+'/'+(m||6), resDanceAvg:(e)=>'Średnia energia parkietu: '+e+'%',
-  resDanceCopy:'Dobry wodzirej cały wieczór czyta salę i wie, co zagrać.\nKarol robi to na każdym weselu — sprawdź go w akcji.',
+  resDanceCopy:'Dobry wodzirej przez cały wieczór wyczuwa nastrój gości i wie, co zagrać.\nTak właśnie Karol prowadzi każde wesele, więc sprawdź go na swoim.',
   /* ---- wspólne: karta „Jak grać", pauza, obrót telefonu, SEO ---- */
-  metaDesc:'Zagraj w grę o profesjonalnym wodzireju! Rozstaw sprzęt przed weselem, rozkręć parkiet i poprowadź wesele polsko-angielskie. Wodzirej i DJ – Wedding MC Poland.',
+  metaDesc:'Gra o pracy wodzireja, która prowadzi przez cały wieczór: od rozstawienia sprzętu przed przyjazdem gości, przez parkiet, po wesele polsko-brytyjskie w dwóch językach.',
   rotateGo:'⛶ Pełny ekran', rotateSkip:'Graj w pionie', resNext:'▶ Następna minigra',
-  howSub:'Krótko o zasadach — potem już tylko zabawa:', howGo:'▶ GRAJ',
+  howSub:'Kilka słów o zasadach, a potem już tylko zabawa:', howGo:'▶ GRAJ',
   howCtlKb:'Sterowanie: strzałki / WASD • akcja: Spacja • pauza: P', howCtlTouch:'Lewa strona ekranu: joystick • przycisk AKCJA po prawej • ⏸ pauza',
-  pauseTitle:'PAUZA', pauseSub:'Gra zatrzymana — przypomnienie zasad:', pauseResume:'▶ WRÓĆ DO GRY',
-  howSetup:['🚐 Wnieś torby z busa do złotej strefy i rozpakuj je (przytrzymaj akcję).','🎛️ Postaw sprzęt na świecących miejscach — najpierw stół DJ i statywy.','🔌 Podłącz kable (chwyć wtyk, podejdź do drugiego końca), uprzątnij je i odnieś torby.','🎩 Na koniec przebierz się we frak — zdąż, zanim wejdą goście!','⭐ Złota strzałka pokazuje, dokąd iść. Pomagaj też ekipie z prośbami.'],
-  howDance:['🎵 Chmurki nad grupami pokazują, jakiej muzyki chcą goście.','🎛️ Przy konsoli DJ zmień styl i trafiaj nuty w rytm — to podbija energię.','👏 Grupa traci zapał? Podejdź i ją zagrzej. Reaguj na wujka, fotografa i awarie.','🚂 Gdy pasek WĘŻYKA się naładuje — poprowadź pociąg po całej sali!','⭐ Złota strzałka pokazuje najpilniejszą sprawę.'],
-  howWedding:['🎤 Każdy etap zaczynasz zapowiedzią: wybierz trafną wersję EN i zatrzymaj wskaźnik na środku.','⚖️ Pilnuj obu pasków: polska rodzina ma się bawić, a goście z UK — rozumieć.','🤝 Wyjaśniaj zwyczaje, zagaduj stoliki, łącz obie strony na parkiecie — rośnie MOST.','🎧 Nie tłumaczysz przemów: podajesz mikrofon i pilnujesz dźwięku.','⭐ Złota strzałka pokazuje najpilniejszą sprawę.'],
+  pauseTitle:'PAUZA', pauseSub:'Gra zatrzymana, oto przypomnienie zasad:', pauseResume:'▶ WRÓĆ DO GRY',
+  howSetup:['🚐 Wnieś torby z busa do złotej strefy i rozpakuj je (przytrzymaj akcję).','🎛️ Postaw sprzęt na świecących miejscach, zaczynając od stołu DJ i statywów.','🔌 Podłącz kable (chwyć wtyk, podejdź do drugiego końca), uprzątnij je i odnieś torby.','🎩 Na koniec przebierz się we frak i zdąż, zanim wejdą goście!','⭐ Złota strzałka pokazuje, dokąd iść. Pomagaj też ekipie z prośbami.'],
+  howDance:['🎵 Chmurki nad grupami pokazują, jakiej muzyki chcą goście.','🎛️ Przy konsoli DJ zmień styl i trafiaj nuty w rytm, bo to rozkręca parkiet.','👏 Grupa traci zapał? Podejdź i ją zagrzej. Reaguj na wujka, fotografa i awarie.','🚂 Gdy pasek WĘŻYKA się naładuje, poprowadź wężyka po całej sali!','⭐ Złota strzałka pokazuje najpilniejszą sprawę.'],
+  howWedding:['🎤 Każdy etap zaczynasz zapowiedzią: wybierz trafną wersję EN i zatrzymaj wskaźnik na środku.','⚖️ Pilnuj obu pasków, bo polska rodzina ma się dobrze bawić, a goście z Wielkiej Brytanii rozumieć, co się dzieje.','🤝 Wyjaśniaj zwyczaje, zagaduj przy stolikach i łącz obie strony na parkiecie, a wtedy rośnie MOST.','🎧 Nie tłumaczysz przemów: podajesz mikrofon i pilnujesz dźwięku.','⭐ Złota strzałka pokazuje najpilniejszą sprawę.'],
   /* ---- Minigra 3: Wesele międzynarodowe PL/EN (Kasia 🇵🇱 + James 🇬🇧) ---- */
-  i_pl:'RODZINA (PL) — ZAANGAŻOWANIE', i_uk:'GOŚCIE Z UK — ZROZUMIENIE', i_bridge:'🌉 MOST', i_ann:'Zapowiedzi: ', i_trainReady:'🚂 gotowy!',
+  i_pl:'RODZINA (PL): ZAANGAŻOWANIE', i_uk:'GOŚCIE Z UK: ZROZUMIENIE', i_bridge:'🌉 MOST', i_ann:'Zapowiedzi: ', i_trainReady:'🚂 gotowy!',
   iph0:'Chleb i sól', iph1:'Toast i Sto lat', iph2:'Pierwszy taniec', iph3:'Przemowy', iph4:'Oczepiny', iph5:'Impreza', iph6:'Tort i podziękowania',
-  ih0:'Zapowiedz powitanie przy mikrofonie 🎤 — goście z UK nie znają tego zwyczaju', ih1:'Zapowiedz toast, a potem zaintonuj „Sto lat" z całą salą',
-  ih2:'Krótka, elegancka zapowiedź — i owacje dla pary', ih3:'Zapowiedz mówców, podaj mikrofon, pilnuj dźwięku. Przemów nie tłumaczysz!',
-  ih4:'Wyjaśnij oczepiny i poprowadź mieszane drużyny', ih5:'Dedykacje z obu krajów, wspólne tańce, pociąg — połącz salę!', ih6:'Tort i podziękowania dla rodziców — w obu językach',
+  ih0:'Zapowiedz powitanie przy mikrofonie 🎤, bo goście z Wielkiej Brytanii nie znają tego zwyczaju', ih1:'Zapowiedz toast, a potem zaintonuj „Sto lat" z całą salą',
+  ih2:'Wystarczy krótka, elegancka zapowiedź, a potem owacje dla pary', ih3:'Zapowiedz mówców, podaj mikrofon, pilnuj dźwięku. Przemów nie tłumaczysz!',
+  ih4:'Wyjaśnij oczepiny i poprowadź mieszane drużyny', ih5:'Dedykacje z obu krajów, wspólne tańce i wężyk pomogą połączyć całą salę!', ih6:'Zapowiedz tort i podziękowania dla rodziców, w obu językach',
   pMic:'Zapowiedź przy mikrofonie', pStoLat:'Zaintonuj „Sto lat"!', pExplain:'Wyjaśnij zwyczaj (EN)', pChat:'Zagadaj po polsku', pPickle:'Podsuń ogórka do wódki 🥒',
   pDedic:'Przyjmij dedykację', pPlayDedic:'Zagraj dedykację: ', pInvite:'Zaproś na wspólny taniec', pGiveMic:'Podaj mikrofon', pFeedback:'Usuń sprzężenie!',
-  pToast:'Wznieś toast: Na zdrowie! / Cheers!', pBoss:'Rozpocznij zabawy oczepinowe', pTrain:'Poprowadź pociąg obu stron!',
-  ivAnnDue:'pora na zapowiedź — podejdź do mikrofonu 🎤', ivDeadAir:'Cisza na sali! Obie strony się nudzą — do mikrofonu!', ivLateSkip:'Zapowiedź przepadła — ten moment uciekł…',
+  pToast:'Wznieś toast: Na zdrowie! / Cheers!', pBoss:'Rozpocznij zabawy oczepinowe', pTrain:'Poprowadź wężyka obu stron!',
+  ivAnnDue:'pora na zapowiedź, podejdź do mikrofonu 🎤', ivDeadAir:'Na sali zrobiło się cicho i obie strony się nudzą, szybko do mikrofonu!', ivLateSkip:'Zapowiedź przepadła, a ten moment już nie wróci…',
   ivConfused:'Goście z UK nie rozumieją, co się dzieje ❓', ivConfusedOk:'Wyjaśnione! Brytyjczycy dołączają do zabawy 👍', ivConfusedFail:'Brytyjczycy dalej nic nie rozumieją…',
-  ivBored:'Polski stolik się nudzi — babcia ziewa 😴', ivBoredOk:'Polski stolik znów w formie!', ivBoredFail:'Polski stolik stracił zapał…',
-  ivVodka:'Wujek niesie Brytyjczykowi trzecią kolejkę! 🥃 Przechwyć go!', ivVodkaOk:'Ogórek kiszony podany — Anglik przetrwał! 🥒', ivVodkaFail:'Anglik po trzeciej kolejce… 🥴',
-  ivReqPL:'Babcia prosi o polski przebój!', ivReqUK:'Świadek prosi o brytyjski klasyk!', ivReqGo:'Obiecane! Zagraj przy konsoli DJ: ', ivReqOk:'Dedykacja zagrana — stolik szaleje!', ivReqFail:'Obietnica niespełniona…',
+  ivBored:'Polski stolik się nudzi, nawet babcia ziewa 😴', ivBoredOk:'Polski stolik znów w formie!', ivBoredFail:'Polski stolik stracił zapał…',
+  ivVodka:'Wujek niesie Brytyjczykowi trzecią kolejkę! 🥃 Przechwyć go!', ivVodkaOk:'Ogórek kiszony podany, Anglik przetrwał! 🥒', ivVodkaFail:'Anglik po trzeciej kolejce… 🥴',
+  ivReqPL:'Babcia prosi o polski przebój!', ivReqUK:'Świadek prosi o brytyjski klasyk!', ivReqGo:'Obiecane! Zagraj przy konsoli DJ: ', ivReqOk:'Dedykacja zagrana, stolik szaleje!', ivReqFail:'Obietnica niespełniona…',
   songPL:'polskie disco', songUK:'British classic',
-  ivMixed:'Zaproś polski i brytyjski stolik na wspólny taniec! 🤝', ivMixedHalf:'Świetnie — teraz druga strona!', ivMixedOk:'Polska i Wielka Brytania tańczą razem! 🌉', ivMixedFail:'Stoliki zostały przy swoich…',
-  ivSpeechGive:'Mówca czeka przy mikrofonie — podaj mu mikrofon', ivSpeechOn:'Przemowa trwa — nie tłumaczysz, pilnujesz dźwięku 🎧',
-  ivFeedback:'Sprzężenie! Biegnij do konsoli DJ!', ivFeedbackOk:'Sprzężenie wyciszone — przemowa płynie dalej', ivFeedbackFail:'Pisk na całą salę… 🙉',
-  ivToastDue:'Przemowy skończone — wznieś toast przy mikrofonie!', ivToastOk:'Na zdrowie! Cheers! Cała sala wznosi kieliszki 🥂',
-  ivBossDue:'Wszyscy na parkiecie — rozpocznij zabawy na środku sali!', ivStoLatDue:'Zaintonuj „Sto lat" przy mikrofonie!',
-  ivTrainReady:'Most jest mocny — poprowadź pociąg obu stron! 🚂', ivTrainStart:'Jedzie pociąg z daleka! Polacy i Brytyjczycy razem!', ivTrainDone:'Pociąg połączył całą salę! 🌉',
+  ivMixed:'Zaproś polski i brytyjski stolik na wspólny taniec! 🤝', ivMixedHalf:'Świetnie, teraz zaproś drugą stronę!', ivMixedOk:'Polska i Wielka Brytania tańczą razem! 🌉', ivMixedFail:'Stoliki zostały przy swoich…',
+  ivSpeechGive:'Mówca już czeka, podaj mu mikrofon', ivSpeechOn:'Trwa przemowa, a Ty nie tłumaczysz, tylko pilnujesz dźwięku 🎧',
+  ivFeedback:'Sprzężenie! Biegnij do konsoli DJ!', ivFeedbackOk:'Sprzężenie wyciszone, przemowa płynie dalej', ivFeedbackFail:'Pisk na całą salę… 🙉',
+  ivToastDue:'Przemowy skończone, wznieś toast przy mikrofonie!', ivToastOk:'Na zdrowie! Cheers! Cała sala wznosi kieliszki 🥂',
+  ivBossDue:'Wszyscy są już na parkiecie, więc rozpocznij zabawy na środku sali!', ivStoLatDue:'Zaintonuj „Sto lat" przy mikrofonie!',
+  ivTrainReady:'Most jest już mocny, więc poprowadź wężyka obu stron! 🚂', ivTrainStart:'Jedzie pociąg z daleka! Polacy i Brytyjczycy razem!', ivTrainDone:'Wężyk połączył całą salę! 🌉',
   ivGorzko:'GORZKO!', ivThanks:'Brawa dla rodziców! 👏', ivCake:'Wjeżdża tort! 🎂',
   annTitle:'ZAPOWIEDŹ PRZY MIKROFONIE', annSaysPL:'Po polsku mówisz:', annPick:'Wybierz, jak powiesz to po angielsku (kliknij albo 1–3):',
-  annBal:'Proporcje języków — zatrzymaj wskaźnik na środku! (Spacja / STOP)', annBalL:'za dużo po polsku', annBalC:'krótko w obu', annBalR:'za dużo po angielsku', annStop:'STOP',
+  annBal:'Proporcje języków: zatrzymaj wskaźnik na środku! (Spacja / STOP)', annBalL:'za dużo po polsku', annBalC:'krótko w obu', annBalR:'za dużo po angielsku', annStop:'STOP',
   annQ0:'Dosłownie… Brytyjczycy w szoku 😂', annQ1:'Poprawnie, ale drewniano 😐', annQ2:'Wodzirejsko! Wszyscy rozumieją 👏',
-  annBC:'Idealny balans ⚖', annBL:'Za dużo polskiego — Brytyjczycy się gubią', annBR:'Za dużo angielskiego — rodzina się nudzi',
-  slTitle:'STO LAT! — DYRYGUJ SALĄ', slSub:'Trafiaj, gdy nuta dotknie złotego koła (Spacja / klik)', slDone:(n)=>'Cała sala śpiewa! Trafienia: '+n+'/10', slPerfect:'Czysto!', slMiss:'Fałsz!',
-  bTitle:'OCZEPINY — MIESZANE DRUŻYNY', bSub:'Gość z karteczki czeka na komendę — wydaj ją w JEGO języku!   ← / A = PL     → / D = EN',
+  annBC:'Idealny balans ⚖', annBL:'Za dużo polskiego, Brytyjczycy się gubią', annBR:'Za dużo angielskiego, rodzina się nudzi',
+  slTitle:'STO LAT! DYRYGUJ SALĄ', slSub:'Trafiaj, gdy nuta dotknie złotego koła (Spacja / klik)', slDone:(n)=>'Cała sala śpiewa! Trafienia: '+n+'/10', slPerfect:'Czysto!', slMiss:'Fałsz!',
+  bTitle:'OCZEPINY: MIESZANE DRUŻYNY', bSub:'Gość z karteczki czeka na komendę, wydaj ją w JEGO języku!   ← / A = PL     → / D = EN',
   bBtnPL:'PO POLSKU', bBtnUK:'PO ANGIELSKU', bTeamA:'Drużyna Kasi', bTeamB:'Drużyna Jamesa', bWrong:'Zły język! ❓', bMiss:'Za późno!',
   bDone:(n,m)=>'Zabawy zaliczone! Trafienia: '+n+'/'+m,
-  resIntl:'MOST MIĘDZY NARODAMI!', resIntlLowT:'GOOGLE TRANSLATE Z MIKROFONEM', resIntlHi:'Obie strony bawiły się razem — dwujęzyczna klasa!',
-  resIntlMid:'Dobre wesele! Jeszcze trochę, a sala stanie się jedną.', resIntlLow:'Strony siedziały osobno — następnym razem połącz salę!',
+  resIntl:'MOST MIĘDZY NARODAMI!', resIntlLowT:'GOOGLE TRANSLATE Z MIKROFONEM', resIntlHi:'Obie strony bawiły się razem, jakby od zawsze mówiły jednym językiem!',
+  resIntlMid:'Dobre wesele! Jeszcze trochę, a sala stanie się jedną.', resIntlLow:'Obie strony siedziały osobno, więc następnym razem spróbuj połączyć salę!',
   resIntlScore:(s,n,m)=>'Wynik: '+s+' pkt  •  Trafne zapowiedzi: '+n+'/'+m, resIntlAvg:(p,u,b)=>'Rodzina PL '+p+'%  •  Goście UK '+u+'%  •  Most '+b+'%',
-  resIntlCopy:'Wesele z gośćmi z zagranicy? Karol poprowadzi je płynnie\npo polsku i angielsku — bez tłumacza, z klasą.',
+  resIntlCopy:'Wesele z gośćmi z zagranicy? Karol poprowadzi je płynnie\npo polsku i po angielsku, bez tłumacza i bez zgrzytów.',
   spBest:['Hi everyone, I\'m Tom — the best man!','I\'ve known James since school… and he still can\'t dance.','Kasia, good luck teaching him. To the bride and groom!'],
-  spDad:['Kochani, dziękuję, że jesteście dziś z nami!','Kasiu, Jamesie — bądźcie zawsze tak szczęśliwi jak dziś.','Witamy Jamesa w rodzinie! Sto lat, dzieci!'],
+  spDad:['Kochani, dziękuję, że jesteście dziś z nami!','Kasiu, Jamesie, bądźcie zawsze tak szczęśliwi jak dziś.','Witamy Jamesa w rodzinie! Sto lat, dzieci!'],
   bCmds:[{i:'🪑',pl:'Krzesło!',en:'Chair!'},{i:'💃',pl:'Tańczymy!',en:'Dance!'},{i:'🎈',pl:'Balon!',en:'Balloon!'},{i:'✋',pl:'Stop!',en:'Freeze!'},{i:'👏',pl:'Klaszczemy!',en:'Clap!'}],
   slSyl:['Sto','lat,','sto','lat,','niech','ży-','je,','ży-','je','nam!'],
   ann:[
-   {icon:'🍞',pl:'Proszę Państwa, wstajemy! Rodzice witają Parę Młodą chlebem i solą.',opts:[{en:'Please get up! The parents are now salting the bread of the young pair!',g:'(dosłownie: „rodzice solą chleb" — goście nie wiedzą, o co chodzi)',q:0},{en:'Please stand. Bread and salt now.',g:'(sucho — bez wyjaśnienia zwyczaju)',q:1},{en:'Please rise! In Poland, parents greet the newlyweds with bread and salt — so they never go hungry and face life\'s hardships together.',g:'(wyjaśnia sens tradycji — wszyscy rozumieją)',q:2}]},
-   {icon:'🥂',pl:'Wznosimy toast! A teraz wszyscy razem: Sto lat!',opts:[{en:'We raise the toast! And now all together: One hundred summers!',g:'(„lat" jak „lato" — totalna zagadka)',q:0},{en:'Toast. Now sing Sto lat.',g:'(nikt nie wie, co i jak śpiewać)',q:1},{en:'Raise your glasses! Now our Polish party anthem — Sto lat, wishing them a hundred years together. Just sing: sto lat, sto lat!',g:'(wyjaśnia piosenkę i daje prosty refren)',q:2}]},
-   {icon:'💑',pl:'Przed nami pierwszy taniec Państwa Młodych!',opts:[{en:'Before us is the first dance of the Young State!',g:'(„Państwo" jak państwo-kraj 😅)',q:0},{en:'Now the first dance of the young couple, which is the first dance that they dance as a couple, together, right now.',g:'(przegadane — moment ucieka)',q:1},{en:'Ladies and gentlemen — please welcome to the floor, for their first dance as husband and wife: Kasia and James!',g:'(krótko i elegancko)',q:2}]},
-   {icon:'🎤',pl:'Za chwilę przemówienia — najpierw świadek, potem tata Panny Młodej.',opts:[{en:'In a moment the speeches — first the witness, then the dad of the young miss.',g:'(„świadek" jak świadek w sądzie…)',q:0},{en:'Speeches now. Best man and the bride\'s father.',g:'(poprawnie, ale bez klimatu)',q:1},{en:'Time for the speeches! Please welcome the best man — and then the father of the bride. Glasses ready!',g:'(zapowiada mówców i szykuje toast)',q:2}]},
-   {icon:'💐',pl:'Zaczynamy oczepiny! Zapraszam wszystkich na parkiet!',opts:[{en:'We are starting the un-capping! Everybody to the floor!',g:'(dosłownie „od-czepianie" — brzmi groźnie)',q:0},{en:'Now: oczepiny. Come to the dance floor.',g:'(nazwa bez wyjaśnienia)',q:1},{en:'It\'s time for Oczepiny — the moment the bride becomes a wife, full of games for everyone. Mixed teams — come on down!',g:'(wyjaśnia zwyczaj i łączy obie strony)',q:2}]},
-   {icon:'💋',pl:'Coś mi tu gorzko… Gorzko, gorzko!',opts:[{en:'Something is bitter here… Bitter, bitter!',g:'(dosłownie — goście sprawdzają swoje drinki)',q:0},{en:'Please kiss now.',g:'(działa, ale zabija zabawę)',q:1},{en:'In Poland, when the vodka tastes bitter, only the couple\'s kiss can sweeten it — so everyone shout: GORZKO! GORZKO!',g:'(wyjaśnia zwyczaj i wciąga gości)',q:2}]},
-   {icon:'🎂',pl:'Na koniec tort — i wielkie podziękowania dla rodziców!',opts:[{en:'At the end the tort — and big thanks for the parents!',g:'(„tort" po angielsku to… delikt prawny 😅)',q:0},{en:'Cake now. Thank you, parents.',g:'(sucho)',q:1},{en:'And now the wedding cake — and a huge thank-you to the parents who made this day possible. Let\'s hear it for them!',g:'(ciepło i z energią — sala klaszcze)',q:2}]}],
+   {icon:'🍞',pl:'Proszę Państwa, wstajemy! Rodzice witają Parę Młodą chlebem i solą.',opts:[{en:'Please get up! The parents are now salting the bread of the young pair!',g:'(dosłownie „rodzice solą chleb", więc goście nie wiedzą, o co chodzi)',q:0},{en:'Please stand. Bread and salt now.',g:'(sucho i bez wyjaśnienia zwyczaju)',q:1},{en:'Please rise! In Poland, parents greet the newlyweds with bread and salt — so they never go hungry and face life\'s hardships together.',g:'(wyjaśnia sens tradycji, więc wszyscy rozumieją)',q:2}]},
+   {icon:'🥂',pl:'Wznosimy toast! A teraz wszyscy razem: Sto lat!',opts:[{en:'We raise the toast! And now all together: One hundred summers!',g:'(„lat" jak „lato", więc dla gości to zagadka)',q:0},{en:'Toast. Now sing Sto lat.',g:'(nikt nie wie, co i jak śpiewać)',q:1},{en:'Raise your glasses! Now our Polish party anthem — Sto lat, wishing them a hundred years together. Just sing: sto lat, sto lat!',g:'(wyjaśnia piosenkę i daje prosty refren)',q:2}]},
+   {icon:'💑',pl:'Przed nami pierwszy taniec Państwa Młodych!',opts:[{en:'Before us is the first dance of the Young State!',g:'(„Państwo" jak państwo-kraj 😅)',q:0},{en:'Now the first dance of the young couple, which is the first dance that they dance as a couple, together, right now.',g:'(przegadane, a moment ucieka)',q:1},{en:'Ladies and gentlemen — please welcome to the floor, for their first dance as husband and wife: Kasia and James!',g:'(krótko i elegancko)',q:2}]},
+   {icon:'🎤',pl:'Za chwilę przemówienia: najpierw świadek, a po nim tata Panny Młodej.',opts:[{en:'In a moment the speeches — first the witness, then the dad of the young miss.',g:'(„świadek" jak świadek w sądzie…)',q:0},{en:'Speeches now. Best man and the bride\'s father.',g:'(poprawnie, ale bez klimatu)',q:1},{en:'Time for the speeches! Please welcome the best man — and then the father of the bride. Glasses ready!',g:'(zapowiada mówców i szykuje toast)',q:2}]},
+   {icon:'💐',pl:'Zaczynamy oczepiny! Zapraszam wszystkich na parkiet!',opts:[{en:'We are starting the un-capping! Everybody to the floor!',g:'(dosłownie „od-czepianie", co brzmi groźnie)',q:0},{en:'Now: oczepiny. Come to the dance floor.',g:'(nazwa bez wyjaśnienia)',q:1},{en:'It\'s time for Oczepiny — the moment the bride becomes a wife, full of games for everyone. Mixed teams — come on down!',g:'(wyjaśnia zwyczaj i łączy obie strony)',q:2}]},
+   {icon:'💋',pl:'Coś mi tu gorzko… Gorzko, gorzko!',opts:[{en:'Something is bitter here… Bitter, bitter!',g:'(dosłownie, więc goście sprawdzają swoje drinki)',q:0},{en:'Please kiss now.',g:'(działa, ale zabija zabawę)',q:1},{en:'In Poland, when the vodka tastes bitter, only the couple\'s kiss can sweeten it — so everyone shout: GORZKO! GORZKO!',g:'(wyjaśnia zwyczaj i wciąga gości)',q:2}]},
+   {icon:'🎂',pl:'Na koniec tort i wielkie podziękowania dla rodziców!',opts:[{en:'At the end the tort — and big thanks for the parents!',g:'(„tort" po angielsku to… delikt prawny 😅)',q:0},{en:'Cake now. Thank you, parents.',g:'(sucho)',q:1},{en:'And now the wedding cake — and a huge thank-you to the parents who made this day possible. Let\'s hear it for them!',g:'(ciepło i z energią, sala klaszcze)',q:2}]}],
  },
  en:{
   docTitle:'Wodzirej Karol: Master of the Dancefloor – game | Wedding MC Poland',
@@ -400,17 +400,17 @@ const I18N={
   resIntlScore:(s,n,m)=>'Score: '+s+' pts  •  Spot-on announcements: '+n+'/'+m, resIntlAvg:(p,u,b)=>'PL family '+p+'%  •  UK guests '+u+'%  •  Bridge '+b+'%',
   resIntlCopy:'Getting married in Poland with guests from abroad?\nKarol hosts fluently in English and Polish — with class.',
   spBest:['Hi everyone, I\'m Tom — the best man!','I\'ve known James since school… and he still can\'t dance.','Kasia, good luck teaching him. To the bride and groom!'],
-  spDad:['Kochani, dziękuję, że jesteście dziś z nami!','Kasiu, Jamesie — bądźcie zawsze tak szczęśliwi jak dziś.','Witamy Jamesa w rodzinie! Sto lat, dzieci!'],
+  spDad:['Kochani, dziękuję, że jesteście dziś z nami!','Kasiu, Jamesie, bądźcie zawsze tak szczęśliwi jak dziś.','Witamy Jamesa w rodzinie! Sto lat, dzieci!'],
   bCmds:[{i:'🪑',pl:'Krzesło!',en:'Chair!'},{i:'💃',pl:'Tańczymy!',en:'Dance!'},{i:'🎈',pl:'Balon!',en:'Balloon!'},{i:'✋',pl:'Stop!',en:'Freeze!'},{i:'👏',pl:'Klaszczemy!',en:'Clap!'}],
   slSyl:['Sto','lat,','sto','lat,','niech','ży-','je,','ży-','je','nam!'],
   ann:[
    {icon:'🍞',pl:'Proszę Państwa, wstajemy! Rodzice witają Parę Młodą chlebem i solą.',opts:[{en:'Please get up! The parents are now salting the bread of the young pair!',g:'(word-for-word — the guests have no idea)',q:0},{en:'Please stand. Bread and salt now.',g:'(dry — the custom isn\'t explained)',q:1},{en:'Please rise! In Poland, parents greet the newlyweds with bread and salt — so they never go hungry and face life\'s hardships together.',g:'(explains the tradition — everyone gets it)',q:2}]},
    {icon:'🥂',pl:'Wznosimy toast! A teraz wszyscy razem: Sto lat!',opts:[{en:'We raise the toast! And now all together: One hundred summers!',g:'("lat" read as "summer" — a total riddle)',q:0},{en:'Toast. Now sing Sto lat.',g:'(nobody knows what or how to sing)',q:1},{en:'Raise your glasses! Now our Polish party anthem — Sto lat, wishing them a hundred years together. Just sing: sto lat, sto lat!',g:'(explains the song and gives an easy chorus)',q:2}]},
    {icon:'💑',pl:'Przed nami pierwszy taniec Państwa Młodych!',opts:[{en:'Before us is the first dance of the Young State!',g:'("Państwo" read as a country 😅)',q:0},{en:'Now the first dance of the young couple, which is the first dance that they dance as a couple, together, right now.',g:'(waffly — the moment slips away)',q:1},{en:'Ladies and gentlemen — please welcome to the floor, for their first dance as husband and wife: Kasia and James!',g:'(short and elegant)',q:2}]},
-   {icon:'🎤',pl:'Za chwilę przemówienia — najpierw świadek, potem tata Panny Młodej.',opts:[{en:'In a moment the speeches — first the witness, then the dad of the young miss.',g:'("świadek" read as a court witness…)',q:0},{en:'Speeches now. Best man and the bride\'s father.',g:'(correct, but flat)',q:1},{en:'Time for the speeches! Please welcome the best man — and then the father of the bride. Glasses ready!',g:'(introduces the speakers and sets up the toast)',q:2}]},
+   {icon:'🎤',pl:'Za chwilę przemówienia: najpierw świadek, a po nim tata Panny Młodej.',opts:[{en:'In a moment the speeches — first the witness, then the dad of the young miss.',g:'("świadek" read as a court witness…)',q:0},{en:'Speeches now. Best man and the bride\'s father.',g:'(correct, but flat)',q:1},{en:'Time for the speeches! Please welcome the best man — and then the father of the bride. Glasses ready!',g:'(introduces the speakers and sets up the toast)',q:2}]},
    {icon:'💐',pl:'Zaczynamy oczepiny! Zapraszam wszystkich na parkiet!',opts:[{en:'We are starting the un-capping! Everybody to the floor!',g:'(word-for-word "un-hooking" — sounds scary)',q:0},{en:'Now: oczepiny. Come to the dance floor.',g:'(the name, unexplained)',q:1},{en:'It\'s time for Oczepiny — the moment the bride becomes a wife, full of games for everyone. Mixed teams — come on down!',g:'(explains the custom and unites both sides)',q:2}]},
    {icon:'💋',pl:'Coś mi tu gorzko… Gorzko, gorzko!',opts:[{en:'Something is bitter here… Bitter, bitter!',g:'(word-for-word — guests check their drinks)',q:0},{en:'Please kiss now.',g:'(works, but kills the fun)',q:1},{en:'In Poland, when the vodka tastes bitter, only the couple\'s kiss can sweeten it — so everyone shout: GORZKO! GORZKO!',g:'(explains the custom and pulls the guests in)',q:2}]},
-   {icon:'🎂',pl:'Na koniec tort — i wielkie podziękowania dla rodziców!',opts:[{en:'At the end the tort — and big thanks for the parents!',g:'("tort" in English is… a legal wrong 😅)',q:0},{en:'Cake now. Thank you, parents.',g:'(dry)',q:1},{en:'And now the wedding cake — and a huge thank-you to the parents who made this day possible. Let\'s hear it for them!',g:'(warm and upbeat — the room applauds)',q:2}]}],
+   {icon:'🎂',pl:'Na koniec tort i wielkie podziękowania dla rodziców!',opts:[{en:'At the end the tort — and big thanks for the parents!',g:'("tort" in English is… a legal wrong 😅)',q:0},{en:'Cake now. Thank you, parents.',g:'(dry)',q:1},{en:'And now the wedding cake — and a huge thank-you to the parents who made this day possible. Let\'s hear it for them!',g:'(warm and upbeat — the room applauds)',q:2}]}],
  }
 };
 function detectLang(){ try{ const u=new URLSearchParams(location.search).get('lang'); if(u==='en'||u==='pl') return u;
@@ -1915,7 +1915,7 @@ class Dance extends Phaser.Scene{
     if(i>0){ Audio.sfx('phase'); }
     if(i===2 && !this.firstDanceFired){ this.firstDanceFired=true; this.startFirstDance(); }   // pierwszy taniec pary młodej
     if(i===4 && !this.bouquetFired) this.bouquetPending=true;   // oczepiny — rzut bukietem
-    this.flashTip(ph.name+' — '+ph.hint); this.refreshHUD(); }
+    this.flashTip(ph.name+': '+ph.hint); this.refreshHUD(); }
   curPhase(){ return this.DPH[this.phaseIdx]; }
 
   /* ---------- TIK SEKUNDOWY ---------- */
@@ -2641,7 +2641,7 @@ class Wedding extends Phaser.Scene{
     if(i===0) this.coupleEnter();
     if(i===2) this.startFirstDance(); else if(this.firstDance) this.endFirstDance();
     if(i===6) this.showCake();
-    this.flashTip(missed?t('ivLateSkip'):(ph.icon+' '+ph.name+' — '+t('ivAnnDue')));
+    this.flashTip(missed?t('ivLateSkip'):(ph.icon+' '+ph.name+': '+t('ivAnnDue')));
     this.refreshHUD(); }
 
   // co dzieje się po udanej zapowiedzi w danej fazie
